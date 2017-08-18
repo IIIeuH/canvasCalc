@@ -1,0 +1,106 @@
+extends layout
+
+block content
+  .container-fluid
+    .row
+      .col-md-3
+        .wrap
+          .row
+            .col-md-12
+              div(calss='physics-param')
+                h2.h2 Физические параметры
+                .input-group
+                  label(for='width') Ширина, мм.
+                  input.form-control#width(type='number', value='1200')
+                .input-group
+                  label(for='depth') Глубина, мм.
+                  input.form-control#depth(type='number', value='600')
+                .input-group
+                  label(for='profile-option') Вариант профиля
+                  select.form-control#profile-option
+                    option(value='с подклейкой', selected='') с подклейкой
+                    option(value='без подклейки') без подклейки
+                .input-group
+                  label(for='gluing-height') Высота подклейки
+                  select.form-control#gluing-height
+                    option(value='20', selected='') 20
+                    option(value='30') 30
+                    option(value='40') 40
+                    option(value='60') 60
+                .input-group
+                  label.pad Стороны профиля
+                  label.checkbox-inline
+                    input#A(type='checkbox', name='sideProfile')
+                    |  A
+                  label.checkbox-inline
+                    input#B(type='checkbox', name='sideProfile')
+                    |  B
+                  label.checkbox-inline
+                    input#C(type='checkbox', name='sideProfile')
+                    |  C
+                  label.checkbox-inline
+                    input#D(type='checkbox', name='sideProfile')
+                    |  D
+                .input-group
+                  label(for='splice1') Расположение стыка 1, мм.
+                  input.form-control#splice1(type='number')
+                .input-group
+                  label(for='splice2') Расположение стыка 2, мм.
+                  input.form-control#splice2(type='number')
+          .row
+            .col-md-12
+              .parameters-of-sanitary
+                h2.h2 Параметры сантехники и отверстия
+                .input-group
+                  label(for='moi-form') Форма мойки
+                  select.form-control#moi-form
+                    option(value='')
+                    option(value='Круглая') Круглая
+                    option(value='Прямоугольная') Прямоугольная
+                    option(value='Эллипс') Эллипс
+                #hid
+                  .input-group
+                    label(for='coordinatesX') Координаты центра мойки по оси X, мм.
+                    input.form-control#coordinatesX(type='number')
+                  .input-group
+                    label(for='coordinatesY') Координаты центра мойки по оси Y, мм.
+                    input.form-control#coordinatesY(type='number')
+                  label.checkbox-inline
+                    input(type='checkbox', name='bottomMounting')
+                    | Нижнего монтажа
+                  .side-group
+                    .input-group
+                      label(for='side-a') Сторона A, мм.
+                      input.form-control#side-a(type='number')
+                    .input-group
+                      label(for='side-b') Сторона B, мм.
+                      input.form-control#side-b(type='number')
+                  .input-group.diameter-group
+                    label(for='diameter') Диаметр, мм.
+                    input.form-control#diameter(type='number')
+                  .lots-group
+                    .input-group
+                      label(for='lots') Длина большой полуоси, мм.
+                      input.form-control#lots(type='number')
+                    .input-group
+                      label(for='sal') Длина малой полуоси, мм.
+                      input.form-control#sal(type='number')
+          .row
+            .col-md-12
+              h2 Доп. отверстия
+              table.table.table-striped.table-bordered.table-condensed
+                thead
+                  th Номер отверстия
+                  th X
+                  th Y
+                  th D
+                tbody#dopChild
+              button.pad.btn.btn-default#dop(onclick='addDop()') Добавить
+              button.pad.btn.btn-default#drop(onclick='drop()') Удалить
+          .row
+            .col-md-12
+              button.pad.btn.btn-info#draw Нарисовать
+              button.pad.btn.btn-success#save  Сохранить
+      .col-md-9
+        .graph
+          canvas#canvas(width='1300', height='700')
