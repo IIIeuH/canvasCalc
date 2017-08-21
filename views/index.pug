@@ -3,7 +3,7 @@ extends layout
 block content
   .container-fluid
     .row
-      .col-md-3
+      .col-md-3.col-lg-3
         .wrap
           .row
             .col-md-12
@@ -101,6 +101,6 @@ block content
             .col-md-12
               button.pad.btn.btn-info#draw Нарисовать
               button.pad.btn.btn-success#save  Сохранить
-      .col-md-9
+      .col-md-9.col-lg-9
         .graph
           canvas#canvas(width='1300', height='700')

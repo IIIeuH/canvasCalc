@@ -4,6 +4,7 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var conf = require('./setting');
 
 var index = require('./routes/index');
 var users = require('./routes/users');
@@ -11,8 +12,8 @@ var users = require('./routes/users');
 var app = express();
 
 
-app.listen(3333, function(){
-  console.log('server is run');
+app.listen(conf.port, function(){
+  console.log('server is run on port '+ conf.port);
 });
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
