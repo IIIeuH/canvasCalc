@@ -23,22 +23,38 @@ window.onload = function(){
         }else{
             document.querySelector('#hid').classList.remove('hidden');
         }
-        if(document.querySelector('#moi-form').value === 'Прямоугольная'){
+        if(document.querySelector('#moi-form').value === '2'){
             document.querySelector('.diameter-group').classList.add('hidden');
+            $('.diameter-group').val('');
             document.querySelector('.lots-group').classList.add('hidden');
+            $('.lots-group').val('');
             document.querySelector('.side-group').classList.remove('hidden');
+            $('.side-group').val('');
         }
-        if(document.querySelector('#moi-form').value === 'Круглая'){
+        if(document.querySelector('#moi-form').value === '1'){
             document.querySelector('.side-group').classList.add('hidden');
+            $('.side-group').val('');
             document.querySelector('.lots-group').classList.add('hidden');
+            $('.lots-group').val('');
             document.querySelector('.diameter-group').classList.remove('hidden');
+            $('.diameter-group').val('');
         }
-        if(document.querySelector('#moi-form').value === 'Эллипс'){
+        if(document.querySelector('#moi-form').value === '3'){
             document.querySelector('.side-group').classList.add('hidden');
+            $('.side-group').val('');
             document.querySelector('.diameter-group').classList.add('hidden');
+            $('.diameter-group').val('');
             document.querySelector('.lots-group').classList.remove('hidden');
+            $('.lots-group').val('');
         }
     };
+    $('#profile-option').change(function(){
+        if($(this).val() === '0'){
+            $('#gluing').addClass('hidden');
+        }else{
+            $('#gluing').removeClass('hidden');
+        }
+    });
 };
 
 function start(){
@@ -118,7 +134,7 @@ function draw(){
         ctx.lineTo(33, +heigth+30);
         ctx.stroke();
     }
-    if(document.querySelector('#moi-form').value === 'Круглая'){
+    if(document.querySelector('#moi-form').value === '1'){
         var coordX = +document.querySelector('#coordinatesX').value;
         var coordY = +document.querySelector('#coordinatesY').value;
         var diametr = +document.querySelector('#diameter').value;
@@ -133,7 +149,7 @@ function draw(){
         ctx.restore();
         ctx.closePath();
     }
-    if(document.querySelector('#moi-form').value === 'Прямоугольная'){
+    if(document.querySelector('#moi-form').value === '2'){
         var coordX = +document.querySelector('#coordinatesX').value;
         var coordY = +document.querySelector('#coordinatesY').value;
         var sideA = +document.querySelector('#side-a').value;
@@ -145,7 +161,7 @@ function draw(){
         ctx.strokeRect(+coordX + 30 -(sideA / 2), +coordY + 30 -(sideB / 2), sideA, sideB);
 
     }
-    if(document.querySelector('#moi-form').value === 'Эллипс'){
+    if(document.querySelector('#moi-form').value === '3'){
         var coordX = +document.querySelector('#coordinatesX').value;
         var coordY = +document.querySelector('#coordinatesY').value;
         var lots = +document.querySelector('#lots').value;
@@ -194,3 +210,150 @@ function drop(){
     var parent = document.querySelector('#dopChild');
     parent.removeChild(elem[elem.length - 1]);
 }
+
+$(function(){
+    var width,              //Ширина
+        heigth,             //Высота
+        section,            //Вариант профиля
+        bottomGlueWidth,    //ширина нижней подклейки
+        sectionSide,        //Стороны профиля
+        sectionHeight,      //Высота профиля
+        joinVertical,       //Расположение стыка 1, мм.
+        joinHorizontal,     //Расположение стыка 2, мм.
+                            //Параметры сантехники и отверстия
+        moiForm,
+        coordinatesX,
+        coordinatesY,
+        bottomMounting,
+                            //для круга
+        diameter,
+                            //Для Прямоугольника
+        sideA,
+        sideB,
+                            //Для эллипса
+        lots,
+        sal;
+    $('#save').click(function(){
+        var tab = document.querySelectorAll('.last');
+        var mas = [];
+        tab.forEach(function(item){
+            var dop = {
+                inputX: item.querySelector('.inputX').value,
+                inputY: item.querySelector('.inputY').value,
+                inputD: item.querySelector('.inputD').value
+            };
+            mas.push(dop);
+        });
+
+        var data = {
+            width :             $('#width').val(),
+            heigth :            $('#depth').val(),
+            section :           $('#profile-option').val(),
+            bottomGlueWidth :   $('#gluing-width').val(),
+            sectionHeight :     $('#profile-heigth').val(),
+            joinVertical :      $('#splice1').val(),
+            joinHorizontal :    $('#splice2').val(),
+            coordinatesX:       $('#coordinatesX').val(),
+            coordinatesY:       $('#coordinatesY').val(),
+            bottomMounting:     $('input[name=bottomMounting]:checked').val() || 0,
+            diameter:           $('#diameter').val(),
+            moiForm:            $('#moi-form').val(),
+            sideA:              $('#side-a').val(),
+            sideB:              $('#side-b').val(),
+            lots:               $('#lots').val(),
+            sal:                $('#sal').val(),
+            dop:                JSON.stringify(mas)
+        };
+        data.sectionSide = '';
+        $('input[name=sideProfile]:checked').each(function(){
+            data.sectionSide += ($(this).val());
+        });
+        console.log(data);
+        $.ajax({
+           url: '/',
+           type: 'PUT',
+           data: data,
+           success: function(data){
+               Snackbar.show({
+                   text: 'Данные успешно сохраненны!',
+                   textColor: '#52ce80',
+                   pos: 'bottom-left',
+                   actionText: null
+               });
+           },
+           error: function(data){
+               Snackbar.show({
+                   text: 'Произошла ошибка',
+                   textColor: '#d81616',
+                   pos: 'bottom-left',
+                   actionText: null
+               });
+           }
+        });
+    });
+});
+
+//Обработка изменения селекта с готовыми решениями
+
+$(function(){
+    $('.ready').change(function(ev){
+        $('.last').remove();
+        $('input[name=sideProfile]').prop('checked', false);;
+        var data = JSON.parse($(this).val());
+        var asyncData = $.ajax({
+            url: '/draw',
+            type: 'POST',
+            data: {id: data.COUNTERTOPS_ID},
+            success: function(data){
+            },
+            error: function(err){
+                console.log(err);
+            }
+        });
+
+        console.log(data);
+        asyncData.then(function(Asdata){
+            var side = data.SECTION_SIDE.split('');
+            console.log(side);
+            $('#width').val(data.WIDTH);
+            $('#depth').val(data.HEIGTH);
+            $('#profile-option').val(data.SECTION).change();
+            $('#gluing-width').val(data.BOTTOM_GLUE_WIDTH);
+            $('#profile-heigth').val(data.SECTION_HEIGHT);
+            side.forEach(function(item){
+                $("input:checkbox[value='"+item+"']").prop("checked", "checked");
+            });
+            $('#splice1').val(data.JOINT_VERTICAL);
+            $('#splice2').val(data.JOINT_HORIZONTAL);
+            Asdata.forEach(function(item){
+                console.log(item);
+                if(item.BOTTOM_MOUNT == 1){
+                    if(item.ADDON_TYPE_ID == 1){
+                        $('#diameter').val(item.ADDON_A);
+                    }
+                    if(item.ADDON_TYPE_ID == 2){
+                        $('#side-a').val(item.ADDON_A);
+                        $('#side-b').val(item.ADDON_B);
+                    }
+                    if(item.ADDON_TYPE_ID == 3){
+                        $('#lots').val(item.ADDON_A);
+                        $('#sal').val(item.ADDON_B);
+                    }
+                    $('#moi-form').val(item.ADDON_TYPE_ID).change();
+                    $('#coordinatesX').val(item.ADDON_X);
+                    $('#coordinatesY').val(item.ADDON_Y);
+                    $('input[name=bottomMounting]').prop("checked", "checked");
+                }
+                else{
+                    $('#dop').click();
+                    $('.inputX').last().val(item.ADDON_X);
+                    $('.inputY').last().val(item.ADDON_Y);
+                    $('.inputD').last().val(item.ADDON_A);
+                }
+            });
+            $('#draw').click();
+        });
+
+
+    });
+});

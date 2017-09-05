@@ -7,6 +7,13 @@ block content
         .wrap
           .row
             .col-md-12
+              h2.h2 Готовые примеры
+              -var redyExemple = data;
+              select.form-control.ready
+                option ''
+                each item in data
+                  option(value=item)=item.COUNTERTOPS_ID
+            .col-md-12
               div(calss='physics-param')
                 h2.h2 Физические параметры
                 .input-group
@@ -18,28 +25,32 @@ block content
                 .input-group
                   label(for='profile-option') Вариант профиля
                   select.form-control#profile-option
-                    option(value='с подклейкой', selected='') с подклейкой
-                    option(value='без подклейки') без подклейки
+                    option(value='1', selected='') с подклейкой
+                    option(value='0') без подклейки
+                #gluing
+                  .input-group
+                    label(for='gluing-width') Ширина нижней подклейки
+                    input.form-control#gluing-width(type='number', value='70')
                 .input-group
-                  label(for='gluing-height') Высота подклейки
-                  select.form-control#gluing-height
-                    option(value='20', selected='') 20
+                  label(for='profile-heigth') Высота профиля, мм.
+                  select.form-control#profile-heigth
+                    option(value='20', selected) 20
                     option(value='30') 30
                     option(value='40') 40
                     option(value='60') 60
                 .input-group
                   label.pad Стороны профиля
                   label.checkbox-inline
-                    input#A(type='checkbox', name='sideProfile')
+                    input#A(type='checkbox', name='sideProfile', value='A')
                     |  A
                   label.checkbox-inline
-                    input#B(type='checkbox', name='sideProfile')
+                    input#B(type='checkbox', name='sideProfile', value='B')
                     |  B
                   label.checkbox-inline
-                    input#C(type='checkbox', name='sideProfile')
+                    input#C(type='checkbox', name='sideProfile', value='C')
                     |  C
                   label.checkbox-inline
-                    input#D(type='checkbox', name='sideProfile')
+                    input#D(type='checkbox', name='sideProfile', value='D')
                     |  D
                 .input-group
                   label(for='splice1') Расположение стыка 1, мм.
@@ -55,9 +66,9 @@ block content
                   label(for='moi-form') Форма мойки
                   select.form-control#moi-form
                     option(value='')
-                    option(value='Круглая') Круглая
-                    option(value='Прямоугольная') Прямоугольная
-                    option(value='Эллипс') Эллипс
+                    option(value='1') Круглая
+                    option(value='2') Прямоугольная
+                    option(value='3') Эллипс
                 #hid
                   .input-group
                     label(for='coordinatesX') Координаты центра мойки по оси X, мм.
@@ -66,7 +77,7 @@ block content
                     label(for='coordinatesY') Координаты центра мойки по оси Y, мм.
                     input.form-control#coordinatesY(type='number')
                   label.checkbox-inline
-                    input(type='checkbox', name='bottomMounting')
+                    input(type='checkbox', name='bottomMounting', value="1")
                     | Нижнего монтажа
                   .side-group
                     .input-group

@@ -1,0 +1,17 @@
+{
+  "name": "calc",
+  "description": "",
+  "main": "",
+  "authors": [
+    "IIIeuH <shein.ev@gmail.com>"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/IIIeuH/canvasCalc",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
