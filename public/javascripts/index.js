@@ -15,6 +15,41 @@ window.onload = function(){
     }
     start();
     document.querySelector('#draw').onclick = function(){
+        var diametr = $('#diameter').val();
+        var x = $('#coordinatesX').val();
+        var y = $('#coordinatesY').val();
+        var width = $('#width').val();
+        var height = $('#depth').val();
+        if($('#splice1').val() > width){
+            Snackbar.show({
+                text: 'Стык 1 не может быть больше ширины',
+                textColor: '#d81616',
+                pos: 'top-center',
+                actionText: null
+            });
+        }else if($('#splice2').val() > height){
+            Snackbar.show({
+                text: 'Стык 2 не может быть больше высоты',
+                textColor: '#d81616',
+                pos: 'top-center',
+                actionText: null
+            });
+        }else if(+x && +y < 0){
+            Snackbar.show({
+                text: 'Координаты центра мойки не могут быть отрицательными',
+                textColor: '#d81616',
+                pos: 'top-center',
+                actionText: null
+            });
+        }else if(( +diametr + +x > +width ) || (+diametr + +y > +height) || +diametr + +x > 30){
+            console.log( +diametr + +x < 30);
+            Snackbar.show({
+                text: 'Координаты выходят за рамки',
+                textColor: '#d81616',
+                pos: 'top-center',
+                actionText: null
+            });
+        }
         draw();
     };
     document.querySelector('#moi-form').onchange = function(){
@@ -353,7 +388,141 @@ $(function(){
             });
             $('#draw').click();
         });
-
-
     });
 });
+
+//расчет
+$(function(){
+    $('#calc').click(function(){
+        var sideA= 0, sideB= 0, sideC= 0, sideD= 0 ;
+        var profileLenght = 0;
+        var width = +$('#width').val();
+        var height = +$('#depth').val();
+        var perimeter = (width + height)*2;
+        var adjacentCut = 0;
+        var materialQty;
+        $('input[name=sideProfile]:checked').each(function(){
+            switch($(this).val()){
+                case 'A':
+                    sideA  = +$('#width').val();
+                    break;
+                case 'B':
+                    sideB = +$('#depth').val();
+                    break;
+                case 'C':
+                    sideC = +$('#width').val();
+                    break;
+                case 'D':
+                    sideD = +$('#depth').val();
+                    break;
+            }
+        });
+        if(sideA){
+            profileLenght += +width;
+        }
+        if(sideB){
+            profileLenght += +height;
+        }
+        if(sideC){
+            profileLenght += +width;
+        }
+        if(sideD){
+            profileLenght += +height;
+        }
+        var glueingPerimeter = profileLenght + +$('#profile-heigth').val();
+        if(sideA && sideB){
+            adjacentCut += +$('#profile-heigth').val()
+        }
+        if(sideC && sideB){
+            adjacentCut += +$('#profile-heigth').val()
+        }
+        if(sideC && sideD){
+            adjacentCut += +$('#profile-heigth').val()
+        }
+        if(sideA && sideD){
+            adjacentCut += +$('#profile-heigth').val()
+        }
+
+        if($('#profile-option').val() === '0'){
+            materialQty =( (profileLenght * +$('#profile-heigth').val()) + (width * height) )/1000000 * 1.5;
+        }else{
+            materialQty =( (width * height) + (profileLenght * +$('#profile-heigth').val()) + ($('#gluing-width').val() * profileLenght )) / 1000000 * 1.5;
+        }
+
+        var gidrorezCutQty;
+        var gidrorezCutQty45;
+
+        gidrorezCutQty= (perimeter - (sideA + sideB+ sideC+ sideD))  + (glueingPerimeter / 2) - adjacentCut*2;
+
+
+        gidrorezCutQty45 = (sideA + sideB+ sideC+ sideD) + (glueingPerimeter / 2) + +adjacentCut*2;
+        if($('#profile-option').val() === '1'){
+            gidrorezCutQty += (+$('#gluing-width').val() + +profileLenght ) * 2;
+            gidrorezCutQty45 += +profileLenght * 2;
+        }
+        $('.last').each(function(){
+            var D = $(this).find('.inputD ').val();
+            gidrorezCutQty += 2 * 3.14 * (D/2);
+        });
+
+        if($('#moi-form').val() === '1'){
+            gidrorezCutQty += (2 * 3.14);
+        }
+
+        if($('#moi-form').val() === '2'){
+            gidrorezCutQty += (+$('#side-a').val() + +$('#side-b').val())*2;
+        }
+
+        if($('#moi-form').val() === '3'){
+            gidrorezCutQty += 3.14;
+        }
+        //var spliceGlueQty  = gidrorezCutQty45 / 2 * BomParams.ItemConsumpQty/BomParams.ItemConsumpPerQty /1000;
+        var spliceGlueQty  = +gidrorezCutQty45 / 2 * 10/2 /1000;
+
+        var metProfileQty  = +perimeter;
+
+        //var profileGlueQty =( metProfileQty * BomParams.ItemConsumpQty / BomParams.ItemConsumpPerQty) / 1000
+        var profileGlueQty =( +metProfileQty * 10 / 2) / 1000;
+
+        //var materialCost = materialQty * MatParams.ItemPrice
+        var materialCost = +materialQty * 70;
+
+        //var profileGlueCost = profileGlueQty * MatParams.ItemPrice
+        var profileGlueCost = +profileGlueQty * 70;
+
+        //var spliceGlueCost = spliceGlueQty * MatParams.ItemPrice
+        var spliceGlueCost = +spliceGlueQty * 70;
+
+        //var profileCost = metProfileQty /1000 * MatParams.itemPrice;
+        var profileCost = +metProfileQty /1000 * 100;
+
+        //var gidrorezCutCost  = gidrorezCutQty * MatParams.ItemPrice
+        var gidrorezCutCost  = +gidrorezCutQty * 1;
+        //var gidrorezCutCost  += gidrorezCutQty45 * MatParams.ItemPrice
+
+        //var assemCost = JobParams.JobPrice * profileLenght
+        var assemCost = 300;
+        var lowerAssemCost = 0;
+        if($('#moi-form').val() === '1'){
+            lowerAssemCost = 10 * 2 * 3.14;
+        }
+
+        if($('#moi-form').val() === '2'){
+            lowerAssemCost = 10 * (+$('#side-a').val() + +$('#side-b').val())*2;
+        }
+
+        if($('#moi-form').val() === '3'){
+            lowerAssemCost = 10 * 3.14;
+        }
+
+        var countertopCost = materialCost + profileGlueCost+ spliceGlueCost + profileCost + gidrorezCutCost  + lowerAssemCost;
+        console.log(materialCost ,profileGlueCost, spliceGlueCost , profileCost, gidrorezCutCost  , lowerAssemCost);
+
+        //console.log(sideA,sideB,sideC,sideD, profileLenght, perimeter, glueingPerimeter, adjacentCut, materialQty, 'gidrorezCutQty - ' + gidrorezCutQty, 'gidrorezCutQty45 - ' + gidrorezCutQty45);
+        console.log('Итог = '+ countertopCost);
+
+        $('.price h2').text('Итог = '+ countertopCost);
+    });
+
+});
+
