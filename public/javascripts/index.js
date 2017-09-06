@@ -519,9 +519,9 @@ $(function(){
         console.log(materialCost ,profileGlueCost, spliceGlueCost , profileCost, gidrorezCutCost  , lowerAssemCost);
 
         //console.log(sideA,sideB,sideC,sideD, profileLenght, perimeter, glueingPerimeter, adjacentCut, materialQty, 'gidrorezCutQty - ' + gidrorezCutQty, 'gidrorezCutQty45 - ' + gidrorezCutQty45);
-        console.log('Итог = '+ countertopCost);
+        console.log('Итог = '+ countertopCost, gidrorezCutQty);
 
-        $('.price h2').text('Итог = '+ countertopCost);
+        $('.price h2').text('Итог = '+ countertopCost, gidrorezCutQty);
     });
 
 });

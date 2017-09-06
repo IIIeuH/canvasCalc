@@ -5,6 +5,9 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var conf = require('./setting');
+//var passport = require('./passport');
+var flash = require('connect-flash');
+var session = require('express-session');
 
 var index = require('./routes/index');
 var users = require('./routes/users');
@@ -24,11 +27,23 @@ app.set('view engine', 'pug');
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(cookieParser());
+
+app.use(session({ cookie: { maxAge: 60000 },
+    secret: 'secretik',
+    resave: false,
+    saveUninitialized: false}));
+
+// Passport:
+// app.use(passport.initialize());
+// app.use(passport.session());
+app.use(flash());
+
+
 
 app.use('/', index);
-app.use('/users', users);
+app.use('/admin', users);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

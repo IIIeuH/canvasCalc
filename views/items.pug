@@ -1,0 +1,34 @@
+extends layoutAdmin
+
+block content
+    button.btn.btn-warning(type="button", id="addItem") Добавить
+    button.btn.btn-success.hidden(type="button", id="addTable") Добавить строчку
+    button.btn.btn-warning.hidden(type="button", id="cancelTable") Убрать строчку
+    button.btn.btn-info.hidden(type="button", id="saveItem") Сохранить
+    button.btn.btn-danger.hidden(type="button", id="cancelItem") Отменить
+    .addItemtable
+    .container-fuild
+        .row
+            .col-md-12
+                table.table.table-hover.table-bordered.table-condensed
+                    thead
+                        th ItemName(Название)
+                        th ItemType(Тип)
+                        th ItemHeight(Высота, мм)
+                        th ItemWidth(Ширина, мм)
+                        th ItemThin(Толщина, мм)
+                        th ItemPrice(Цена)
+                        th Удалить
+                    tbody
+                        each item in items
+                            tr
+                                td=item.ITEMNAME
+                                td=item.ITEM_TYPES_ID
+                                td=item.ITEMHEIGHT
+                                td=item.ITEMWIDTH
+                                td=item.ITEMTHIN
+                                td=item.ITEMPRICE
+                                td
+                                    button(type="button", data-id=item.ITEMID, data-name=item.ITEMNAME, class="close", aria-hidden="true") &times;
+
+

@@ -1,0 +1,34 @@
+doctype html
+html
+    head
+        meta(charset="utf-8")
+        meta(http-equiv="X-UA-Compatible", content="IE=edge")
+        meta(name="viewport", content="width=device-width, initial-scale=1")
+        title= title
+        link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css')
+        link(rel='stylesheet', href='/stylesheets/index.css')
+        link(rel='stylesheet', href='../../stylesheets/snackbar.min.css')
+        link(rel='stylesheet', href='../../stylesheets/style.css')
+    body
+        script(src="https://code.jquery.com/jquery-3.2.1.min.js", integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=", crossorigin="anonymous")
+        script(src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js")
+        script(src="../../javascripts/snackbar.min.js")
+        script(src="../../javascripts/admin.js")
+        nav.navbar.navbar-default(role='navigation')
+            .container-fluid
+                .navbar-header
+                    button.navbar-toggle(type='button', data-toggle='collapse', data-target='#bs-example-navbar-collapse-1')
+                        span.sr-only Toggle navigation
+                        span.icon-bar
+                        span.icon-bar
+                        span.icon-bar
+                    a.navbar-brand(href='/admin') Админ-панель
+                #bs-example-navbar-collapse-1.collapse.navbar-collapse
+                    ul.nav.navbar-nav
+                        li
+                            a(href='admin/items/') Параметры материала
+                        li
+                            a(href='admin/jobparams/') Параметры работ
+                        li
+                            a(href='admin/bomparams/') Спецификация
+        block content
