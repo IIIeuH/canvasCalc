@@ -43,8 +43,34 @@ module.exports.addItems = function(req, res, next){
     });
 };
 
+module.exports.addJobParams = function(req, res, next){
+    saveJobParams(req.body.data, req.body.col,  function(data){
+        res.json(data);
+    });
+};
+
+module.exports.jobuom = function(req, res, next){
+    getJobuom(function(data){
+        res.json(data);
+    });
+};
+
+module.exports.jobParams = function(req, res, next){
+    getJobParams(function(jobParams){
+        res.render('jobparams', { title: 'Параметры работ', jobParams: jobParams});
+    });
+};
+
+
+module.exports.bomParams = function(req, res, next){
+    getBomParams(function(bomParams){
+        res.render('bomparams', { title: 'Спецификация', bomParams: bomParams});
+    });
+};
+
 module.exports.del = function(req, res, next){
-    delItems(req.body.id, function(data){
+    console.log(req.body);
+    delItems(req.body.id, req.body.table, req.body.nameId, function(data){
         res.json(data);
     });
 };
@@ -222,7 +248,6 @@ function saveItems(req, col, cb){
                     for(var i = 0; i < item.length; i ++){
                         if(i === 0){
                             query.push("'"+item[i]+"'");
-                            console.log(typeof item[i]);
                             query.push(",");
                         }else{
                             query.push(+item[i]);
@@ -235,7 +260,6 @@ function saveItems(req, col, cb){
                 });
                 query.push('SELECT 1 FROM DUAL');
                 query = query.join(' ');
-                console.log(query);
                 connection.execute(
                     query, {}, {autoCommit: true},
                     function (err, result) {
@@ -248,6 +272,56 @@ function saveItems(req, col, cb){
                         doRelease(connection);
                         cb(result);
                     });
+        });
+}
+
+//Сохранение в таблицу jobparams
+function saveJobParams(req, col, cb){
+    oracledb.getConnection(
+        {
+            user: "tops",
+            password: "tops",
+            connectString: "(DESCRIPTION =(ADDRESS_LIST = (ADDRESS = (PROTOCOL = TCP)(HOST = webdb.terracorp.ru)(PORT = 1521)))(CONNECT_DATA = (SID = WEBDB)(SERVER = DEDICATED)))"
+        },
+        function (err, connection) {
+            if (err) {
+                console.error(err.message);
+                return;
+            }
+            req = JSON.parse(req);
+            col = JSON.parse(col);
+            //var query = "INSERT INTO items (itemname, item_types_id, itemheight, itemwidth, itemthin, itemprice) VALUES (:itemname, :item_types_id, :itemheight, :itemwidth, :itemthin, :itemprice)";
+            var query = [];
+            query.push("INSERT ALL ");
+            req.forEach(function(item, i){
+                query.push("INTO jobparams (jobdesc, jobprice, jobuoms_id) VALUES");
+                query.push("(");
+                for(var i = 0; i < item.length; i ++){
+                    if(i === 0){
+                        query.push("'"+item[i]+"'");
+                        query.push(",");
+                    }else{
+                        query.push(+item[i]);
+                        query.push(",");
+                    }
+                }
+                delete query[query.length-1];
+                query.push(")");
+            });
+            query.push('SELECT 1 FROM DUAL');
+            query = query.join(' ');
+            connection.execute(
+                query, {}, {autoCommit: true},
+                function (err, result) {
+                    if (err) {
+                        console.log(err);
+                        doRelease(connection);
+                        cb(err);
+                    }
+                    console.log(result);
+                    doRelease(connection);
+                    cb(result);
+                });
         });
 }
 
@@ -302,12 +376,39 @@ function getItems(cb){
                         cb(err);
                     }
                     doRelease(connection);
-                    console.log(result.rows);
                     cb(result.rows);
                 });
         });
 }
 
+
+//получение всей таблицы jobpparams
+function getJobParams(cb){
+    oracledb.getConnection(
+        {
+            user: "tops",
+            password: "tops",
+            connectString: "(DESCRIPTION =(ADDRESS_LIST = (ADDRESS = (PROTOCOL = TCP)(HOST = webdb.terracorp.ru)(PORT = 1521)))(CONNECT_DATA = (SID = WEBDB)(SERVER = DEDICATED)))"
+        },
+        function (err, connection) {
+            if (err) {
+                console.error(err.message);
+                return;
+            }
+            var query = "SELECT * FROM jobparams";
+            connection.execute(
+                query, {}, { outFormat: oracledb.OBJECT},
+                function (err, result) {
+                    if (err) {
+                        console.error(err);
+                        doRelease(connection);
+                        cb(err);
+                    }
+                    doRelease(connection);
+                    cb(result.rows);
+                });
+        });
+}
 
 //получение данных из таблицы itemtypes
 function getItemType(cb){
@@ -337,7 +438,8 @@ function getItemType(cb){
         });
 }
 
-function delItems(id, cb){
+//получение всей таблицы jobpparams
+function getBomParams(cb){
     oracledb.getConnection(
         {
             user: "tops",
@@ -349,9 +451,66 @@ function delItems(id, cb){
                 console.error(err.message);
                 return;
             }
-            var query = "DELETE FROM items WHERE ITEMID = '"+id + "'";
+            var query = "SELECT * FROM bomparams";
             connection.execute(
-                query, {},
+                query, {}, { outFormat: oracledb.OBJECT},
+                function (err, result) {
+                    if (err) {
+                        console.error(err);
+                        doRelease(connection);
+                        cb(err);
+                    }
+                    doRelease(connection);
+                    cb(result.rows);
+                });
+        });
+}
+
+
+//получение данных из таблицы UOM
+function getJobuom(cb){
+    oracledb.getConnection(
+        {
+            user: "tops",
+            password: "tops",
+            connectString: "(DESCRIPTION =(ADDRESS_LIST = (ADDRESS = (PROTOCOL = TCP)(HOST = webdb.terracorp.ru)(PORT = 1521)))(CONNECT_DATA = (SID = WEBDB)(SERVER = DEDICATED)))"
+        },
+        function (err, connection) {
+            if (err) {
+                console.error(err.message);
+                return;
+            }
+            var query = "SELECT * FROM uom";
+            connection.execute(
+                query, {}, { outFormat: oracledb.OBJECT},
+                function (err, result) {
+                    if (err) {
+                        console.error(err);
+                        doRelease(connection);
+                        cb(err);
+                    }
+                    doRelease(connection);
+                    cb(result.rows);
+                });
+        });
+}
+
+function delItems(id, table, nameId, cb){
+    oracledb.getConnection(
+        {
+            user: "tops",
+            password: "tops",
+            connectString: "(DESCRIPTION =(ADDRESS_LIST = (ADDRESS = (PROTOCOL = TCP)(HOST = webdb.terracorp.ru)(PORT = 1521)))(CONNECT_DATA = (SID = WEBDB)(SERVER = DEDICATED)))"
+        },
+        function (err, connection) {
+            if (err) {
+                console.error(err.message);
+                return;
+            }
+            var query = "DELETE FROM "+table+" WHERE "+nameId+"="+ Number(id);
+            console.log(query);
+            connection.execute(
+                query, {}, {autoCommit: true},
                 function (err, result) {
                     if (err) {
                         console.error(err);

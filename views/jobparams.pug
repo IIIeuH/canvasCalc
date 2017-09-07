@@ -1,0 +1,26 @@
+extends layoutAdmin
+
+block content
+    button.btn.btn-warning(type="button", id="addItemJob") Добавить
+    button.btn.btn-success.hidden(type="button", id="addTableJob") Добавить строчку
+    button.btn.btn-warning.hidden(type="button", id="cancelTableJob") Убрать строчку
+    button.btn.btn-info.hidden(type="button", id="saveItemJob") Сохранить
+    button.btn.btn-danger.hidden(type="button", id="cancelItemJob") Отменить
+    .addItemtable
+    .container-fuild
+        .row
+            .col-md-12
+                table.table.table-hover.table-bordered.table-condensed
+                    thead
+                        th Описание работ
+                        th Цена работы
+                        th Единица измерения
+                        th Удалить
+                    tbody
+                        each item in jobParams
+                            tr
+                                td=item.JOBDESC
+                                td=item.JOBPRICE
+                                td=item.JOBUOMS_ID
+                                td
+                                    button(type="button", data-id=item.JOBID, data-nameid="JOBID", class="close", aria-hidden="true") &times;

@@ -109,6 +109,9 @@ function draw(){
     ctx.clearRect(0, 0, 1300, 700);
     width = document.getElementById('width').value;
     heigth = document.getElementById('depth').value;
+    var procX = width * 100 / 1200;
+    var procY = heigth * 100 / 600;
+    console.log('ПРоцент Х' + procX, 'Процент Y' + procY);
     ctx.strokeStyle = '#000';
     ctx.lineWidth = 1;
     ctx.fillStyle = '#90ab6e';

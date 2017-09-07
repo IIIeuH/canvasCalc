@@ -14,12 +14,21 @@ router.post('/draw', ctrl.draw);
 router.get('/login', ctrl.login);
 router.post('/login', ctrl.auth);
 
-//admin routs
+
+
+//подгрузка данных
 router.get('/itemType', ctrl.itemType);
+router.get('/jobuom', ctrl.jobuom);
+
+//admin routs
 router.get('/admin', ctrl.mainAdmin);
 router.get('/admin/items/', ctrl.items);
-router.post('/admin/items/', ctrl.addItems);
+router.get('/admin/jobparams/', ctrl.jobParams);
+router.get('/admin/bomparams/', ctrl.bomParams);
 
+//сохранение данных
+router.post('/admin/items/', ctrl.addItems);
+router.post('/admin/jobparams/', ctrl.addJobParams);
 
 //дулаение итема
 router.delete('/delete', ctrl.del);
