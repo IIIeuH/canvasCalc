@@ -25,10 +25,13 @@ router.get('/admin', ctrl.mainAdmin);
 router.get('/admin/items/', ctrl.items);
 router.get('/admin/jobparams/', ctrl.jobParams);
 router.get('/admin/bomparams/', ctrl.bomParams);
+router.get('/admin/uom/', ctrl.uom);
 
 //сохранение данных
 router.post('/admin/items/', ctrl.addItems);
 router.post('/admin/jobparams/', ctrl.addJobParams);
+router.post('/admin/bomparams/', ctrl.addBomParams);
+router.post('/admin/uom/', ctrl.addUom);
 
 //дулаение итема
 router.delete('/delete', ctrl.del);
