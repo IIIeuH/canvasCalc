@@ -284,7 +284,7 @@ function draw(){
             inputD = Math.round(proc * inputD / 100);
             ctx.save();
             ctx.beginPath();
-            ctx.arc(+inputX+30, +inputY+30, inputD, 0, 2*Math.PI, true);
+            ctx.arc(+inputX+30, +inputY+30, inputD/2, 0, 2*Math.PI, true);
             ctx.strokeStyle = '#000';
             ctx.fillStyle = '#fff';
             ctx.lineWidth = 1;
