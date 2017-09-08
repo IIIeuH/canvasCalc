@@ -210,10 +210,9 @@ function draw(){
         procY = coordY * 100 / h;
         coordX = Math.round(procX * width / 100);
         coordY = Math.round(procY * heigth / 100);
-        var sq1 = w * h;
-        var sq2 = width * heigth;
-        var proc = sq2 * 100 / sq1;
+        var proc = heigth * 100 / h;
         diametr = Math.round(proc * diametr / 100);
+        console.log(proc, diametr/2);
         ctx.save();
         ctx.beginPath();
         ctx.arc(+coordX+30, +coordY+30, diametr/2, 0, 2*Math.PI, true);
@@ -287,7 +286,7 @@ function draw(){
             inputD = Math.round(proc * inputD / 100);
             ctx.save();
             ctx.beginPath();
-            ctx.arc(+inputX+30, +inputY+30, inputD/2, 0, 2*Math.PI, true);
+            ctx.arc(+inputX+30, +inputY+30, inputD, 0, 2*Math.PI, true);
             ctx.strokeStyle = '#000';
             ctx.fillStyle = '#fff';
             ctx.lineWidth = 1;
