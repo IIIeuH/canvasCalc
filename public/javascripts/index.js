@@ -109,35 +109,36 @@ function draw(){
     ctx.clearRect(0, 0, 1300, 700);
     width = document.getElementById('width').value;
     heigth = document.getElementById('depth').value;
-    var procX = width * 100 / 1200;
-    var procY = heigth * 100 / 600;
-    console.log('ПРоцент Х' + procX, 'Процент Y' + procY);
     ctx.strokeStyle = '#000';
     ctx.lineWidth = 1;
     ctx.fillStyle = '#90ab6e';
     ctx.translate(0, 0);
-    ctx.strokeText("A", +width/2, 28);
-    ctx.strokeText("B", +width+30, +heigth/2);
-    ctx.strokeText("C", +width/2, +heigth + 60);
-    ctx.strokeText("D", 0, +heigth/2);
-    ctx.fillRect(30, 30, +width, +heigth);
+    ctx.strokeText("A", 600, 28);
+    ctx.strokeText("B", 1230, 300);
+    ctx.strokeText("C", 600, 660);
+    ctx.strokeText("D", 0, 300);
+    ctx.fillRect(30, 30, 1200, 600);
     ctx.beginPath();
     var x = +document.getElementById('splice1').value || 0;
     var y = +document.getElementById('splice2').value || 0;
     if(x > 0){
+        var procX = x * 100 / width;
+        x = Math.round(procX * 1200 / 100);
         ctx.beginPath();
         ctx.strokeStyle="#000000";
         ctx.lineWidth = 1;
         ctx.moveTo(x+30,30);
-        ctx.lineTo(x+30, +heigth+30);
+        ctx.lineTo(x+30,630);
         ctx.stroke();
     }
     if(y > 0){
+        var procY = y * 100 / heigth;
+        y = Math.round(procY * 600 / 100);
         ctx.beginPath();
         ctx.strokeStyle="#000000";
         ctx.lineWidth = 1;
         ctx.moveTo(30,y+30);
-        ctx.lineTo(+width+30, y+30);
+        ctx.lineTo(1230, y+30);
         ctx.stroke();
     }
     if(document.querySelector('#A').checked){
@@ -145,23 +146,23 @@ function draw(){
         ctx.lineWidth = 5;
         ctx.strokeStyle = 'rgba(0,0,0, 0.4)';
         ctx.moveTo(30, 33);
-        ctx.lineTo(+width+30, 33);
+        ctx.lineTo(1230, 33);
         ctx.stroke();
     }
     if(document.querySelector('#B').checked){
         ctx.beginPath();
         ctx.lineWidth = 5;
         ctx.strokeStyle = 'rgba(0,0,0, 0.4)';
-        ctx.moveTo(+width + 27, 30);
-        ctx.lineTo(+width + 27, +heigth + 30);
+        ctx.moveTo(1227, 30);
+        ctx.lineTo(1227, 630);
         ctx.stroke();
     }
     if(document.querySelector('#C').checked){
         ctx.beginPath();
         ctx.lineWidth = 5;
         ctx.strokeStyle = 'rgba(0,0,0, 0.4)';
-        ctx.moveTo(30, +heigth + 27);
-        ctx.lineTo(+width+30, +heigth + 27);
+        ctx.moveTo(30, 627);
+        ctx.lineTo(1230, 627);
         ctx.stroke();
     }
     if(document.querySelector('#D').checked){
@@ -169,16 +170,24 @@ function draw(){
         ctx.lineWidth = 5;
         ctx.strokeStyle = 'rgba(0,0,0, 0.4)';
         ctx.moveTo(33, 30);
-        ctx.lineTo(33, +heigth+30);
+        ctx.lineTo(33, 630);
         ctx.stroke();
     }
     if(document.querySelector('#moi-form').value === '1'){
         var coordX = +document.querySelector('#coordinatesX').value;
         var coordY = +document.querySelector('#coordinatesY').value;
         var diametr = +document.querySelector('#diameter').value;
+        var procX = coordX * 100 / width;
+        var procY = coordY * 100 / heigth;
+        coordX = Math.round(procX * 1200 / 100);
+        coordY = Math.round(procY * 600 / 100);
+        var sq1 = width * heigth;
+        var sq2 = 1200 * 600;
+        var proc = sq2 * 100 / sq1;
+        diametr = Math.round(proc * diametr / 100);
         ctx.save();
         ctx.beginPath();
-        ctx.arc(+coordX+30, +coordY+30, diametr, 0, 2*Math.PI, true);
+        ctx.arc(+coordX+30, +coordY+30, diametr/2, 0, 2*Math.PI, true);
         ctx.strokeStyle = '#000';
         ctx.fillStyle = '#fff';
         ctx.lineWidth = 1;
@@ -192,6 +201,14 @@ function draw(){
         var coordY = +document.querySelector('#coordinatesY').value;
         var sideA = +document.querySelector('#side-a').value;
         var sideB = +document.querySelector('#side-b').value;
+        var procX = coordX * 100 / width;
+        var procY = coordY * 100 / heigth;
+        coordX = Math.round(procX * 1200 / 100);
+        coordY = Math.round(procY * 600 / 100);
+        procX = sideA * 100 / width;
+        procY = sideB * 100 / heigth;
+        sideA = Math.round(procX * 1200 / 100);
+        sideB = Math.round(procY * 600 / 100);
         ctx.strokeStyle = '#000';
         ctx.fillStyle = '#fff';
         ctx.lineWidth = 1;
@@ -204,6 +221,14 @@ function draw(){
         var coordY = +document.querySelector('#coordinatesY').value;
         var lots = +document.querySelector('#lots').value;
         var sal = +document.querySelector('#sal').value;
+        var procX = coordX * 100 / width;
+        var procY = coordY * 100 / heigth;
+        coordX = Math.round(procX * 1200 / 100);
+        coordY = Math.round(procY * 600 / 100);
+        procX = lots * 100 / width;
+        procY = sal * 100 / heigth;
+        lots = Math.round(procX * 1200 / 100);
+        sal = Math.round(procY * 600 / 100);
         ctx.save();
         ctx.beginPath();
         ctx.translate(+coordX + 30, +coordY + 30);
@@ -223,6 +248,14 @@ function draw(){
             var inputX = item.querySelector('.inputX').value;
             var inputY = item.querySelector('.inputY').value;
             var inputD = item.querySelector('.inputD').value;
+            var procX = inputX * 100 / width;
+            var procY = inputY * 100 / heigth;
+            inputX = Math.round(procX * 1200 / 100);
+            inputY = Math.round(procY * 600 / 100);
+            var sq1 = width * heigth;
+            var sq2 = 1200 * 600;
+            var proc = sq2 * 100 / sq1;
+            inputD = Math.round(proc * inputD / 100);
             ctx.save();
             ctx.beginPath();
             ctx.arc(+inputX+30, +inputY+30, inputD, 0, 2*Math.PI, true);

@@ -261,111 +261,205 @@ $(function(){
 
 
 //Начало Спецификации
-// $(function(){
-//     var select;
-//     var string;
-//     $.ajax({
-//         url: "/jobuom",
-//         type: 'GET',
-//         success: function(data){
-//             select = '<select class="form-control">' +
-//                 '<option></option>';
-//             data.forEach(function (item) {
-//                 select += '<option value="'+ item.UOMS_ID +'">'+ item.UOM +'</option>';
-//             });
-//
-//             select += '</select>';
-//             string = '<tr class="str">' +
-//                 '<td>' +
-//                 '<div class="form-group">' +
-//                 '<input type="text" class="form-control jobDesc">' +
-//                 '</div>' +
-//                 '</td>' +
-//                 '<td>' +
-//                 '<div class="form-group">' +
-//                 '<input type="number" class="form-control jobPrice">' +
-//                 '</div>' +
-//                 '</td>' +
-//                 '<td>' +
-//                 '<div class="form-group">' +
-//                 select+
-//                 '</div>' +
-//                 '</td>' +
-//                 '<td>' +
-//                 '</tr>';
-//         },
-//         error: function (err) {
-//             console.log(err);
-//         }
-//     });
-//     $('#addItemJob').click(function(){
-//
-//         $('.addItemtable').append(
-//             '<table class="table table-bordered addItemTableJob">' +
-//             '<thead>' +
-//             '<th>Описание работы</th>' +
-//             '<th>Цена работы</th>' +
-//             '<th>Единица измерения</th>' +
-//             '</thead>' +
-//             '<tbody class="mainTable">' +
-//             string+
-//             '</tbody>'
-//         );
-//
-//         $(this).addClass('hidden');
-//         $('#cancelItemJob').removeClass('hidden');
-//         $('#addTableJob').removeClass('hidden');
-//         $('#saveItemJob').removeClass('hidden');
-//         $('#cancelTableJob').removeClass('hidden');
-//
-//
-//     });
-//
-//     //при клике на отмена
-//     $('#cancelItemJob').click(function(){
-//         $('.addItemTable').remove();
-//         $('#addItemJob').removeClass('hidden');
-//         $(this).addClass('hidden');
-//         $('#addTableJob').addClass('hidden');
-//         $('#saveItemJob').addClass('hidden');
-//         $('#cancelTableJob').addClass('hidden');
-//     });
-//
-//     //при клике сохранить
-//     $('#saveItemJob').click(function(){
-//         var data = [];
-//         var col = [];
-//         $('.str').each(function(i){
-//             var mas = [];
-//             col.push(i+1);
-//             $(this).find('.form-group').children().each(function(){
-//                 mas.push($(this).val());
-//             });
-//             data.push(mas);
-//         });
-//         console.log(data);
-//         $.ajax({
-//             url: '/admin/jobparams/',
-//             type: 'POST',
-//             data: {data: JSON.stringify(data), col: JSON.stringify(col)},
-//             success: function(data){
-//                 window.location.reload();
-//             },
-//             error: function(err){
-//                 console.log(err);
-//             }
-//         })
-//     });
-//
-//     //при клике на удалить строчку
-//     $('#cancelTableJob').click(function(){
-//         $('.str').last().remove();
-//     });
-//
-//     //при клике на добавить строчку
-//     $('#addTableJob').click(function(ev){
-//         $('.mainTable').append(string);
-//     });
-//
-// });
+$(function(){
+    var select;
+    var string;
+    $.ajax({
+        url: "/jobuom",
+        type: 'GET',
+        success: function(data){
+            select = '<select class="form-control">' +
+                '<option></option>';
+            data.forEach(function (item) {
+                select += '<option value="'+ item.UOMS_ID +'">'+ item.UOM +'</option>';
+            });
+
+            select += '</select>';
+            string = '<tr class="str">' +
+                '<td>' +
+                '<div class="form-group">' +
+                '<select class="form-control"><option></option><option value="0">Клей для стыков</option><option value="1">Клей для профилей</option></select>' +
+                '</div>' +
+                '</td>' +
+                '<td>' +
+                '<div class="form-group">' +
+                '<input type="number" class="form-control">' +
+                '</div>' +
+                '</td>' +
+                '<td>' +
+                '<div class="form-group">' +
+                select+
+                '</div>' +
+                '</td>' +
+                '<td>' +
+                '<div class="form-group">' +
+                '<input type="number" class="form-control">' +
+                '</div>' +
+                '</td>' +
+                '<td>' +
+                '<div class="form-group">' +
+                select+
+                '</div>' +
+                '</td>' +
+                '</tr>';
+        },
+        error: function (err) {
+            console.log(err);
+        }
+    });
+
+    $('#addItemBom').click(function(){
+
+        $('.addItemtable').append(
+            '<table class="table table-bordered addItemTableBom">' +
+            '<thead>' +
+            '<th>Тип спецификации</th>' +
+            '<th>Расход</th>' +
+            '<th>ItemConsumpUOM(Ед. изм.)</th>' +
+            '<th>На кол-во</th>' +
+            '<th>ItemConsumpPerUOM(Ед. изм.)</th>' +
+            '</thead>' +
+            '<tbody class="mainTable">' +
+            string+
+            '</tbody>'
+        );
+
+        $(this).addClass('hidden');
+        $('#cancelItemBom').removeClass('hidden');
+        $('#addTableBom').removeClass('hidden');
+        $('#saveItemBom').removeClass('hidden');
+        $('#cancelTableBom').removeClass('hidden');
+
+
+    });
+
+    //при клике на отмена
+    $('#cancelItemBom').click(function(){
+        $('.addItemTableBom').remove();
+        $('#addItemBom').removeClass('hidden');
+        $(this).addClass('hidden');
+        $('#addTableBom').addClass('hidden');
+        $('#saveItemBom').addClass('hidden');
+        $('#cancelTableBom').addClass('hidden');
+    });
+
+    //при клике сохранить
+    $('#saveItemBom').click(function(){
+        var data = [];
+        var col = [];
+        $('.str').each(function(i){
+            var mas = [];
+            col.push(i+1);
+            $(this).find('.form-group').children().each(function(){
+                mas.push($(this).val());
+            });
+            data.push(mas);
+        });
+        console.log(data);
+        $.ajax({
+            url: '/admin/bomparams/',
+            type: 'POST',
+            data: {data: JSON.stringify(data), col: JSON.stringify(col)},
+            success: function(data){
+                window.location.reload();
+            },
+            error: function(err){
+                console.log(err);
+            }
+        })
+    });
+
+    //при клике на удалить строчку
+    $('#cancelTableBom').click(function(){
+        $('.str').last().remove();
+    });
+
+    //при клике на добавить строчку
+    $('#addTableBom').click(function(ev){
+        $('.mainTable').append(string);
+    });
+
+});
 //Конец Спецификации
+
+
+//Начало Единицы измерения
+$(function(){
+    var select;
+    var string;
+    string = '<tr class="str">' +
+        '<td>' +
+        '<div class="form-group">' +
+        '<input type="text" class="form-control">' +
+        '</div>' +
+        '</td>' +
+        '</tr>';
+    $('#addItemUom').click(function(){
+
+        $('.addItemtable').append(
+            '<table class="table table-bordered addItemTableUom">' +
+            '<thead>' +
+            '<th>Единица измерения</th>' +
+            '</thead>' +
+            '<tbody class="mainTable">' +
+            string+
+            '</tbody>'
+        );
+
+        $(this).addClass('hidden');
+        $('#cancelItemUom').removeClass('hidden');
+        $('#addTableUom').removeClass('hidden');
+        $('#saveItemUom').removeClass('hidden');
+        $('#cancelTableUom').removeClass('hidden');
+
+
+    });
+
+    //при клике на отмена
+    $('#cancelItemUom').click(function(){
+        $('.addItemTableUom').remove();
+        $('#addItemUom').removeClass('hidden');
+        $(this).addClass('hidden');
+        $('#addTableUom').addClass('hidden');
+        $('#saveItemUom').addClass('hidden');
+        $('#cancelTableUom').addClass('hidden');
+    });
+
+    //при клике сохранить
+    $('#saveItemUom').click(function(){
+        var data = [];
+        var col = [];
+        $('.str').each(function(i){
+            var mas = [];
+            col.push(i+1);
+            $(this).find('.form-group').children().each(function(){
+                mas.push($(this).val());
+            });
+            data.push(mas);
+        });
+        console.log(data);
+        $.ajax({
+            url: '/admin/uom/',
+            type: 'POST',
+            data: {data: JSON.stringify(data), col: JSON.stringify(col)},
+            success: function(data){
+                window.location.reload();
+            },
+            error: function(err){
+                console.log(err);
+            }
+        })
+    });
+
+    //при клике на удалить строчку
+    $('#cancelTableUom').click(function(){
+        $('.str').last().remove();
+    });
+
+    //при клике на добавить строчку
+    $('#addTableUom').click(function(ev){
+        $('.mainTable').append(string);
+    });
+
+});
+//Конец Единицы измерения

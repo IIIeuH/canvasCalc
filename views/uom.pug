@@ -1,0 +1,22 @@
+extends layoutAdmin
+
+block content
+    button.btn.btn-warning(type="button", id="addItemUom") Добавить
+    button.btn.btn-success.hidden(type="button", id="addTableUom") Добавить строчку
+    button.btn.btn-warning.hidden(type="button", id="cancelTableUom") Убрать строчку
+    button.btn.btn-info.hidden(type="button", id="saveItemUom") Сохранить
+    button.btn.btn-danger.hidden(type="button", id="cancelItemUom") Отменить
+    .addItemtable
+    .container-fuild
+        .row
+            .col-md-12
+                table.table.table-hover.table-bordered.table-condensed
+                    thead
+                        th Единица измерения
+                        th Удалить
+                    tbody
+                        each item in items
+                            tr
+                                td=item.UOM
+                                td
+                                    button(type="button", data-id=item.UOMS_ID, data-nameid="UOMS_ID" class="close", aria-hidden="true") &times;
