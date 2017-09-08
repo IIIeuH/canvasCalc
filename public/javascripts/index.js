@@ -280,9 +280,7 @@ function draw(){
             procY = inputY * 100 / h;
             inputX = Math.round(procX * width / 100);
             inputY = Math.round(procY * heigth / 100);
-            var sq1 = w * h;
-            var sq2 = width * heigth;
-            var proc = sq2 * 100 / sq1;
+            var proc = heigth * 100 / h;
             inputD = Math.round(proc * inputD / 100);
             ctx.save();
             ctx.beginPath();
