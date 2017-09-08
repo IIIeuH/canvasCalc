@@ -31,6 +31,12 @@ module.exports.items = function(req, res, next){
     });
 };
 
+module.exports.uom = function(req, res, next){
+    getUoms(function(items){
+        res.render('uom', { title: 'Единицы измерения', items: items});
+    });
+};
+
 module.exports.itemType = function(req, res, next){
     getItemType(function(data){
         res.json(data);
@@ -45,6 +51,17 @@ module.exports.addItems = function(req, res, next){
 
 module.exports.addJobParams = function(req, res, next){
     saveJobParams(req.body.data, req.body.col,  function(data){
+        res.json(data);
+    });
+};
+module.exports.addBomParams = function(req, res, next){
+    saveBomParams(req.body.data, req.body.col,  function(data){
+        res.json(data);
+    });
+};
+
+module.exports.addUom = function(req, res, next){
+    saveUom(req.body.data, req.body.col,  function(data){
         res.json(data);
     });
 };
@@ -325,6 +342,108 @@ function saveJobParams(req, col, cb){
         });
 }
 
+
+//Сохранение в таблицу bomparams
+function saveBomParams(req, col, cb){
+    oracledb.getConnection(
+        {
+            user: "tops",
+            password: "tops",
+            connectString: "(DESCRIPTION =(ADDRESS_LIST = (ADDRESS = (PROTOCOL = TCP)(HOST = webdb.terracorp.ru)(PORT = 1521)))(CONNECT_DATA = (SID = WEBDB)(SERVER = DEDICATED)))"
+        },
+        function (err, connection) {
+            if (err) {
+                console.error(err.message);
+                return;
+            }
+            req = JSON.parse(req);
+            col = JSON.parse(col);
+            //var query = "INSERT INTO items (itemname, item_types_id, itemheight, itemwidth, itemthin, itemprice) VALUES (:itemname, :item_types_id, :itemheight, :itemwidth, :itemthin, :itemprice)";
+            var query = [];
+            query.push("INSERT ALL ");
+            req.forEach(function(item, i){
+                query.push("INTO bomparams (bomtype, ItemConsumpQty, consumpuoms_id, ItemConsumperQty, consumpperuoms_id) VALUES");
+                query.push("(");
+                for(var i = 0; i < item.length; i ++){
+                    if(i === 0){
+                        query.push("'"+item[i]+"'");
+                        query.push(",");
+                    }else{
+                        query.push(+item[i]);
+                        query.push(",");
+                    }
+                }
+                delete query[query.length-1];
+                query.push(")");
+            });
+            query.push('SELECT 1 FROM DUAL');
+            query = query.join(' ');
+            connection.execute(
+                query, {}, {autoCommit: true},
+                function (err, result) {
+                    if (err) {
+                        console.log(err);
+                        doRelease(connection);
+                        cb(err);
+                    }
+                    console.log(result);
+                    doRelease(connection);
+                    cb(result);
+                });
+        });
+}
+
+
+//Сохранение в таблицу Uom
+function saveUom(req, col, cb){
+    oracledb.getConnection(
+        {
+            user: "tops",
+            password: "tops",
+            connectString: "(DESCRIPTION =(ADDRESS_LIST = (ADDRESS = (PROTOCOL = TCP)(HOST = webdb.terracorp.ru)(PORT = 1521)))(CONNECT_DATA = (SID = WEBDB)(SERVER = DEDICATED)))"
+        },
+        function (err, connection) {
+            if (err) {
+                console.error(err.message);
+                return;
+            }
+            req = JSON.parse(req);
+            col = JSON.parse(col);
+            //var query = "INSERT INTO items (itemname, item_types_id, itemheight, itemwidth, itemthin, itemprice) VALUES (:itemname, :item_types_id, :itemheight, :itemwidth, :itemthin, :itemprice)";
+            var query = [];
+            query.push("INSERT ALL ");
+            req.forEach(function(item, i){
+                query.push("INTO uom (uom) VALUES");
+                query.push("(");
+                for(var i = 0; i < item.length; i ++){
+                    if(i === 0){
+                        query.push("'"+item[i]+"'");
+                        query.push(",");
+                    }else{
+                        query.push(+item[i]);
+                        query.push(",");
+                    }
+                }
+                delete query[query.length-1];
+                query.push(")");
+            });
+            query.push('SELECT 1 FROM DUAL');
+            query = query.join(' ');
+            connection.execute(
+                query, {}, {autoCommit: true},
+                function (err, result) {
+                    if (err) {
+                        console.log(err);
+                        doRelease(connection);
+                        cb(err);
+                    }
+                    console.log(result);
+                    doRelease(connection);
+                    cb(result);
+                });
+        });
+}
+
 module.exports.draw = function(req, res){
     oracledb.getConnection(
         {
@@ -396,6 +515,35 @@ function getJobParams(cb){
                 return;
             }
             var query = "SELECT * FROM jobparams";
+            connection.execute(
+                query, {}, { outFormat: oracledb.OBJECT},
+                function (err, result) {
+                    if (err) {
+                        console.error(err);
+                        doRelease(connection);
+                        cb(err);
+                    }
+                    doRelease(connection);
+                    cb(result.rows);
+                });
+        });
+}
+
+
+//получение всей таблицы UOM
+function getUoms(cb){
+    oracledb.getConnection(
+        {
+            user: "tops",
+            password: "tops",
+            connectString: "(DESCRIPTION =(ADDRESS_LIST = (ADDRESS = (PROTOCOL = TCP)(HOST = webdb.terracorp.ru)(PORT = 1521)))(CONNECT_DATA = (SID = WEBDB)(SERVER = DEDICATED)))"
+        },
+        function (err, connection) {
+            if (err) {
+                console.error(err.message);
+                return;
+            }
+            var query = "SELECT * FROM uom";
             connection.execute(
                 query, {}, { outFormat: oracledb.OBJECT},
                 function (err, result) {

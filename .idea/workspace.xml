@@ -2,7 +2,18 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="e83c926d-7296-4078-befb-25e82bf28a51" name="Default" comment="">
+<<<<<<< HEAD
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+=======
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/views/uom.pug" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ctrl.js" afterPath="$PROJECT_DIR$/ctrl.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/public/javascripts/admin.js" afterPath="$PROJECT_DIR$/public/javascripts/admin.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/public/javascripts/index.js" afterPath="$PROJECT_DIR$/public/javascripts/index.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/routes/index.js" afterPath="$PROJECT_DIR$/routes/index.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/views/bomparams.pug" afterPath="$PROJECT_DIR$/views/bomparams.pug" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/views/layoutAdmin.pug" afterPath="$PROJECT_DIR$/views/layoutAdmin.pug" />
+>>>>>>> 1fa112842044ec5e8fdf65300949c3bb667873d1
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -16,23 +27,35 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="index.js" pinned="false" current-in-tab="true">
+      <file leaf-file-name="index.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/public/javascripts/index.js">
           <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
             <state relative-caret-position="-136">
               <caret line="181" column="33" lean-forward="true" selection-start-line="181" selection-start-column="33" selection-end-line="181" selection-end-column="33" />
               <folding>
                 <marker date="1504853764411" expanded="true" signature="188:305" ph="..." />
+=======
+            <state relative-caret-position="252">
+              <caret line="190" column="33" lean-forward="true" selection-start-line="190" selection-start-column="33" selection-end-line="190" selection-end-column="33" />
+              <folding>
+                <marker date="1504790668410" expanded="true" signature="188:305" ph="..." />
+>>>>>>> 1fa112842044ec5e8fdf65300949c3bb667873d1
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ctrl.js" pinned="false" current-in-tab="false">
+      <file leaf-file-name="ctrl.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/ctrl.js">
           <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
             <state relative-caret-position="-1504">
               <caret line="327" column="11" lean-forward="true" selection-start-line="327" selection-start-column="11" selection-end-line="327" selection-end-column="11" />
+=======
+            <state relative-caret-position="296">
+              <caret line="442" column="19" lean-forward="true" selection-start-line="442" selection-start-column="19" selection-end-line="442" selection-end-column="19" />
+>>>>>>> 1fa112842044ec5e8fdf65300949c3bb667873d1
               <folding />
             </state>
           </provider>
@@ -41,11 +64,17 @@
       <file leaf-file-name="bomparams.pug" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/views/bomparams.pug">
           <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
             <state relative-caret-position="192">
               <caret line="18" column="25" lean-forward="true" selection-start-line="18" selection-start-column="25" selection-end-line="18" selection-end-column="25" />
               <folding>
                 <marker date="1504853764411" expanded="true" signature="594:622" ph="..." />
               </folding>
+=======
+            <state relative-caret-position="390">
+              <caret line="29" column="140" lean-forward="true" selection-start-line="28" selection-start-column="32" selection-end-line="29" selection-end-column="140" />
+              <folding />
+>>>>>>> 1fa112842044ec5e8fdf65300949c3bb667873d1
             </state>
           </provider>
         </entry>
@@ -54,7 +83,11 @@
         <entry file="file://$PROJECT_DIR$/routes/index.js">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="274">
+<<<<<<< HEAD
               <caret line="31" column="0" lean-forward="true" selection-start-line="31" selection-start-column="0" selection-end-line="31" selection-end-column="0" />
+=======
+              <caret line="34" column="0" lean-forward="true" selection-start-line="34" selection-start-column="0" selection-end-line="34" selection-end-column="0" />
+>>>>>>> 1fa112842044ec5e8fdf65300949c3bb667873d1
               <folding />
             </state>
           </provider>
@@ -63,8 +96,23 @@
       <file leaf-file-name="admin.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/public/javascripts/admin.js">
           <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
             <state relative-caret-position="-165">
               <caret line="370" column="20" lean-forward="false" selection-start-line="370" selection-start-column="20" selection-end-line="370" selection-end-column="20" />
+=======
+            <state relative-caret-position="-81">
+              <caret line="419" column="27" lean-forward="false" selection-start-line="419" selection-start-column="27" selection-end-line="419" selection-end-column="27" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="uom.pug" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/views/uom.pug">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="360">
+              <caret line="20" column="34" lean-forward="true" selection-start-line="20" selection-start-column="34" selection-end-line="20" selection-end-column="34" />
+>>>>>>> 1fa112842044ec5e8fdf65300949c3bb667873d1
               <folding />
             </state>
           </provider>
@@ -95,6 +143,7 @@
       <find>.form-horizontal .btn</find>
       <find>gidrorezCutCost</find>
       <find>addItemtable</find>
+      <find>delItems</find>
       <find>addItemJob</find>
       <find>delItems</find>
     </findStrings>
@@ -122,15 +171,16 @@
         <option value="$PROJECT_DIR$/views/admin.pug" />
         <option value="$PROJECT_DIR$/app.js" />
         <option value="$PROJECT_DIR$/public/stylesheets/style.css" />
-        <option value="$PROJECT_DIR$/views/layoutAdmin.pug" />
         <option value="$PROJECT_DIR$/views/items.pug" />
         <option value="$PROJECT_DIR$/views/jobparams.pug" />
-        <option value="$PROJECT_DIR$/ctrl.js" />
-        <option value="$PROJECT_DIR$/routes/index.js" />
-        <option value="$PROJECT_DIR$/views/bomparams.pug" />
-        <option value="$PROJECT_DIR$/public/javascripts/admin.js" />
         <option value="$PROJECT_DIR$/views/index.pug" />
         <option value="$PROJECT_DIR$/public/javascripts/index.js" />
+        <option value="$PROJECT_DIR$/views/bomparams.pug" />
+        <option value="$PROJECT_DIR$/views/layoutAdmin.pug" />
+        <option value="$PROJECT_DIR$/views/uom.pug" />
+        <option value="$PROJECT_DIR$/public/javascripts/admin.js" />
+        <option value="$PROJECT_DIR$/routes/index.js" />
+        <option value="$PROJECT_DIR$/ctrl.js" />
       </list>
     </option>
   </component>
@@ -151,8 +201,13 @@
     <handled-path value="$PROJECT_DIR$/node_modules" />
   </component>
   <component name="ProjectFrameBounds">
+<<<<<<< HEAD
     <option name="x" value="88" />
     <option name="y" value="278" />
+=======
+    <option name="x" value="170" />
+    <option name="y" value="223" />
+>>>>>>> 1fa112842044ec5e8fdf65300949c3bb667873d1
     <option name="width" value="1642" />
     <option name="height" value="883" />
   </component>
@@ -256,15 +311,23 @@
       <workItem from="1503060923750" duration="5324000" />
       <workItem from="1503299991937" duration="2398000" />
       <workItem from="1504073994212" duration="22793000" />
-      <workItem from="1504526889170" duration="58617000" />
+      <workItem from="1504526889170" duration="69695000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
+<<<<<<< HEAD
     <option name="totallyTimeSpent" value="125441000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="88" y="278" width="1642" height="883" extended-state="0" />
+=======
+    <option name="totallyTimeSpent" value="135686000" />
+  </component>
+  <component name="ToolWindowManager">
+    <frame x="170" y="223" width="1642" height="883" extended-state="0" />
+    <editor active="true" />
+>>>>>>> 1fa112842044ec5e8fdf65300949c3bb667873d1
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.24459542" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -273,7 +336,11 @@
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+<<<<<<< HEAD
       <window_info id="Terminal" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32891247" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+=======
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32891247" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+>>>>>>> 1fa112842044ec5e8fdf65300949c3bb667873d1
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
@@ -305,13 +372,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$USER_HOME$/sync-terra/sync.terracorp/selects.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="15192">
-          <caret line="844" column="90" lean-forward="false" selection-start-line="844" selection-start-column="80" selection-end-line="844" selection-end-column="90" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="270">
@@ -361,7 +421,11 @@
         <state relative-caret-position="3402">
           <caret line="189" column="183" lean-forward="false" selection-start-line="189" selection-start-column="183" selection-end-line="189" selection-end-column="183" />
           <folding>
+<<<<<<< HEAD
             <marker date="1504853764411" expanded="true" signature="188:305" ph="..." />
+=======
+            <marker date="1504790668410" expanded="true" signature="188:305" ph="..." />
+>>>>>>> 1fa112842044ec5e8fdf65300949c3bb667873d1
           </folding>
         </state>
       </provider>
@@ -408,7 +472,11 @@
         <state relative-caret-position="2196">
           <caret line="122" column="68" lean-forward="false" selection-start-line="122" selection-start-column="68" selection-end-line="122" selection-end-column="68" />
           <folding>
+<<<<<<< HEAD
             <marker date="1504853764411" expanded="true" signature="188:305" ph="..." />
+=======
+            <marker date="1504790668410" expanded="true" signature="188:305" ph="..." />
+>>>>>>> 1fa112842044ec5e8fdf65300949c3bb667873d1
           </folding>
         </state>
       </provider>
@@ -434,7 +502,11 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
+<<<<<<< HEAD
             <marker date="1504853764411" expanded="true" signature="188:305" ph="..." />
+=======
+            <marker date="1504790668410" expanded="true" signature="188:305" ph="..." />
+>>>>>>> 1fa112842044ec5e8fdf65300949c3bb667873d1
           </folding>
         </state>
       </provider>
@@ -453,7 +525,11 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
+<<<<<<< HEAD
             <marker date="1504853764411" expanded="true" signature="188:305" ph="..." />
+=======
+            <marker date="1504790668410" expanded="true" signature="188:305" ph="..." />
+>>>>>>> 1fa112842044ec5e8fdf65300949c3bb667873d1
           </folding>
         </state>
       </provider>
@@ -577,64 +653,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/views/layoutAdmin.pug">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="318">
-          <caret line="31" column="26" lean-forward="true" selection-start-line="31" selection-start-column="26" selection-end-line="31" selection-end-column="26" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/views/items.pug">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="314">
-          <caret line="31" column="89" lean-forward="false" selection-start-line="31" selection-start-column="89" selection-end-line="31" selection-end-column="89" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ctrl.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1504">
-          <caret line="327" column="11" lean-forward="true" selection-start-line="327" selection-start-column="11" selection-end-line="327" selection-end-column="11" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/routes/index.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="274">
-          <caret line="31" column="0" lean-forward="true" selection-start-line="31" selection-start-column="0" selection-end-line="31" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/views/jobparams.pug">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="324">
-          <caret line="18" column="25" lean-forward="true" selection-start-line="3" selection-start-column="4" selection-end-line="18" selection-end-column="25" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/views/bomparams.pug">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="192">
-          <caret line="18" column="25" lean-forward="true" selection-start-line="18" selection-start-column="25" selection-end-line="18" selection-end-column="25" />
-          <folding>
-            <marker date="1504853764411" expanded="true" signature="594:622" ph="..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/public/javascripts/admin.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-165">
-          <caret line="370" column="20" lean-forward="false" selection-start-line="370" selection-start-column="20" selection-end-line="370" selection-end-column="20" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/public/stylesheets/index.css">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="126">
@@ -653,11 +671,106 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/public/javascripts/index.js">
       <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="252">
+          <caret line="190" column="33" lean-forward="true" selection-start-line="190" selection-start-column="33" selection-end-line="190" selection-end-column="33" />
+          <folding>
+            <marker date="1504790668410" expanded="true" signature="188:305" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/views/items.pug">
+      <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
+        <state relative-caret-position="-1504">
+          <caret line="327" column="11" lean-forward="true" selection-start-line="327" selection-start-column="11" selection-end-line="327" selection-end-column="11" />
+=======
+        <state relative-caret-position="314">
+          <caret line="31" column="142" lean-forward="false" selection-start-line="22" selection-start-column="24" selection-end-line="31" selection-end-column="142" />
+>>>>>>> 1fa112842044ec5e8fdf65300949c3bb667873d1
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/views/layoutAdmin.pug">
+      <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
+        <state relative-caret-position="274">
+          <caret line="31" column="0" lean-forward="true" selection-start-line="31" selection-start-column="0" selection-end-line="31" selection-end-column="0" />
+=======
+        <state relative-caret-position="368">
+          <caret line="33" column="26" lean-forward="true" selection-start-line="33" selection-start-column="26" selection-end-line="33" selection-end-column="26" />
+>>>>>>> 1fa112842044ec5e8fdf65300949c3bb667873d1
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/views/jobparams.pug">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="324">
+          <caret line="18" column="25" lean-forward="true" selection-start-line="0" selection-start-column="0" selection-end-line="18" selection-end-column="25" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/views/bomparams.pug">
+      <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
+        <state relative-caret-position="192">
+          <caret line="18" column="25" lean-forward="true" selection-start-line="18" selection-start-column="25" selection-end-line="18" selection-end-column="25" />
+          <folding>
+            <marker date="1504853764411" expanded="true" signature="594:622" ph="..." />
+          </folding>
+=======
+        <state relative-caret-position="390">
+          <caret line="29" column="140" lean-forward="true" selection-start-line="28" selection-start-column="32" selection-end-line="29" selection-end-column="140" />
+          <folding />
+>>>>>>> 1fa112842044ec5e8fdf65300949c3bb667873d1
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/views/uom.pug">
+      <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
+        <state relative-caret-position="-165">
+          <caret line="370" column="20" lean-forward="false" selection-start-line="370" selection-start-column="20" selection-end-line="370" selection-end-column="20" />
+=======
+        <state relative-caret-position="360">
+          <caret line="20" column="34" lean-forward="true" selection-start-line="20" selection-start-column="34" selection-end-line="20" selection-end-column="34" />
+>>>>>>> 1fa112842044ec5e8fdf65300949c3bb667873d1
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/public/javascripts/admin.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-81">
+          <caret line="419" column="27" lean-forward="false" selection-start-line="419" selection-start-column="27" selection-end-line="419" selection-end-column="27" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/routes/index.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="274">
+          <caret line="34" column="0" lean-forward="true" selection-start-line="34" selection-start-column="0" selection-end-line="34" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ctrl.js">
+      <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
         <state relative-caret-position="-136">
           <caret line="181" column="33" lean-forward="true" selection-start-line="181" selection-start-column="33" selection-end-line="181" selection-end-column="33" />
           <folding>
             <marker date="1504853764411" expanded="true" signature="188:305" ph="..." />
           </folding>
+=======
+        <state relative-caret-position="296">
+          <caret line="442" column="19" lean-forward="true" selection-start-line="442" selection-start-column="19" selection-end-line="442" selection-end-column="19" />
+          <folding />
+>>>>>>> 1fa112842044ec5e8fdf65300949c3bb667873d1
         </state>
       </provider>
     </entry>
