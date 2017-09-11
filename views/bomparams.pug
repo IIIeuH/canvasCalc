@@ -12,6 +12,7 @@ block content
             .col-md-12
                 table.table.table-hover.table-bordered.table-condensed
                     thead
+                        th Номенклатура
                         th Тип спецификации
                         th Расход
                         th ItemConsumpUOM(Ед. изм.)
@@ -21,6 +22,7 @@ block content
                     tbody
                         each item in bomParams
                             tr
+                                td=item.ITEMID
                                 td=item.BOMTYPE
                                 td=item.ITEMCONSUMPQTY
                                 td=item.CONSUMPUOMS_ID

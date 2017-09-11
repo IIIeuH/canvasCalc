@@ -31,6 +31,12 @@ module.exports.items = function(req, res, next){
     });
 };
 
+module.exports.item = function(req, res, next){
+    getItems(function(items){
+        res.json(items);
+    });
+};
+
 module.exports.uom = function(req, res, next){
     getUoms(function(items){
         res.render('uom', { title: 'Единицы измерения', items: items});
@@ -362,7 +368,7 @@ function saveBomParams(req, col, cb){
             var query = [];
             query.push("INSERT ALL ");
             req.forEach(function(item, i){
-                query.push("INTO bomparams (bomtype, ItemConsumpQty, consumpuoms_id, ItemConsumperQty, consumpperuoms_id) VALUES");
+                query.push("INTO bomparams (itemid, bomtype, ItemConsumpQty, consumpuoms_id, ItemConsumperQty, consumpperuoms_id) VALUES");
                 query.push("(");
                 for(var i = 0; i < item.length; i ++){
                     if(i === 0){

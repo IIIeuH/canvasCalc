@@ -263,56 +263,84 @@ $(function(){
 //Начало Спецификации
 $(function(){
     var select;
+    var selectItem;
     var string;
-    $.ajax({
-        url: "/jobuom",
+
+    var items = $.ajax({
+        url: "/items",
         type: 'GET',
         success: function(data){
-            select = '<select class="form-control">' +
+            selectItem = '<select class="form-control">' +
                 '<option></option>';
             data.forEach(function (item) {
-                select += '<option value="'+ item.UOMS_ID +'">'+ item.UOM +'</option>';
+                selectItem += '<option value="'+ item.ITEMID +'">'+ item.ITEMNAME +'</option>';
             });
 
-            select += '</select>';
-            string = '<tr class="str">' +
-                '<td>' +
-                '<div class="form-group">' +
-                '<select class="form-control"><option></option><option value="0">Клей для стыков</option><option value="1">Клей для профилей</option></select>' +
-                '</div>' +
-                '</td>' +
-                '<td>' +
-                '<div class="form-group">' +
-                '<input type="number" class="form-control">' +
-                '</div>' +
-                '</td>' +
-                '<td>' +
-                '<div class="form-group">' +
-                select+
-                '</div>' +
-                '</td>' +
-                '<td>' +
-                '<div class="form-group">' +
-                '<input type="number" class="form-control">' +
-                '</div>' +
-                '</td>' +
-                '<td>' +
-                '<div class="form-group">' +
-                select+
-                '</div>' +
-                '</td>' +
-                '</tr>';
+            selectItem += '</select>';
         },
         error: function (err) {
             console.log(err);
         }
     });
 
+    items.then(function(data){
+        $.ajax({
+            url: "/jobuom",
+            type: 'GET',
+            success: function(data){
+                select = '<select class="form-control">' +
+                    '<option></option>';
+                data.forEach(function (item) {
+                    select += '<option value="'+ item.UOMS_ID +'">'+ item.UOM +'</option>';
+                });
+
+                select += '</select>';
+                string = '<tr class="str">' +
+                    '<td>' +
+                    '<div class="form-group">' +
+                    selectItem+
+                    '</div>' +
+                    '</td>' +
+                    '<td>' +
+                    '<div class="form-group">' +
+                    '<select class="form-control"><option></option><option value="0">Клей для стыков</option><option value="1">Клей для профилей</option></select>' +
+                    '</div>' +
+                    '</td>' +
+                    '<td>' +
+                    '<div class="form-group">' +
+                    '<input type="number" class="form-control">' +
+                    '</div>' +
+                    '</td>' +
+                    '<td>' +
+                    '<div class="form-group">' +
+                    select+
+                    '</div>' +
+                    '</td>' +
+                    '<td>' +
+                    '<div class="form-group">' +
+                    '<input type="number" class="form-control">' +
+                    '</div>' +
+                    '</td>' +
+                    '<td>' +
+                    '<div class="form-group">' +
+                    select+
+                    '</div>' +
+                    '</td>' +
+                    '</tr>';
+            },
+            error: function (err) {
+                console.log(err);
+            }
+        });
+    });
+
+
     $('#addItemBom').click(function(){
 
         $('.addItemtable').append(
             '<table class="table table-bordered addItemTableBom">' +
             '<thead>' +
+            '<th>Номенклатура</th>' +
             '<th>Тип спецификации</th>' +
             '<th>Расход</th>' +
             '<th>ItemConsumpUOM(Ед. изм.)</th>' +

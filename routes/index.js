@@ -19,6 +19,7 @@ router.post('/login', ctrl.auth);
 //подгрузка данных
 router.get('/itemType', ctrl.itemType);
 router.get('/jobuom', ctrl.jobuom);
+router.get('/items', ctrl.item);
 
 //admin routs
 router.get('/admin', ctrl.mainAdmin);
