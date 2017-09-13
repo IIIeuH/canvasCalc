@@ -20,6 +20,9 @@ router.post('/login', ctrl.auth);
 router.get('/itemType', ctrl.itemType);
 router.get('/jobuom', ctrl.jobuom);
 router.get('/items', ctrl.item);
+router.get('/selectitems', ctrl.SelectItems);
+router.get('/selectbomparams', ctrl.SelectBomParams);
+router.get('/selectjobparams', ctrl.SelectJobParams);
 
 //admin routs
 router.get('/admin', ctrl.mainAdmin);

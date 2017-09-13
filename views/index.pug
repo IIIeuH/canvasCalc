@@ -17,6 +17,9 @@ block content
               div(calss='physics-param')
                 h2.h2 Физические параметры
                 .input-group
+                  label(for='material') Выбор материала
+                  select.form-control#material
+                .input-group
                   label(for='width') Ширина, мм.
                   input.form-control#width(type='number', value='1200')
                 .input-group
@@ -32,8 +35,8 @@ block content
                     label(for='gluing-width') Ширина нижней подклейки
                     input.form-control#gluing-width(type='number', value='70')
                 .input-group
-                  label(for='profile-heigth') Высота профиля, мм.
-                  select.form-control#profile-heigth
+                  label#sel(for='profile-heigth') Высота профиля, мм.
+                  select.form-control.profile-heigth#profile-heigth
                     option(value='20', selected) 20
                     option(value='30') 30
                     option(value='40') 40
@@ -53,10 +56,10 @@ block content
                     input#D(type='checkbox', name='sideProfile', value='D')
                     |  D
                 .input-group
-                  label(for='splice1') Расположение стыка 1, мм.
+                  label(for='splice1') Расположение горизонтального стыка, мм.
                   input.form-control#splice1(type='number')
                 .input-group
-                  label(for='splice2') Расположение стыка 2, мм.
+                  label(for='splice2') Расположение вертикальногос стыка, мм.
                   input.form-control#splice2(type='number')
           .row
             .col-md-12
@@ -120,3 +123,5 @@ block content
       .col-md-6
         .price
           h2.h2
+      .col-md-6#parametr
+          h2.h2.parametr Список переменных

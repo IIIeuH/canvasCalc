@@ -31,6 +31,24 @@ module.exports.items = function(req, res, next){
     });
 };
 
+module.exports.SelectBomParams = function(req, res, next){
+    getBomParams(function(items){
+        res.json(items);
+    });
+};
+
+module.exports.SelectJobParams = function(req, res, next){
+    getJobParams(function(jobParams){
+      res.json(jobParams);
+    })
+};
+
+module.exports.SelectItems = function(req, res, next){
+    getItems(function(items){
+        res.json(items);
+    });
+};
+
 module.exports.item = function(req, res, next){
     getItems(function(items){
         res.json(items);

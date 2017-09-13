@@ -390,6 +390,108 @@ $(function(){
     });
 });
 
+//select выбор материала
+var select;
+var items = $.ajax({
+    url: '/selectitems',
+    type: 'GET',
+    success: function(data){
+        select ='<option></option>';
+        data.forEach(function (item) {
+            select += '<option value="'+ item.ITEMID +'">'+ item.ITEMNAME +'</option>';
+        });
+    },
+    error: function (err) {
+        console.log(err);
+    }
+});
+
+$(function(){
+    items.then(function(data){
+        $('#material').append(
+            select
+        );
+    });
+});
+//END select выбор материала
+
+//Выбор высоты профиля исходя из типа материала
+$(function(){
+    $('.input-group').on('change', '#material', function(){
+        var inputSelect;
+        var elem;
+        var itemid = $(this).val();
+        items.then(function(data){
+            data.forEach(function(item){
+                if(item.ITEMID == itemid){
+                    inputSelect = item;
+                }
+            });
+            if($('#profile-option').val() === '1') {
+                elem =
+                    '<select class="form-control profile-heigth" id="profile-heigth">' +
+                    '<option value="'+((inputSelect.ITEMTHIN * 2) + 20)+'">'+((inputSelect.ITEMTHIN * 2) + 20)+'</option>' +
+                    '<option value="'+((inputSelect.ITEMTHIN * 2) + 30)+'">'+((inputSelect.ITEMTHIN * 2) + 30)+'</option>' +
+                    '<option value="'+((inputSelect.ITEMTHIN * 2) + 40)+'">'+((inputSelect.ITEMTHIN * 2) + 40)+'</option>' +
+                    '<option value="'+((inputSelect.ITEMTHIN * 2) + 60)+'">'+((inputSelect.ITEMTHIN * 2) + 60)+'</option>' +
+                    '</select>';
+            }
+            if($('#profile-option').val() === '0') {
+                elem =
+                    '<select class="form-control  profile-heigth" id="profile-heigth">' +
+                    '<option value="'+(inputSelect.ITEMTHIN + 20)+'">'+(inputSelect.ITEMTHIN + 20)+'</option>' +
+                    '<option value="'+(inputSelect.ITEMTHIN + 30)+'">'+(inputSelect.ITEMTHIN + 30)+'</option>' +
+                    '<option value="'+(inputSelect.ITEMTHIN + 40)+'">'+(inputSelect.ITEMTHIN + 40)+'</option>' +
+                    '<option value="'+(inputSelect.ITEMTHIN + 60)+'">'+(inputSelect.ITEMTHIN + 60)+'</option>' +
+                    '</select>';
+            }
+            $('.profile-heigth').replaceWith(elem);
+        });
+    });
+});
+//END Выбор высоты профиля исходя из типа материала
+
+
+//при изменении варианта профиля его высота должна пресчитаться
+
+$(function(){
+    $('#profile-option').change(function(){
+        var elem;
+        var inputSelect;
+        var itemid = $('#material').val();
+        if(itemid){
+            items.then(function(data){
+                data.forEach(function(item){
+                    if(item.ITEMID == itemid){
+                        inputSelect = item;
+                    }
+                });
+                if($('#profile-option').val() === '1') {
+                    elem =
+                        '<select class="form-control profile-heigth" id="profile-heigth">' +
+                        '<option value="'+((inputSelect.ITEMTHIN * 2) + 20)+'">'+((inputSelect.ITEMTHIN * 2) + 20)+'</option>' +
+                        '<option value="'+((inputSelect.ITEMTHIN * 2) + 30)+'">'+((inputSelect.ITEMTHIN * 2) + 30)+'</option>' +
+                        '<option value="'+((inputSelect.ITEMTHIN * 2) + 40)+'">'+((inputSelect.ITEMTHIN * 2) + 40)+'</option>' +
+                        '<option value="'+((inputSelect.ITEMTHIN * 2) + 60)+'">'+((inputSelect.ITEMTHIN * 2) + 60)+'</option>' +
+                        '</select>';
+                }
+                if($('#profile-option').val() === '0') {
+                    elem =
+                        '<select class="form-control  profile-heigth" id="profile-heigth">' +
+                        '<option value="'+(inputSelect.ITEMTHIN + 20)+'">'+(inputSelect.ITEMTHIN + 20)+'</option>' +
+                        '<option value="'+(inputSelect.ITEMTHIN + 30)+'">'+(inputSelect.ITEMTHIN + 30)+'</option>' +
+                        '<option value="'+(inputSelect.ITEMTHIN + 40)+'">'+(inputSelect.ITEMTHIN + 40)+'</option>' +
+                        '<option value="'+(inputSelect.ITEMTHIN + 60)+'">'+(inputSelect.ITEMTHIN + 60)+'</option>' +
+                        '</select>';
+                }
+                $('.profile-heigth').replaceWith(elem);
+            });
+        }
+    });
+});
+
+//END при изменении варианта профиля его высота должна пресчитаться
+
 //Обработка изменения селекта с готовыми решениями
 
 $(function(){
@@ -408,7 +510,6 @@ $(function(){
             }
         });
 
-        console.log(data);
         asyncData.then(function(Asdata){
             var side = data.SECTION_SIDE.split('');
             console.log(side);
@@ -456,6 +557,8 @@ $(function(){
 //расчет
 $(function(){
     $('#calc').click(function(){
+        $('.parametr').remove();
+        $('#parametr').append('<h2 class="h2 parametr"></h2>');
         var sideA= 0, sideB= 0, sideC= 0, sideD= 0 ;
         var profileLenght = 0;
         var width = +$('#width').val();
@@ -536,54 +639,193 @@ $(function(){
         }
 
         if($('#moi-form').val() === '3'){
-            gidrorezCutQty += 3.14;
-        }
-        //var spliceGlueQty  = gidrorezCutQty45 / 2 * BomParams.ItemConsumpQty/BomParams.ItemConsumpPerQty /1000;
-        var spliceGlueQty  = +gidrorezCutQty45 / 2 * 10/2 /1000;
-
-        var metProfileQty  = +perimeter;
-
-        //var profileGlueQty =( metProfileQty * BomParams.ItemConsumpQty / BomParams.ItemConsumpPerQty) / 1000
-        var profileGlueQty =( +metProfileQty * 10 / 2) / 1000;
-
-        //var materialCost = materialQty * MatParams.ItemPrice
-        var materialCost = +materialQty * 70;
-
-        //var profileGlueCost = profileGlueQty * MatParams.ItemPrice
-        var profileGlueCost = +profileGlueQty * 70;
-
-        //var spliceGlueCost = spliceGlueQty * MatParams.ItemPrice
-        var spliceGlueCost = +spliceGlueQty * 70;
-
-        //var profileCost = metProfileQty /1000 * MatParams.itemPrice;
-        var profileCost = +metProfileQty /1000 * 100;
-
-        //var gidrorezCutCost  = gidrorezCutQty * MatParams.ItemPrice
-        var gidrorezCutCost  = +gidrorezCutQty * 1;
-        //var gidrorezCutCost  += gidrorezCutQty45 * MatParams.ItemPrice
-
-        //var assemCost = JobParams.JobPrice * profileLenght
-        var assemCost = 300;
-        var lowerAssemCost = 0;
-        if($('#moi-form').val() === '1'){
-            lowerAssemCost = 10 * 2 * 3.14;
+            gidrorezCutQty += Math.PI;
         }
 
-        if($('#moi-form').val() === '2'){
-            lowerAssemCost = 10 * (+$('#side-a').val() + +$('#side-b').val())*2;
+        $('.parametr').append(
+            '<div>Периметр столешницы: perimeter = '+ perimeter +'</div>'+
+            '<div>Длина профиля: profileLenght = '+ profileLenght +'</div>'+
+            '<div>Площадь материала: materialQty = '+ materialQty +'</div>'
+        );
+
+
+        var _BomParams = $.ajax({
+            url: '/selectbomparams',
+            type: 'get',
+            success: function(data){
+
+            },
+            error: function (err) {
+                console.log(err);
+            }
+        });
+        var bomType;
+        var bomTypeKley;
+        var spliceGlueQty;
+        var profileGlueQty;
+        var materialCost;
+        var profileGlueCost;
+        var spliceGlueCost;
+        var profileCost;
+        var gidrorezCutCost;
+        var assemCost;
+        var lowerAssemCost;
+        var countertopCost;
+        var profileHight;
+        var profileWidht;
+
+        if($('#profile-heigth').val() === 42 || $('#profile-heigth').val() === 50){
+            profileHight = 30;
+            profileWidht = 30;
+        }
+        if($('#profile-heigth').val() === 72 || $('#profile-heigth').val() === 82){
+            profileHight = 60;
+            profileWidht = 60;
+        }
+        if($('#profile-heigth').val() === 36 || $('#profile-heigth').val() === 41){
+            profileHight = 30;
+            profileWidht = 30;
+        }
+        if($('#profile-heigth').val() === 66 || $('#profile-heigth').val() === 71){
+            profileHight = 60;
+            profileWidht = 60;
+        }
+        if($('#profile-heigth').val() === 42 || $('#profile-heigth').val() === 52){
+            profileHight = 30;
+            profileWidht = 60;
         }
 
-        if($('#moi-form').val() === '3'){
-            lowerAssemCost = 10 * 3.14;
-        }
 
-        var countertopCost = materialCost + profileGlueCost+ spliceGlueCost + profileCost + gidrorezCutCost  + lowerAssemCost;
-        console.log(materialCost ,profileGlueCost, spliceGlueCost , profileCost, gidrorezCutCost  , lowerAssemCost);
+        _BomParams.then(function(data){
+            data.forEach(function(item){
+                if(item.BOMTYPE === 0){
+                    bomType = item;
+                }
+            });
 
-        //console.log(sideA,sideB,sideC,sideD, profileLenght, perimeter, glueingPerimeter, adjacentCut, materialQty, 'gidrorezCutQty - ' + gidrorezCutQty, 'gidrorezCutQty45 - ' + gidrorezCutQty45);
-        console.log('Итог = '+ countertopCost, gidrorezCutQty);
+            spliceGlueQty  = gidrorezCutQty45 / 2 * bomType.ITEMCONSUMPQTY / bomType.ITEMCONSUMPERQTY /1000;
 
-        $('.price h2').text('Итог = '+ countertopCost, gidrorezCutQty);
+            $('.parametr').append(
+                '<div>Кличество стыкового клея: spliceGlueQty = '+ spliceGlueQty +'</div>'
+
+            );
+
+            var metProfileQty  = +perimeter;
+
+            data.forEach(function(item){
+                if(item.BOMTYPE === 1){
+                    bomTypeKley = item;
+                }
+            });
+
+            profileGlueQty =( metProfileQty * bomTypeKley.ITEMCONSUMPQTY  / bomTypeKley.ITEMCONSUMPERQTY) / 1000;
+
+            $('.parametr').append(
+                '<div>Количество клея для профилей: profileGlueQty = '+ profileGlueQty +'</div>'
+            );
+
+            var itemid = $('#material').val();
+            var inputSelect;
+            items.then(function(data) {
+                data.forEach(function (item) {
+                    if (item.ITEMID == itemid) {
+                        materialCost = materialQty * item.ITEMPRICE;
+                    }
+                    if(item.ITEM_TYPES_ID === 4){
+                        profileGlueCost = profileGlueQty * item.ITEMPRICE;
+                    }
+                    if(item.ITEM_TYPES_ID === 5){
+                        spliceGlueCost = spliceGlueQty * item.ITEMPRICE;
+                    }
+                    if(item.ITEM_TYPES_ID === 6 && item.HEIGHT === profileHight && item.WIDTH === profileWidht){
+                        profileCost = metProfileQty / 1000 * item.ITEMPRICE;
+                    }
+
+                    if(item.ITEMTHIN <= 6 ){
+                        if(item.ITEM_TYPES_ID === 2 && item.ITEMTHIN === 6){
+                            gidrorezCutCost  = gidrorezCutQty * item.ITEMPRICE;
+                        }
+                        if(item.ITEM_TYPES_ID === 3 && item.ITEMTHIN === 6){
+                            gidrorezCutCost  += gidrorezCutQty45 * item.ITEMPRICE;
+                        }
+                    }
+
+                    if(item.ITEMTHIN > 6 ){
+                        if(item.ITEM_TYPES_ID === 2 && item.ITEMTHIN === 12){
+                            gidrorezCutCost  = gidrorezCutQty * item.ITEMPRICE;
+                        }
+                        if(item.ITEM_TYPES_ID === 3 && item.ITEMTHIN === 12){
+                            gidrorezCutCost  += gidrorezCutQty45 * item.ITEMPRICE;
+                        }
+                    }
+
+                });
+
+
+                $('.parametr').append(
+                    '<div>Стоимость материала: materialCost = '+ materialCost +'</div>' +
+                    '<div>Стоимость профильного клея: profileGlueCost = '+ profileGlueCost +'</div>' +
+                    '<div>Стоимость стыкового клея  : spliceGlueCost = '+ spliceGlueCost +'</div>' +
+                    '<div>Стоимость профилей  : profileCost = '+ profileCost +'</div>' +
+                    '<div>Стоимость раскроя на гидрорезе  : gidrorezCutCost = '+ gidrorezCutCost +'</div>'
+                );
+
+                var _jobParams = $.ajax({
+                    url: 'selectjobparams',
+                    type: 'GET',
+                    success: function (data) {
+                        console.log(data);
+                    },
+                    error: function (err) {
+                        console.log(err);
+                    }
+                });
+                var jobParams;
+                _jobParams.then(function (item) {
+
+                    item.forEach(function (data) {
+                        if (data.JOBID === 5) {
+                            jobParams = data;
+                            assemCost = jobParams.JOBPRICE * profileLenght;
+                            console.log(assemCost);
+                        }
+                        if(item.JOBID === 6){
+                            jobParams= data;
+                        }
+                    });
+
+                    if($('#moi-form').val() === '1'){
+                        lowerAssemCost = jobParams.JOBPRICE * 2 * Math.PI * ($('#diameter').val() / 2);
+                    }
+
+                    if($('#moi-form').val() === '2'){
+                        lowerAssemCost = jobParams.JOBPRICE * (+$('#side-a').val() + +$('#side-b').val())*2;
+                    }
+
+                    if($('#moi-form').val() === '3'){
+                        lowerAssemCost = jobParams.JOBPRICE * Math.PI * (+$('$lots').val() + +$('#sal').val());
+                    }
+
+
+                    $('.parametr').append(
+                        '<div>Стоимость склейки: assemCost = '+ assemCost +'</div>' +
+                        '<div>Стоимость обработки нависания мойки : lowerAssemCost = '+ lowerAssemCost +'</div>'
+                    );
+
+                    countertopCost = Math.round(materialCost + profileGlueCost+ spliceGlueCost + profileCost + gidrorezCutCost  + lowerAssemCost);
+                    console.log(materialCost ,profileGlueCost, spliceGlueCost , profileCost, gidrorezCutCost  , lowerAssemCost);
+
+                    //console.log(sideA,sideB,sideC,sideD, profileLenght, perimeter, glueingPerimeter, adjacentCut, materialQty, 'gidrorezCutQty - ' + gidrorezCutQty, 'gidrorezCutQty45 - ' + gidrorezCutQty45);
+                    console.log('Итог = '+ countertopCost, gidrorezCutQty);
+
+                    $('.price h2').text('Итог = '+ countertopCost);
+
+                })
+
+            });
+
+        });
+
     });
 
 });
