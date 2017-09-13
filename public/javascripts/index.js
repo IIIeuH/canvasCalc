@@ -398,7 +398,9 @@ var items = $.ajax({
     success: function(data){
         select ='<option></option>';
         data.forEach(function (item) {
-            select += '<option value="'+ item.ITEMID +'">'+ item.ITEMNAME +'</option>';
+            if(item.ITEM_TYPES_ID === 1){
+                select += '<option value="'+ item.ITEMID +'">'+ item.ITEMNAME +'</option>';
+            }
         });
     },
     error: function (err) {
