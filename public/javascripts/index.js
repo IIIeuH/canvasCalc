@@ -787,17 +787,20 @@ $(function(){
 
                     item.forEach(function (data) {
                         if (data.JOBID === 5) {
-                            jobParams = data;
-                            assemCost = jobParams.JOBPRICE * profileLenght;
-                            console.log(assemCost);
+                            assemCost = data.JOBPRICE * profileLenght;
                         }
-                        if(item.JOBID === 6){
+
+                    });
+
+                    item.forEach(function (data) {
+                        if(data.JOBID === 6){
                             jobParams= data;
                         }
                     });
 
                     if($('#moi-form').val() === '1'){
-                        lowerAssemCost = jobParams.JOBPRICE * 2 * Math.PI * ($('#diameter').val() / 2);
+                        console.log(jobParams.JOBPRICE );
+                        lowerAssemCost = jobParams.JOBPRICE * 2 * Math.PI * (+$('#diameter').val() / 2);
                     }
 
                     if($('#moi-form').val() === '2'){
