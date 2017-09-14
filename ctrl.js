@@ -115,6 +115,11 @@ module.exports.del = function(req, res, next){
         res.json(data);
     });
 };
+module.exports.updateItems = function(req, res, next) {
+    updateItems(req.body.data, req.body.id, req.params.table, function (data) {
+        res.json(data);
+    })
+};
 
 module.exports.add = function(req, res, next) {
     async.waterfall([
@@ -313,6 +318,56 @@ function saveItems(req, col, cb){
                         doRelease(connection);
                         cb(result);
                     });
+        });
+}
+
+
+function updateItems(req, id, col, cb){
+    oracledb.getConnection(
+        {
+            user: "tops",
+            password: "tops",
+            connectString: "(DESCRIPTION =(ADDRESS_LIST = (ADDRESS = (PROTOCOL = TCP)(HOST = webdb.terracorp.ru)(PORT = 1521)))(CONNECT_DATA = (SID = WEBDB)(SERVER = DEDICATED)))"
+        },
+        function (err, connection) {
+            if (err) {
+                console.error(err.message);
+                return;
+            }
+            req = JSON.parse(req);
+            console.log(req, id,col);
+            var query = [];
+            query.push("UPDATE " + col);
+            query.push("SET ");
+            query.push("itemname = :itemname,");
+            query.push("item_types_id = :itemTypesId,");
+            query.push("itemheight = :itemheight,");
+            query.push("itemwidth = :itemwidth,");
+            query.push("itemthin = :itemthin,");
+            query.push("itemprice = :itemprice");
+            query.push(" WHERE itemid= :id");
+            query = query.join(' ');
+            console.log(query);
+            connection.execute(
+                query, {
+                    id: id,
+                    itemname: req[0],
+                    itemTypesId: req[1],
+                    itemheight: req[2],
+                    itemwidth: req[3],
+                    itemthin: req[4],
+                    itemprice: req[5]
+                }, {autoCommit: true},
+                function (err, result) {
+                    if (err) {
+                        console.log(err);
+                        doRelease(connection);
+                        cb(err);
+                    }
+                    console.log(result);
+                    doRelease(connection);
+                    cb(result);
+                });
         });
 }
 

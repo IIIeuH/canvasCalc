@@ -124,6 +124,7 @@ $(function(){
         ev.preventDefault();
         $('.mainTable').append(string);
     });
+
     //клик на кнопку удаление в таблицу
     $('.close').click(function(){
         var id = $(this).data('id');
@@ -144,6 +145,72 @@ $(function(){
                 }
             })
         }
+    });
+
+    //при клике на редактирование
+    $('.redactor').click(function(){
+        var id = $(this).data('red');
+        var tr = $(this).parent().parent();
+        var td = tr.children('td');
+        console.log(tr);
+        console.log(td);
+        var text = [];
+        $.each(td, function(i){
+            text.push($(this).text());
+            if(!$(this).is(':has(button)')){
+                $(this).empty();
+                $(this).append('<input type="text" class="form-control" value="'+ text[i] +'">');
+            }
+            if($(this).is('.itemType')){
+                console.log($(this));
+                $(this).empty();
+                $(this).append(select);
+                $('select option[value="' +text[i]+ '"]').prop("selected", true);
+            }
+        });
+
+        //создание кнопок
+        $('.addItemtable').before(
+            '<button class="btn btn-danger" type="button" id="cancelRedactor"> Отменить' +
+            '<button class="btn btn-success" type="button" id="saveRedactor"> Сохранить'
+        );
+
+        //обработка клика на кнопку отменить
+        $(document).on('click', '#cancelRedactor', function(){
+            $.each(td, function(i){
+                if(!$(this).is(':has(button)')){
+                    $(this).empty();
+                    $(this).text(text[i]);
+                }
+            });
+            $(this).remove();
+            $('#saveRedactor').remove();
+        });
+
+        //обработка клика на кнопку сохранить
+        $(document).on('click', '#saveRedactor', function(){
+            var btn = $('#'+id);
+            console.log(btn);
+            var tr = btn.parent().parent();
+            var td = tr.children('td');
+            console.log(td);
+            var saveItem = [];
+            $.each(td, function(i){
+                if(!$(this).is(':has(button)')){
+                    saveItem.push($(this).find(':first-child').val());
+                }
+            });
+            $.ajax({
+                type: 'PUT',
+                data: {data: JSON.stringify(saveItem), id: id},
+                success: function(data){
+                    window.location.reload();
+                },
+                error: function(err){
+                    console.log(err);
+                }
+            })
+        });
     });
 });
 //Конец параметры материала

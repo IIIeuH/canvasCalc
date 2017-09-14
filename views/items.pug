@@ -18,17 +18,18 @@ block content
                         th ItemWidth(Ширина, мм)
                         th ItemThin(Толщина, мм)
                         th ItemPrice(Цена)
-                        th Удалить
+                        th Редактировать/Удалить
                     tbody
                         each item in items
                             tr
                                 td=item.ITEMNAME
-                                td=item.ITEM_TYPES_ID
+                                td.itemType=item.ITEM_TYPES_ID
                                 td=item.ITEMHEIGHT
                                 td=item.ITEMWIDTH
                                 td=item.ITEMTHIN
                                 td=item.ITEMPRICE
                                 td
                                     button(type="button", data-id=item.ITEMID, data-nameid="ITEMID" class="close", aria-hidden="true") &times;
+                                    button(type="button", data-red=item.ITEMID, class="redactor", aria-hidden="true" id=item.ITEMID) &#9998;
 
 
