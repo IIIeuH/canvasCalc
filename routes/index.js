@@ -36,7 +36,10 @@ router.post('/admin/items/', ctrl.addItems);
 router.post('/admin/jobparams/', ctrl.addJobParams);
 router.post('/admin/bomparams/', ctrl.addBomParams);
 router.post('/admin/uom/', ctrl.addUom);
-router.put('/admin/:table', ctrl.updateItems);
+
+//обновление данных
+router.put('/admin/items', ctrl.updateItems);
+router.put('/admin/jobparams', ctrl.updateJobParams);
 
 //дулаение итема
 router.delete('/delete', ctrl.del);

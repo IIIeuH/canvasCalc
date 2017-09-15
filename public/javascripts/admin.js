@@ -1,58 +1,75 @@
 //Параметры материала
-$(function(){
-    var select;
-    var string;
-    $.ajax({
-        url: "/itemType",
-        type: 'GET',
-        success: function(data){
-            select = '<select class="form-control">' +
-                '<option></option>';
-            data.forEach(function (item) {
-                select += '<option value="'+ item.ITEM_TYPES_ID +'">'+ item.ITEM_TYPE +'</option>';
-            });
+var select;
+var string;
+var selectItem;
+var itemType = $.ajax({
+    url: "/itemType",
+    type: 'GET',
+    success: function(data){
+        itemType = data;
+        select = '<select class="form-control">' +
+            '<option></option>';
+        data.forEach(function (item) {
+            select += '<option value="'+ item.ITEM_TYPES_ID +'">'+ item.ITEM_TYPE +'</option>';
+        });
 
-            select += '</select>';
-            string = '<tr class="str">' +
-                '<td>' +
-                '<div class="form-group">' +
-                '<input type="text" class="form-control itemName">' +
-                '</div>' +
-                '</td>' +
-                '<td>' +
-                '<div class="form-group">' +
-                select+
-                '</div>' +
-                '</td>' +
-                '<td>' +
-                '<div class="form-group">' +
-                '<input type="number" class="form-control itemHight">' +
-                '</div>' +
-                '</td>' +
-                '<td>' +
-                '<div class="form-group">' +
-                '<input type="number" class="form-control itemWidth">' +
-                '</div>' +
-                '</td>' +
-                '<td>' +
-                '<div class="form-group">' +
-                '<input type="number" class="form-control itemThin">' +
-                '</div>' +
-                '</td>' +
-                '<td>' +
-                '<div class="form-group">' +
-                '<input type="number" class="form-control itemPrice">' +
-                '</div>' +
-                '</td>' +
-                '</tr>';
-        },
-        error: function (err) {
-            console.log(err);
-        }
+        select += '</select>';
+        selectItem = select;
+        string = '<tr class="str">' +
+            '<td>' +
+            '<div class="form-group">' +
+            '<input type="text" class="form-control itemName">' +
+            '</div>' +
+            '</td>' +
+            '<td>' +
+            '<div class="form-group">' +
+            select+
+            '</div>' +
+            '</td>' +
+            '<td>' +
+            '<div class="form-group">' +
+            '<input type="number" class="form-control itemHight">' +
+            '</div>' +
+            '</td>' +
+            '<td>' +
+            '<div class="form-group">' +
+            '<input type="number" class="form-control itemWidth">' +
+            '</div>' +
+            '</td>' +
+            '<td>' +
+            '<div class="form-group">' +
+            '<input type="number" class="form-control itemThin">' +
+            '</div>' +
+            '</td>' +
+            '<td>' +
+            '<div class="form-group">' +
+            '<input type="number" class="form-control itemPrice">' +
+            '</div>' +
+            '</td>' +
+            '</tr>';
+    },
+    error: function (err) {
+        console.log(err);
+    }
+});
+
+
+$(function(){
+    //itemType с цифр на названия
+    itemType.then(function(data){
+        $.each($('tr').find('td.itemType'), function(){
+            var that = $(this);
+            data.forEach(function(item){
+                console.log(that.text(), item.ITEM_TYPES_ID);
+                if(that.text() == item.ITEM_TYPES_ID){
+                    that.text(item.ITEM_TYPE);
+                }
+            });
+        });
     });
 
+    //Обработка клика на кнопку добавить
     $('#addItem').click(function(){
-
         $('.addItemtable').append(
             '<table class="table table-bordered addItemTable">' +
                 '<thead>' +
@@ -157,6 +174,7 @@ $(function(){
         var text = [];
         $.each(td, function(i){
             text.push($(this).text());
+            console.log($(this));
             if(!$(this).is(':has(button)')){
                 $(this).empty();
                 $(this).append('<input type="text" class="form-control" value="'+ text[i] +'">');
@@ -165,7 +183,7 @@ $(function(){
                 console.log($(this));
                 $(this).empty();
                 $(this).append(select);
-                $('select option[value="' +text[i]+ '"]').prop("selected", true);
+                $('select :contains('+text[i]+')').first().attr("selected", "selected");
             }
         });
 
@@ -220,7 +238,8 @@ $(function(){
 $(function(){
     var select;
     var string;
-    $.ajax({
+    var selectJobType;
+    var jobUomsId = $.ajax({
         url: "/jobuom",
         type: 'GET',
         success: function(data){
@@ -229,8 +248,8 @@ $(function(){
             data.forEach(function (item) {
                 select += '<option value="'+ item.UOMS_ID +'">'+ item.UOM +'</option>';
             });
-
             select += '</select>';
+            selectJobType = select;
             string = '<tr class="str">' +
                 '<td>' +
                 '<div class="form-group">' +
@@ -254,6 +273,39 @@ $(function(){
             console.log(err);
         }
     });
+
+    //itemType с цифр на названия
+    jobUomsId.then(function(data){
+        $.each($('tr').find('td.jobUomsId'), function(){
+            var that = $(this);
+            data.forEach(function(item){
+                if(that.text() == item.UOMS_ID){
+                    that.text(item.UOM);
+                }
+            });
+        });
+    });
+    jobUomsId.then(function(data){
+        $.each($('tr').find('td.specOne'), function(){
+            var that = $(this);
+            data.forEach(function(item){
+                if(that.text() == item.UOMS_ID){
+                    that.text(item.UOM);
+                }
+            });
+        });
+    });
+    jobUomsId.then(function(data){
+        $.each($('tr').find('td.specTwo'), function(){
+            var that = $(this);
+            data.forEach(function(item){
+                if(that.text() == item.UOMS_ID){
+                    that.text(item.UOM);
+                }
+            });
+        });
+    });
+
     $('#addItemJob').click(function(){
 
         $('.addItemtable').append(
@@ -323,6 +375,70 @@ $(function(){
         $('.mainTable').append(string);
     });
 
+    $('.redactorJob').click(function(){
+        var id = $(this).data('red');
+        var tr = $(this).parent().parent();
+        var td = tr.children('td');
+        var text = [];
+        $.each(td, function(i){
+            text.push($(this).text());
+            if(!$(this).is(':has(button)')){
+                $(this).empty();
+                $(this).append('<input type="text" class="form-control" value="'+ text[i] +'">');
+            }
+            if($(this).is('.jobUomsId')){
+                console.log($(this));
+                $(this).empty();
+                $(this).append(select);
+                $('select :contains('+text[i]+')').first().attr("selected", "selected");
+            }
+        });
+
+        //создание кнопок
+        $('.addItemtable').before(
+            '<button class="btn btn-danger" type="button" id="cancelRedactor"> Отменить' +
+            '<button class="btn btn-success" type="button" id="saveRedactor"> Сохранить'
+        );
+
+        //обработка клика на кнопку отменить
+        $(document).on('click', '#cancelRedactor', function(){
+            $.each(td, function(i){
+                if(!$(this).is(':has(button)')){
+                    $(this).empty();
+                    $(this).text(text[i]);
+                }
+            });
+            $(this).remove();
+            $('#saveRedactor').remove();
+        });
+
+        //обработка клика на кнопку сохранить
+        $(document).on('click', '#saveRedactor', function(){
+            var btn = $('#'+id);
+            console.log(btn);
+            var tr = btn.parent().parent();
+            var td = tr.children('td');
+            console.log(td);
+            var saveItem = [];
+            $.each(td, function(i){
+                if(!$(this).is(':has(button)')){
+                    saveItem.push($(this).find(':first-child').val());
+                }
+            });
+            console.log(saveItem);
+            $.ajax({
+                type: 'PUT',
+                data: {data: JSON.stringify(saveItem), id: id},
+                success: function(data){
+                    window.location.reload();
+                },
+                error: function(err){
+                    console.log(err);
+                }
+            })
+        });
+    });
+
 });
 //Конец параметры работы
 
@@ -332,7 +448,7 @@ $(function(){
     var select;
     var selectItem;
     var string;
-
+    var selectUoms;
     var items = $.ajax({
         url: "/items",
         type: 'GET',
@@ -362,6 +478,7 @@ $(function(){
                 });
 
                 select += '</select>';
+                selectUoms = select;
                 string = '<tr class="str">' +
                     '<td>' +
                     '<div class="form-group">' +
@@ -472,6 +589,87 @@ $(function(){
     //при клике на добавить строчку
     $('#addTableBom').click(function(ev){
         $('.mainTable').append(string);
+    });
+
+    //клик редактировать
+    $('.redactorBom').click(function(){
+        var id = $(this).data('red');
+        var tr = $(this).parent().parent();
+        var td = tr.children('td');
+        var text = [];
+        $.each(td, function(i){
+            text.push($(this).text());
+            if(!$(this).is(':has(button)')){
+                $(this).empty();
+                $(this).append('<input type="text" class="form-control" value="'+ text[i] +'">');
+            }
+            if($(this).is('.nomen')){
+                $(this).empty();
+                $(this).append(selectItem);
+                $('select :contains('+text[i]+')').first().attr("selected", "selected");
+            }
+            if($(this).is('.bomtype')){
+                $(this).empty();
+                $(this).append('<select class="form-control"><option></option><option value="0">Клей для стыков</option><option value="1">Клей для профилей<option></select>');
+                $('select :contains('+text[i]+')').first().attr("selected", "selected");
+            }
+            if($(this).is('.specOne')){
+                console.log(text[i]);
+                $(this).empty();
+                $(this).append(selectUoms);
+                $('select :contains('+text[i]+')').first().attr("selected", "selected");
+            }
+            if($(this).is('.specTwo')){
+                console.log(text[i]);
+                $(this).empty();
+                $(this).append(selectUoms);
+                $('select :contains('+text[i]+')').first().attr("selected", "selected");
+            }
+        });
+        console.log(text);
+        //создание кнопок
+        $('.addItemtable').before(
+            '<button class="btn btn-danger" type="button" id="cancelRedactor"> Отменить' +
+            '<button class="btn btn-success" type="button" id="saveRedactor"> Сохранить'
+        );
+
+        //обработка клика на кнопку отменить
+        $(document).on('click', '#cancelRedactor', function(){
+            $.each(td, function(i){
+                if(!$(this).is(':has(button)')){
+                    $(this).empty();
+                    $(this).text(text[i]);
+                }
+            });
+            $(this).remove();
+            $('#saveRedactor').remove();
+        });
+
+        //обработка клика на кнопку сохранить
+        $(document).on('click', '#saveRedactor', function(){
+            var btn = $('#'+id);
+            console.log(btn);
+            var tr = btn.parent().parent();
+            var td = tr.children('td');
+            console.log(td);
+            var saveItem = [];
+            $.each(td, function(i){
+                if(!$(this).is(':has(button)')){
+                    saveItem.push($(this).find(':first-child').val());
+                }
+            });
+            console.log(saveItem);
+            $.ajax({
+                type: 'PUT',
+                data: {data: JSON.stringify(saveItem), id: id},
+                success: function(data){
+                    window.location.reload();
+                },
+                error: function(err){
+                    console.log(err);
+                }
+            })
+        });
     });
 
 });

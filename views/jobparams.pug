@@ -15,12 +15,13 @@ block content
                         th Описание работ
                         th Цена работы
                         th Единица измерения
-                        th Удалить
+                        th Редактировать/Удалить
                     tbody
                         each item in jobParams
                             tr
                                 td=item.JOBDESC
                                 td=item.JOBPRICE
-                                td=item.JOBUOMS_ID
+                                td.jobUomsId=item.JOBUOMS_ID
                                 td
                                     button(type="button", data-id=item.JOBID, data-nameid="JOBID", class="close", aria-hidden="true") &times;
+                                    button(type="button", data-red=item.JOBID, class="redactorJob", aria-hidden="true" id=item.JOBID) &#9998;

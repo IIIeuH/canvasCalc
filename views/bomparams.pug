@@ -22,11 +22,12 @@ block content
                     tbody
                         each item in bomParams
                             tr
-                                td=item.ITEMID
-                                td=item.BOMTYPE
+                                td.nomen=item.ITEMID
+                                td.bomtype=item.BOMTYPE
                                 td=item.ITEMCONSUMPQTY
-                                td=item.CONSUMPUOMS_ID
+                                td.specOne=item.CONSUMPUOMS_ID
                                 td=item.ITEMCONSUMPERQTY
-                                td=item.CONSUMPPERUOMS_ID
+                                td.specTwo=item.CONSUMPPERUOMS_ID
                                 td
                                     button(type="button", data-id=item.BOMID, data-nameid="BOMID" class="close", aria-hidden="true") &times;
+                                    button(type="button", data-red=item.BOMID, class="redactorBom", aria-hidden="true" id=item.BOMID) &#9998;

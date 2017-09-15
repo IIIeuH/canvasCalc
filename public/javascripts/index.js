@@ -611,9 +611,11 @@ $(function(){
         }
 
         if($('#profile-option').val() === '0'){
-            materialQty =( (profileLenght * +$('#profile-heigth').val()) + (width * height) )/1000000 * 1.5;
+            materialQty = ( (profileLenght * +$('#profile-heigth').val()) + (width * height) )/1000000 * 1.5
+            materialQty = materialQty.toFixed(2);
         }else{
-            materialQty =( (width * height) + (profileLenght * +$('#profile-heigth').val()) + ($('#gluing-width').val() * profileLenght )) / 1000000 * 1.5;
+            materialQty =( (width * height) + (profileLenght * +$('#profile-heigth').val()) + ($('#gluing-width').val() * profileLenght )) / 1000000 * 1.5
+            materialQty = materialQty.toFixed(2);
         }
 
         var gidrorezCutQty;
@@ -647,7 +649,9 @@ $(function(){
         $('.parametr').append(
             '<div>Периметр столешницы: perimeter = '+ perimeter +'</div>'+
             '<div>Длина профиля: profileLenght = '+ profileLenght +'</div>'+
-            '<div>Площадь материала: materialQty = '+ materialQty +'</div>'
+            '<div>Площадь материала: materialQty = '+ materialQty +'</div>' +
+            '<div>gidrorezCutQty = '+ gidrorezCutQty +'</div>' +
+            '<div>gidrorezCutQty45 = '+ gidrorezCutQty45 +'</div>'
         );
 
 

@@ -116,7 +116,13 @@ module.exports.del = function(req, res, next){
     });
 };
 module.exports.updateItems = function(req, res, next) {
-    updateItems(req.body.data, req.body.id, req.params.table, function (data) {
+    updateItems(req.body.data, req.body.id, 'items', function (data) {
+        res.json(data);
+    })
+};
+
+module.exports.updateJobParams = function(req, res, next) {
+    updateJobParams(req.body.data, req.body.id, 'jobparams', function (data) {
         res.json(data);
     })
 };
@@ -352,11 +358,11 @@ function updateItems(req, id, col, cb){
                 query, {
                     id: id,
                     itemname: req[0],
-                    itemTypesId: req[1],
-                    itemheight: req[2],
-                    itemwidth: req[3],
-                    itemthin: req[4],
-                    itemprice: req[5]
+                    itemTypesId:  +req[1],
+                    itemheight:  +req[2],
+                    itemwidth:  +req[3],
+                    itemthin:  +req[4],
+                    itemprice: +req[5]
                 }, {autoCommit: true},
                 function (err, result) {
                     if (err) {
@@ -370,6 +376,53 @@ function updateItems(req, id, col, cb){
                 });
         });
 }
+
+
+//начало обновления параметров работы
+function updateJobParams(req, id, col, cb){
+    oracledb.getConnection(
+        {
+            user: "tops",
+            password: "tops",
+            connectString: "(DESCRIPTION =(ADDRESS_LIST = (ADDRESS = (PROTOCOL = TCP)(HOST = webdb.terracorp.ru)(PORT = 1521)))(CONNECT_DATA = (SID = WEBDB)(SERVER = DEDICATED)))"
+        },
+        function (err, connection) {
+            if (err) {
+                console.error(err.message);
+                return;
+            }
+            req = JSON.parse(req);
+            console.log(req, id,col);
+            var query = [];
+            query.push("UPDATE " + col);
+            query.push("SET ");
+            query.push("jobdesc = :jobdesc,");
+            query.push("jobprice = :jobprice,");
+            query.push("jobuoms_id = :jobuomsId");
+            query.push(" WHERE jobid= :jobid");
+            query = query.join(' ');
+            console.log(query);
+            connection.execute(
+                query, {
+                    jobid: id,
+                    jobdesc: req[0],
+                    jobprice:  +req[1],
+                    jobuomsId:  +req[2]
+                }, {autoCommit: true},
+                function (err, result) {
+                    if (err) {
+                        console.log(err);
+                        doRelease(connection);
+                        cb(err);
+                    }
+                    console.log(result);
+                    doRelease(connection);
+                    cb(result);
+                });
+        });
+}
+
+//конец обновления параметров работы
 
 //Сохранение в таблицу jobparams
 function saveJobParams(req, col, cb){
