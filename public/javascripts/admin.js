@@ -167,6 +167,7 @@ $(function(){
 
     //при клике на редактирование
     $('.redactor').click(function(){
+        $('.redactor').addClass('hidden');
         var id = $(this).data('red');
         var tr = $(this).parent().parent();
         var td = tr.children('td');
@@ -196,6 +197,7 @@ $(function(){
 
         //обработка клика на кнопку отменить
         $(document).on('click', '#cancelRedactor', function(){
+            $('.redactor').removeClass('hidden');
             $.each(td, function(i){
                 if(!$(this).is(':has(button)')){
                     $(this).empty();
@@ -384,6 +386,7 @@ $(function(){
     });
 
     $('.redactorJob').click(function(){
+        $('.redactorJob').addClass('hidden');
         var id = $(this).data('red');
         var tr = $(this).parent().parent();
         var td = tr.children('td');
@@ -410,6 +413,7 @@ $(function(){
 
         //обработка клика на кнопку отменить
         $(document).on('click', '#cancelRedactor', function(){
+            $('.redactorJob').removeClass('hidden');
             $.each(td, function(i){
                 if(!$(this).is(':has(button)')){
                     $(this).empty();
@@ -616,6 +620,7 @@ $(function(){
 
     //клик редактировать
     $('.redactorBom').click(function(){
+        $('.redactorBom').addClass('hidden');
         var id = $(this).data('red');
         var tr = $(this).parent().parent();
         var td = tr.children('td');
@@ -636,17 +641,15 @@ $(function(){
                 $(this).append('<select class="form-control"><option></option><option value="0">Клей для стыков</option><option value="1">Клей для профилей<option></select>');
                 $('select :contains('+text[i]+')').first().attr("selected", "selected");
             }
-            // if($(this).is('.specOne')){
-            //     console.log(text[i]);
-            //     $(this).empty();
-            //     $(this).append(selectUoms);
-            //     $('select :contains('+text[i]+')').last().attr("selected", "selected");
-            // }
             if($(this).is('.specTwo')){
-                console.log(text[i]);
                 $(this).empty();
                 $(this).append(selectUoms);
-                $('select :contains('+text[i]+')').first().attr("selected", "selected");
+                $(this).find('select :contains('+text[i]+')').first().attr("selected", "selected");
+            }
+            if($(this).is('.specOne')){
+                $(this).empty();
+                $(this).append(selectUoms);
+                $(this).find('select :contains('+text[i]+')').last().attr("selected", "selected");
             }
         });
         console.log(text);
@@ -658,6 +661,7 @@ $(function(){
 
         //обработка клика на кнопку отменить
         $(document).on('click', '#cancelRedactor', function(){
+            $('.redactorBom').removeClass('hidden');
             $.each(td, function(i){
                 if(!$(this).is(':has(button)')){
                     $(this).empty();

@@ -431,7 +431,7 @@ function updateJobParams(req, id, col, cb){
 //конец обновления параметров работы
 
 //начало обновления спецификации
-function updateJobParams(req, id, col, cb){
+function updateBomParams(req, id, col, cb){
     oracledb.getConnection(
         {
             user: "tops",
@@ -449,17 +449,23 @@ function updateJobParams(req, id, col, cb){
             query.push("UPDATE " + col);
             query.push("SET ");
             query.push("itemid = :itemid,");
-            query.push("jobprice = :jobprice,");
-            query.push("jobuoms_id = :jobuomsId");
-            query.push(" WHERE jobid= :jobid");
+            query.push("bomtype = :bomtype,");
+            query.push("itemconsumpqty = :itemconsumpqty,");
+            query.push("consumpuoms_id = :consumpuoms_id,");
+            query.push("itemconsumperqty = :itemconsumperqty,");
+            query.push("consumpperuoms_id = :consumpperuoms_id");
+            query.push(" WHERE bomid= :bomid");
             query = query.join(' ');
             console.log(query);
             connection.execute(
                 query, {
-                    jobid: id,
-                    jobdesc: req[0],
-                    jobprice:  +req[1],
-                    jobuomsId:  +req[2]
+                    bomid: id,
+                    itemid: req[0],
+                    bomtype:  +req[1],
+                    itemconsumpqty:  +req[2],
+                    consumpuoms_id:  +req[3],
+                    itemconsumperqty:  +req[4],
+                    consumpperuoms_id:  +req[5]
                 }, {autoCommit: true},
                 function (err, result) {
                     if (err) {
