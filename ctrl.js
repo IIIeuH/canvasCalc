@@ -126,6 +126,12 @@ module.exports.updateJobParams = function(req, res, next) {
         res.json(data);
     })
 };
+module.exports.updateBomParams = function(req, res, next) {
+    updateBomParams(req.body.data, req.body.id, 'bomparams', function (data) {
+        res.json(data);
+    })
+};
+
 
 module.exports.add = function(req, res, next) {
     async.waterfall([
@@ -423,6 +429,52 @@ function updateJobParams(req, id, col, cb){
 }
 
 //конец обновления параметров работы
+
+//начало обновления спецификации
+function updateJobParams(req, id, col, cb){
+    oracledb.getConnection(
+        {
+            user: "tops",
+            password: "tops",
+            connectString: "(DESCRIPTION =(ADDRESS_LIST = (ADDRESS = (PROTOCOL = TCP)(HOST = webdb.terracorp.ru)(PORT = 1521)))(CONNECT_DATA = (SID = WEBDB)(SERVER = DEDICATED)))"
+        },
+        function (err, connection) {
+            if (err) {
+                console.error(err.message);
+                return;
+            }
+            req = JSON.parse(req);
+            console.log(req, id,col);
+            var query = [];
+            query.push("UPDATE " + col);
+            query.push("SET ");
+            query.push("itemid = :itemid,");
+            query.push("jobprice = :jobprice,");
+            query.push("jobuoms_id = :jobuomsId");
+            query.push(" WHERE jobid= :jobid");
+            query = query.join(' ');
+            console.log(query);
+            connection.execute(
+                query, {
+                    jobid: id,
+                    jobdesc: req[0],
+                    jobprice:  +req[1],
+                    jobuomsId:  +req[2]
+                }, {autoCommit: true},
+                function (err, result) {
+                    if (err) {
+                        console.log(err);
+                        doRelease(connection);
+                        cb(err);
+                    }
+                    console.log(result);
+                    doRelease(connection);
+                    cb(result);
+                });
+        });
+}
+
+//конец обновления спецификации
 
 //Сохранение в таблицу jobparams
 function saveJobParams(req, col, cb){

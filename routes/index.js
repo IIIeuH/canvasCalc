@@ -40,6 +40,7 @@ router.post('/admin/uom/', ctrl.addUom);
 //обновление данных
 router.put('/admin/items', ctrl.updateItems);
 router.put('/admin/jobparams', ctrl.updateJobParams);
+router.put('/admin/bomparams', ctrl.updateBomParams);
 
 //дулаение итема
 router.delete('/delete', ctrl.del);

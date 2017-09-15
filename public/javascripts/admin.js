@@ -68,6 +68,7 @@ $(function(){
         });
     });
 
+
     //Обработка клика на кнопку добавить
     $('#addItem').click(function(){
         $('.addItemtable').append(
@@ -305,7 +306,14 @@ $(function(){
             });
         });
     });
-
+    $.each($('tr').find('td.bomtype'), function(){
+        if($(this).text() === '0'){
+            $(this).text('Клей для стыков');
+        }
+        if($(this).text() === '1'){
+            $(this).text('Клей для профилей');
+        }
+    });
     $('#addItemJob').click(function(){
 
         $('.addItemtable').append(
@@ -449,6 +457,7 @@ $(function(){
     var selectItem;
     var string;
     var selectUoms;
+
     var items = $.ajax({
         url: "/items",
         type: 'GET',
@@ -464,6 +473,20 @@ $(function(){
         error: function (err) {
             console.log(err);
         }
+    });
+
+
+    items.then(function(data){
+        console.log(data);
+        $.each($('tr').find('td.nomen'), function(){
+            var that = $(this);
+            data.forEach(function(item){
+                console.log(that.text(), item.ITEM_TYPES_ID);
+                if(that.text() == item.ITEMID){
+                    that.text(item.ITEMNAME);
+                }
+            });
+        });
     });
 
     items.then(function(data){
@@ -613,12 +636,12 @@ $(function(){
                 $(this).append('<select class="form-control"><option></option><option value="0">Клей для стыков</option><option value="1">Клей для профилей<option></select>');
                 $('select :contains('+text[i]+')').first().attr("selected", "selected");
             }
-            if($(this).is('.specOne')){
-                console.log(text[i]);
-                $(this).empty();
-                $(this).append(selectUoms);
-                $('select :contains('+text[i]+')').first().attr("selected", "selected");
-            }
+            // if($(this).is('.specOne')){
+            //     console.log(text[i]);
+            //     $(this).empty();
+            //     $(this).append(selectUoms);
+            //     $('select :contains('+text[i]+')').last().attr("selected", "selected");
+            // }
             if($(this).is('.specTwo')){
                 console.log(text[i]);
                 $(this).empty();

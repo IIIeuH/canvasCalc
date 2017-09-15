@@ -611,7 +611,7 @@ $(function(){
         }
 
         if($('#profile-option').val() === '0'){
-            materialQty = ( (profileLenght * +$('#profile-heigth').val()) + (width * height) )/1000000 * 1.5
+            materialQty = ( (profileLenght * +$('#profile-heigth').val()) + (width * height) )/1000000 * 1.5;
             materialQty = materialQty.toFixed(2);
         }else{
             materialQty =( (width * height) + (profileLenght * +$('#profile-heigth').val()) + ($('#gluing-width').val() * profileLenght )) / 1000000 * 1.5
@@ -621,10 +621,9 @@ $(function(){
         var gidrorezCutQty;
         var gidrorezCutQty45;
 
-        gidrorezCutQty= (perimeter - (sideA + sideB+ sideC+ sideD))  + (glueingPerimeter / 2) - adjacentCut*2;
+        gidrorezCutQty= ((perimeter - (sideA + sideB+ sideC+ sideD))  + (glueingPerimeter / 2) - adjacentCut*2)/1000;
 
-
-        gidrorezCutQty45 = (sideA + sideB+ sideC+ sideD) + (glueingPerimeter / 2) + +adjacentCut*2;
+        gidrorezCutQty45 = ((sideA + sideB+ sideC+ sideD) + (glueingPerimeter / 2) + +adjacentCut*2)/1000;
         if($('#profile-option').val() === '1'){
             gidrorezCutQty += (+$('#gluing-width').val() + +profileLenght ) * 2;
             gidrorezCutQty45 += +profileLenght * 2;
