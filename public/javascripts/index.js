@@ -93,16 +93,70 @@ window.onload = function(){
 };
 
 function start(){
-    ctx.fillStyle="#90ab6e";
     heigth = 600;
     width = 1200;
-    ctx.strokeStyle = "#000000";
-    ctx.font = "25px Helvetica";
-    ctx.strokeText("A", +width/2, 28);
-    ctx.strokeText("B", +width+30, +heigth/2);
-    ctx.strokeText("C", +width/2, +heigth + 60);
-    ctx.strokeText("D", 0, +heigth/2);
+    ctx.beginPath();
+    ctx.save();
+    ctx.fillStyle = "#ff307c";
+    ctx.font = "bold 30px Helvetica";
+    ctx.fillText("A", +width/2, 28);
+    ctx.fillText("B", +width+30, +heigth/2);
+    ctx.fillText("C", +width/2, +heigth + 60);
+    ctx.fillText("D", 0, +heigth/2);
+    ctx.restore();
+
+    //нижняя состема координат
+    ctx.beginPath();
+    ctx.save();
+    ctx.strokeStyle="#078eff";
+    ctx.lineWidth = 1;
+    ctx.moveTo(0, heigth+ 30);
+    ctx.lineTo(width + 70, heigth+30);
+    ctx.stroke();
+    ctx.restore();
+    ctx.closePath();
+
+    //верхняя состема координат
+    ctx.beginPath();
+    ctx.save();
+    ctx.strokeStyle="#078eff";
+    ctx.lineWidth = 1;
+    ctx.moveTo(30, heigth + 60);
+    ctx.lineTo(30, 0);
+    ctx.stroke();
+    ctx.restore();
+    ctx.closePath();
+
+    //надпись длины и ширины
+    ctx.beginPath();
+    ctx.save();
+    ctx.fillStyle = "#000";
+    ctx.font = "bold 15px Helvetica";
+    ctx.lineWidth = 1;
+    ctx.fillText($('#width').val() + " мм.", width, heigth + 45);
+    ctx.stroke();
+    ctx.restore();
+    ctx.closePath();
+
+    ctx.beginPath();
+    ctx.save();
+    ctx.fillStyle = "#000";
+    ctx.font = "bold 15px Helvetica";
+    ctx.lineWidth = 1;
+    ctx.translate(25, 60);
+    ctx.rotate(270*Math.PI/180);
+    ctx.fillText($('#depth').val() + " мм.", 0, 0);
+    ctx.stroke();
+    ctx.restore();
+    ctx.closePath();
+
+    ctx.beginPath();
+    ctx.save();
+    ctx.fillStyle="#cbcbcb";
     ctx.fillRect(30, 30, width, heigth);
+    ctx.fillStyle = "#000000";
+    ctx.strokeRect(30, 30, width, heigth);
+    ctx.restore();
 }
 
 function draw(){
@@ -121,7 +175,6 @@ function draw(){
         }
 
         procX = count * 100 / w;
-        console.log(procX);
         h = heigth;
         heigth = ((100-procX) * heigth)/100;
         procY = heigth * 100 / h;
@@ -135,39 +188,116 @@ function draw(){
         width = ((100-procX) * width)/100;
         procX = width * 100 / h;
     }
-    console.log(' ПроцентX:' + procX,' ПроцентY:' + procY, width, heigth);
-    ctx.strokeStyle = '#000';
-    ctx.lineWidth = 1;
-    ctx.fillStyle = '#90ab6e';
-    ctx.translate(0, 0);
-    ctx.strokeText("A", width/2, 28);
-    ctx.strokeText("B", width+30, heigth/2);
-    ctx.strokeText("C", width/2, heigth+60);
-    ctx.strokeText("D", 0, heigth/2);
-    ctx.fillRect(30, 30, width, heigth);
+
+    //нижняя состема координат
     ctx.beginPath();
+    ctx.save();
+    ctx.strokeStyle="#078eff";
+    ctx.lineWidth = 1;
+    ctx.moveTo(0, heigth+ 30);
+    ctx.lineTo(width + 70, heigth+30);
+    ctx.stroke();
+    ctx.restore();
+    ctx.closePath();
+
+    //верхняя состема координат
+    ctx.beginPath();
+    ctx.save();
+    ctx.strokeStyle="#078eff";
+    ctx.lineWidth = 1;
+    ctx.moveTo(30, heigth + 60);
+    ctx.lineTo(30, 0);
+    ctx.stroke();
+    ctx.restore();
+    ctx.closePath();
+
+    //надпись длины и ширины
+    ctx.beginPath();
+    ctx.save();
+    ctx.fillStyle = "#000";
+    ctx.font = "bold 15px Helvetica";
+    ctx.lineWidth = 1;
+    ctx.fillText($('#width').val() + " мм.", width, heigth + 45);
+    ctx.stroke();
+    ctx.restore();
+    ctx.closePath();
+
+    ctx.beginPath();
+    ctx.save();
+    ctx.fillStyle = "#000";
+    ctx.font = "bold 15px Helvetica";
+    ctx.lineWidth = 1;
+    ctx.translate(25, 60);
+    ctx.rotate(270*Math.PI/180);
+    ctx.fillText($('#depth').val() + " мм.", 0, 0);
+    ctx.stroke();
+    ctx.restore();
+    ctx.closePath();
+
+    ctx.beginPath();
+    ctx.save();
+    ctx.fillStyle="#cbcbcb";
+    ctx.fillRect(30, 30, width, heigth);
+    ctx.fillStyle = "#000000";
+    ctx.strokeRect(30, 30, width, heigth);
+    ctx.restore();
+
+    ctx.beginPath();
+    ctx.save();
+    ctx.fillStyle = "#ff307c";
+    ctx.font = "bold 30px Helvetica";
+    ctx.fillText("A", +width/2, 28);
+    ctx.fillText("B", +width+30, +heigth/2);
+    ctx.fillText("C", +width/2, +heigth + 60);
+    ctx.fillText("D", 0, +heigth/2);
+    ctx.restore();
+    ctx.closePath();
+
+    ctx.beginPath();
+    ctx.save();
+    ctx.fillStyle="#cbcbcb";
+    ctx.fillRect(30, 30, width, heigth);
+    ctx.fillStyle = "#000000";
+    ctx.strokeRect(30, 30, width, heigth);
+    ctx.closePath();
     var x = +document.getElementById('splice1').value || 0;
     var y = +document.getElementById('splice2').value || 0;
     if(x > 0){
         procX = x * 100 / w;
-        console.log(procX);
         x = Math.round(procX * width / 100);
-        console.log('X',x);
-        ctx.beginPath();
         ctx.strokeStyle="#000000";
         ctx.lineWidth = 1;
-        ctx.moveTo(x+30,30);
-        ctx.lineTo(x+30,heigth+30);
+        ctx.moveTo(x+30, 30);
+        ctx.lineTo(x+30,heigth + 60);
+        ctx.moveTo(30, heigth + 45);
+        ctx.lineTo(x+30,heigth + 45);
+        ctx.fillStyle="#000000";
+        ctx.font = "italic 11pt Arial";
+        ctx.fillStyle = "#078eff";
+        ctx.fillText("стык 1 по X", (x-30)/2, heigth + 43);
         ctx.stroke();
     }
     if(y > 0){
         procY = y * 100 / h;
+        var n = y;
         y = Math.round(procY * heigth / 100);
+        y = Math.round(y * 100)/heigth;
+        y = 100 - y;
+        y = Math.round((y*heigth)/100);
         ctx.beginPath();
         ctx.strokeStyle="#000000";
         ctx.lineWidth = 1;
-        ctx.moveTo(30,y+30);
+        ctx.moveTo(0,y+30);
         ctx.lineTo(width+30, y+30);
+        ctx.moveTo(15, heigth + 30);
+        ctx.lineTo(15, y + 30);
+        ctx.save();
+        ctx.translate(13, (heigth+70) - n/2);
+        ctx.rotate(270*Math.PI/180);
+        ctx.font = "italic 11pt Arial";
+        ctx.fillStyle = "#078eff";
+        ctx.fillText("cтык 2 по Y", 0, 0);
+        ctx.restore();
         ctx.stroke();
     }
     if(document.querySelector('#A').checked){
@@ -210,9 +340,13 @@ function draw(){
         procY = coordY * 100 / h;
         coordX = Math.round(procX * width / 100);
         coordY = Math.round(procY * heigth / 100);
+        //Изменение системы координат
+        coordY = Math.round(coordY * 100)/heigth;
+        coordY = 100 - coordY;
+        coordY = Math.round((coordY*heigth)/100);
+
         var proc = heigth * 100 / h;
         diametr = Math.round(proc * diametr / 100);
-        console.log(proc, diametr/2);
         ctx.save();
         ctx.beginPath();
         ctx.arc(+coordX+30, +coordY+30, diametr/2, 0, 2*Math.PI, true);
@@ -223,6 +357,16 @@ function draw(){
         ctx.stroke();
         ctx.restore();
         ctx.closePath();
+        //линии из центра
+        ctx.beginPath();
+        ctx.fillStyle = '#fff';
+        ctx.lineWidth = 0.7;
+        ctx.moveTo(coordX + 30,coordY + 30);
+        ctx.lineTo(30, coordY + 30);
+        ctx.moveTo(coordX + 30,coordY + 30);
+        ctx.lineTo(coordX + 30, heigth + 30);
+        ctx.stroke();
+
     }
     if(document.querySelector('#moi-form').value === '2'){
         var coordX = +document.querySelector('#coordinatesX').value;
@@ -233,6 +377,11 @@ function draw(){
         procY = coordY * 100 / h;
         coordX = Math.round(procX * width / 100);
         coordY = Math.round(procY * heigth / 100);
+        //Изменение системы координат
+        coordY = Math.round(coordY * 100)/heigth;
+        coordY = 100 - coordY;
+        coordY = Math.round((coordY*heigth)/100);
+
         procX = sideA * 100 / w;
         procY = sideB * 100 / h;
         sideA = Math.round(procX * width / 100);
@@ -253,6 +402,11 @@ function draw(){
         procY = coordY * 100 / h;
         coordX = Math.round(procX * width / 100);
         coordY = Math.round(procY * heigth / 100);
+        //Изменение системы координат
+        coordY = Math.round(coordY * 100)/heigth;
+        coordY = 100 - coordY;
+        coordY = Math.round((coordY*heigth)/100);
+
         procX = lots * 100 / w;
         procY = sal * 100 / h;
         lots = Math.round(procX * width / 100);
@@ -280,6 +434,11 @@ function draw(){
             procY = inputY * 100 / h;
             inputX = Math.round(procX * width / 100);
             inputY = Math.round(procY * heigth / 100);
+            //Изменение системы координат
+            inputY = Math.round(inputY * 100)/heigth;
+            inputY = 100 - inputY;
+            inputY = Math.round((inputY*heigth)/100);
+
             var proc = heigth * 100 / h;
             inputD = Math.round(proc * inputD / 100);
             ctx.save();
@@ -292,9 +451,19 @@ function draw(){
             ctx.stroke();
             ctx.restore();
             ctx.closePath();
+            //линии из центра
+            ctx.beginPath();
+            ctx.fillStyle = '#fff';
+            ctx.lineWidth = 0.7;
+            ctx.moveTo(inputX + 30,inputY + 30);
+            ctx.lineTo(30, inputY + 30);
+            ctx.moveTo(inputX + 30,inputY + 30);
+            ctx.lineTo(inputX + 30, heigth + 30);
+            ctx.stroke();
         });
     }
 }
+
 var count;
 function addDop(){
     var dopChild = $('#dopChild');
@@ -596,7 +765,7 @@ $(function(){
         if(sideD){
             profileLenght += +height;
         }
-        var glueingPerimeter = profileLenght + +$('#profile-heigth').val();
+        var glueingPerimeter = (profileLenght + +$('#profile-heigth').val()) * 2;
         if(sideA && sideB){
             adjacentCut += +$('#profile-heigth').val()
         }
@@ -621,20 +790,33 @@ $(function(){
         var gidrorezCutQty;
         var gidrorezCutQty45;
 
-        gidrorezCutQty= ((perimeter - (sideA + sideB+ sideC+ sideD))  + (glueingPerimeter / 2) - adjacentCut*2)/1000;
+        gidrorezCutQty= 0;
+        gidrorezCutQty += (perimeter - (+sideA + +sideB + +sideC + +sideD));
+        console.log('1', gidrorezCutQty);
+        gidrorezCutQty += (glueingPerimeter / 2);
+        console.log('2', gidrorezCutQty);
+        gidrorezCutQty -= (adjacentCut * 2);
+        console.log('3', gidrorezCutQty);
 
-        gidrorezCutQty45 = ((sideA + sideB+ sideC+ sideD) + (glueingPerimeter / 2) + +adjacentCut*2)/1000;
+        console.log('Периметр',perimeter, (+sideA + +sideB + +sideC + +sideD),(glueingPerimeter / 2),(adjacentCut * 2), gidrorezCutQty);
+        gidrorezCutQty45 = ((sideA + sideB+ sideC+ sideD) + (glueingPerimeter / 2) + +adjacentCut*2);
         if($('#profile-option').val() === '1'){
-            gidrorezCutQty += (+$('#gluing-width').val() + +profileLenght ) * 2;
+            gidrorezCutQty += (+$('#gluing-width').val() + +profileLenght );
             gidrorezCutQty45 += +profileLenght * 2;
+            console.log('после периметра',gidrorezCutQty);
         }
         $('.last').each(function(){
             var D = $(this).find('.inputD ').val();
-            gidrorezCutQty += 2 * 3.14 * (D/2);
+            console.log('До расчета отверстий',gidrorezCutQty);
+            gidrorezCutQty += 2 * Math.PI * (+D/2);
+            console.log('ОТверстия', gidrorezCutQty)
         });
 
         if($('#moi-form').val() === '1'){
-            gidrorezCutQty += (2 * 3.14);
+            var D = $('#diameter').val();
+            console.log(D);
+            gidrorezCutQty += (2 * Math.PI * (+D/2));
+            console.log('Мойка', gidrorezCutQty)
         }
 
         if($('#moi-form').val() === '2'){
@@ -649,10 +831,14 @@ $(function(){
             '<div>Периметр столешницы: perimeter = '+ perimeter +'</div>'+
             '<div>Длина профиля: profileLenght = '+ profileLenght +'</div>'+
             '<div>Площадь материала: materialQty = '+ materialQty +'</div>' +
-            '<div>gidrorezCutQty = '+ gidrorezCutQty +'</div>' +
-            '<div>gidrorezCutQty45 = '+ gidrorezCutQty45 +'</div>'
+            '<div>gidrorezCutQty = '+ gidrorezCutQty/1000 +'</div>' +
+            '<div>gidrorezCutQty45 = '+ gidrorezCutQty45/1000 +'</div>' +
+            '<div>glueingPerimeter = '+ glueingPerimeter +'</div>' +
+            '<div>adjacentCut = '+ adjacentCut +'</div>'
         );
 
+        gidrorezCutQty = gidrorezCutQty/1000;
+        gidrorezCutQty45 = gidrorezCutQty45/1000;
 
         var _BomParams = $.ajax({
             url: '/selectbomparams',
@@ -723,7 +909,7 @@ $(function(){
                 }
             });
 
-            profileGlueQty =( metProfileQty * bomTypeKley.ITEMCONSUMPQTY  / bomTypeKley.ITEMCONSUMPERQTY) / 1000;
+            profileGlueQty = (+metProfileQty * +bomTypeKley.ITEMCONSUMPQTY  / +bomTypeKley.ITEMCONSUMPERQTY) / 1000000;
 
             $('.parametr').append(
                 '<div>Количество клея для профилей: profileGlueQty = '+ profileGlueQty +'</div>'
@@ -790,7 +976,7 @@ $(function(){
 
                     item.forEach(function (data) {
                         if (data.JOBID === 5) {
-                            assemCost = data.JOBPRICE * profileLenght;
+                            assemCost = data.JOBPRICE * profileLenght/1000;
                         }
 
                     });
@@ -800,18 +986,17 @@ $(function(){
                             jobParams= data;
                         }
                     });
-
-                    if($('#moi-form').val() === '1'){
-                        console.log(jobParams.JOBPRICE );
-                        lowerAssemCost = jobParams.JOBPRICE * 2 * Math.PI * (+$('#diameter').val() / 2);
+                    lowerAssemCost = 0;
+                    if($('#moi-form').val() === '1' && $('input[name=bottomMounting]').prop("checked")){
+                        lowerAssemCost = jobParams.JOBPRICE * (2 * Math.PI * (+$('#diameter').val() / 2) / 1000) ;
                     }
 
-                    if($('#moi-form').val() === '2'){
-                        lowerAssemCost = jobParams.JOBPRICE * (+$('#side-a').val() + +$('#side-b').val())*2;
+                    if($('#moi-form').val() === '2' && $('input[name=bottomMounting]').prop("checked")){
+                        lowerAssemCost = jobParams.JOBPRICE * ((+$('#side-a').val() + +$('#side-b').val()) * 2 / 1000);
                     }
 
-                    if($('#moi-form').val() === '3'){
-                        lowerAssemCost = jobParams.JOBPRICE * Math.PI * (+$('$lots').val() + +$('#sal').val());
+                    if($('#moi-form').val() === '3' && $('input[name=bottomMounting]').prop("checked")){
+                        lowerAssemCost = jobParams.JOBPRICE * Math.PI * ((+$('#lots').val() + +$('#sal').val()) / 1000);
                     }
 
 
