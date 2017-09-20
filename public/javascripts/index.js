@@ -265,10 +265,33 @@ function draw(){
     if(x > 0){
         procX = x * 100 / w;
         x = Math.round(procX * width / 100);
-        ctx.strokeStyle="#000000";
-        ctx.lineWidth = 1;
-        ctx.moveTo(x+30, 30);
-        ctx.lineTo(x+30,heigth + 60);
+        var h = 0;
+        for(var i = 1; i < heigth + 60; i++){
+            if((h+5)+30 < heigth + 30){
+                ctx.beginPath();
+                ctx.save();
+                ctx.strokeStyle="#000000";
+                ctx.lineWidth = 0.5;
+                ctx.moveTo(x+30, h+30);
+                ctx.lineTo(x+30, (h+5)+30);
+                ctx.stroke();
+                console.log(h);
+                ctx.restore();
+                ctx.closePath();
+                h += 10;
+            }else if((h+3)+30 < heigth + 60){
+                ctx.beginPath();
+                ctx.save();
+                ctx.strokeStyle="#078eff";
+                ctx.lineWidth = 1;
+                ctx.moveTo(x+30, h+30);
+                ctx.lineTo(x+30, (h+5)+30);
+                ctx.stroke();
+                ctx.restore();
+                ctx.closePath();
+                h += 5;
+            }
+        }
         ctx.moveTo(30, heigth + 45);
         ctx.lineTo(x+30,heigth + 45);
         ctx.fillStyle="#000000";
@@ -284,11 +307,26 @@ function draw(){
         y = Math.round(y * 100)/heigth;
         y = 100 - y;
         y = Math.round((y*heigth)/100);
-        ctx.beginPath();
-        ctx.strokeStyle="#000000";
-        ctx.lineWidth = 1;
-        ctx.moveTo(0,y+30);
-        ctx.lineTo(width+30, y+30);
+        var h = 0;
+        for(var i = 1; i < width+30; i++) {
+            if ((h + 5) + 30 < width+60) {
+                ctx.beginPath();
+                ctx.strokeStyle="#000000";
+                ctx.lineWidth = 1;
+                ctx.moveTo(h, y+30);
+                ctx.lineTo(h+5, y+30);
+                ctx.stroke();
+                ctx.closePath();
+                h += 10;
+            }
+            ctx.beginPath();
+            ctx.strokeStyle="#078eff";
+            ctx.lineWidth = 1;
+            ctx.moveTo(0, y+30);
+            ctx.lineTo(30, y+30);
+            ctx.stroke();
+            ctx.closePath();
+        }
         ctx.moveTo(15, heigth + 30);
         ctx.lineTo(15, y + 30);
         ctx.save();
@@ -340,6 +378,7 @@ function draw(){
         procY = coordY * 100 / h;
         coordX = Math.round(procX * width / 100);
         coordY = Math.round(procY * heigth / 100);
+        var t = coordY;
         //Изменение системы координат
         coordY = Math.round(coordY * 100)/heigth;
         coordY = 100 - coordY;
@@ -358,15 +397,34 @@ function draw(){
         ctx.restore();
         ctx.closePath();
         //линии из центра
-        ctx.beginPath();
-        ctx.fillStyle = '#fff';
-        ctx.lineWidth = 0.7;
-        ctx.moveTo(coordX + 30,coordY + 30);
-        ctx.lineTo(30, coordY + 30);
-        ctx.moveTo(coordX + 30,coordY + 30);
-        ctx.lineTo(coordX + 30, heigth + 30);
-        ctx.stroke();
+        var h = 0;
+        for(var i = 1; i < width+30; i++) {
+            if(h + 30 < coordX + 30){
+                ctx.beginPath();
+                ctx.strokeStyle = '#000';
+                ctx.lineWidth = 1;
+                ctx.moveTo(h + 30, coordY + 30);
+                ctx.lineTo((h +3) + 30, coordY + 30);
+                ctx.stroke();
+                ctx.closePath();
+                h += 6;
 
+            }
+        }
+        h = 0;
+        for(var i = 1; i < width+30; i++) {
+            if(h + 3 <= t){
+                ctx.beginPath();
+                ctx.strokeStyle = '#000';
+                ctx.lineWidth = 1;
+                ctx.moveTo(coordX + 30, heigth + 30 - h);
+                ctx.lineTo(coordX + 30, heigth + 30 - (h + 3));
+                ctx.stroke();
+                console.log(h, coordY);
+                ctx.closePath();
+                h += 6;
+            }
+        }
     }
     if(document.querySelector('#moi-form').value === '2'){
         var coordX = +document.querySelector('#coordinatesX').value;
@@ -377,6 +435,7 @@ function draw(){
         procY = coordY * 100 / h;
         coordX = Math.round(procX * width / 100);
         coordY = Math.round(procY * heigth / 100);
+        var t = coordY;
         //Изменение системы координат
         coordY = Math.round(coordY * 100)/heigth;
         coordY = 100 - coordY;
@@ -392,6 +451,37 @@ function draw(){
         ctx.fillRect(+coordX + 30 -(sideA / 2), +coordY + 30 -(sideB / 2), sideA, sideB);
         ctx.strokeRect(+coordX + 30 -(sideA / 2), +coordY + 30 -(sideB / 2), sideA, sideB);
 
+        //линии из центра
+        var h = 0;
+        for(var i = 1; i < width+30; i++) {
+            if(h + 30 < coordX + 30){
+                ctx.beginPath();
+                ctx.strokeStyle = '#000';
+                ctx.lineWidth = 1;
+                ctx.moveTo(h + 30, coordY + 30);
+                ctx.lineTo((h +3) + 30, coordY + 30);
+                ctx.stroke();
+                ctx.closePath();
+                h += 6;
+
+            }
+        }
+        h = 0;
+        for(var i = 1; i < width+30; i++) {
+            if(h + 3 <= t){
+                ctx.beginPath();
+                ctx.strokeStyle = '#000';
+                ctx.lineWidth = 1;
+                ctx.moveTo(coordX + 30, heigth + 30 - h);
+                ctx.lineTo(coordX + 30, heigth + 30 - (h + 3));
+                ctx.stroke();
+                console.log(h, coordY);
+                ctx.closePath();
+                h += 6;
+            }
+        }
+
+
     }
     if(document.querySelector('#moi-form').value === '3'){
         var coordX = +document.querySelector('#coordinatesX').value;
@@ -402,6 +492,7 @@ function draw(){
         procY = coordY * 100 / h;
         coordX = Math.round(procX * width / 100);
         coordY = Math.round(procY * heigth / 100);
+        var t = coordY;
         //Изменение системы координат
         coordY = Math.round(coordY * 100)/heigth;
         coordY = 100 - coordY;
@@ -423,6 +514,37 @@ function draw(){
         ctx.stroke();
         ctx.restore();
         ctx.closePath();
+
+        //линии из центра
+        var h = 0;
+        for(var i = 1; i < width+30; i++) {
+            if(h + 30 < coordX + 30){
+                ctx.beginPath();
+                ctx.strokeStyle = '#000';
+                ctx.lineWidth = 1;
+                ctx.moveTo(h + 30, coordY + 30);
+                ctx.lineTo((h +3) + 30, coordY + 30);
+                ctx.stroke();
+                ctx.closePath();
+                h += 6;
+
+            }
+        }
+        h = 0;
+        for(var i = 1; i < width+30; i++) {
+            if(h + 3 <= t){
+                ctx.beginPath();
+                ctx.strokeStyle = '#000';
+                ctx.lineWidth = 1;
+                ctx.moveTo(coordX + 30, heigth + 30 - h);
+                ctx.lineTo(coordX + 30, heigth + 30 - (h + 3));
+                ctx.stroke();
+                console.log(h, coordY);
+                ctx.closePath();
+                h += 6;
+            }
+        }
+
     }
     if(document.querySelectorAll('.last').length !== 0){
         var mass = document.querySelectorAll('.last');
@@ -434,6 +556,7 @@ function draw(){
             procY = inputY * 100 / h;
             inputX = Math.round(procX * width / 100);
             inputY = Math.round(procY * heigth / 100);
+            var t = inputY;
             //Изменение системы координат
             inputY = Math.round(inputY * 100)/heigth;
             inputY = 100 - inputY;
@@ -451,15 +574,36 @@ function draw(){
             ctx.stroke();
             ctx.restore();
             ctx.closePath();
+
             //линии из центра
-            ctx.beginPath();
-            ctx.fillStyle = '#fff';
-            ctx.lineWidth = 0.7;
-            ctx.moveTo(inputX + 30,inputY + 30);
-            ctx.lineTo(30, inputY + 30);
-            ctx.moveTo(inputX + 30,inputY + 30);
-            ctx.lineTo(inputX + 30, heigth + 30);
-            ctx.stroke();
+            var he = 0;
+            for(var i = 1; i < width+30; i++) {
+                if(he + 30 < inputX + 30){
+                    console.log(123);
+                    ctx.beginPath();
+                    ctx.strokeStyle = '#000';
+                    ctx.lineWidth = 1;
+                    ctx.moveTo(he + 30, inputY + 30);
+                    ctx.lineTo((he +3) + 30, inputY + 30);
+                    ctx.stroke();
+                    ctx.closePath();
+                    he += 6;
+
+                }
+            }
+            he = 0;
+            for(var i = 1; i < width+30; i++) {
+                if(he + 3 <= t){
+                    ctx.beginPath();
+                    ctx.strokeStyle = '#000';
+                    ctx.lineWidth = 1;
+                    ctx.moveTo(inputX + 30, heigth + 30 - he);
+                    ctx.lineTo(inputX + 30, heigth + 30 - (he + 3));
+                    ctx.stroke();
+                    ctx.closePath();
+                    he += 6;
+                }
+            }
         });
     }
 }
