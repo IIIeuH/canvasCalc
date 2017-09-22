@@ -191,3 +191,7 @@ button.redactorBom{
   filter: alpha(opacity=20);
   opacity: .5;
 }
+.graph{
+  width: 100%;
+  height: auto;
+}

@@ -397,32 +397,32 @@ function draw(){
         ctx.restore();
         ctx.closePath();
         //линии из центра
-        var h = 0;
+        var he = 0;
         for(var i = 1; i < width+30; i++) {
-            if(h + 30 < coordX + 30){
+            if(he + 30 < coordX + 30){
                 ctx.beginPath();
                 ctx.strokeStyle = '#000';
                 ctx.lineWidth = 1;
-                ctx.moveTo(h + 30, coordY + 30);
-                ctx.lineTo((h +3) + 30, coordY + 30);
+                ctx.moveTo(he + 30, coordY + 30);
+                ctx.lineTo((he +3) + 30, coordY + 30);
                 ctx.stroke();
                 ctx.closePath();
-                h += 6;
+                he += 6;
 
             }
         }
-        h = 0;
+        he = 0;
         for(var i = 1; i < width+30; i++) {
-            if(h + 3 <= t){
+            if(he + 3 <= t){
                 ctx.beginPath();
                 ctx.strokeStyle = '#000';
                 ctx.lineWidth = 1;
-                ctx.moveTo(coordX + 30, heigth + 30 - h);
-                ctx.lineTo(coordX + 30, heigth + 30 - (h + 3));
+                ctx.moveTo(coordX + 30, heigth + 30 - he);
+                ctx.lineTo(coordX + 30, heigth + 30 - (he + 3));
                 ctx.stroke();
-                console.log(h, coordY);
+                console.log(he, coordY);
                 ctx.closePath();
-                h += 6;
+                he += 6;
             }
         }
     }
@@ -452,32 +452,32 @@ function draw(){
         ctx.strokeRect(+coordX + 30 -(sideA / 2), +coordY + 30 -(sideB / 2), sideA, sideB);
 
         //линии из центра
-        var h = 0;
+        var he = 0;
         for(var i = 1; i < width+30; i++) {
-            if(h + 30 < coordX + 30){
+            if(he + 30 < coordX + 30){
                 ctx.beginPath();
                 ctx.strokeStyle = '#000';
                 ctx.lineWidth = 1;
-                ctx.moveTo(h + 30, coordY + 30);
-                ctx.lineTo((h +3) + 30, coordY + 30);
+                ctx.moveTo(he + 30, coordY + 30);
+                ctx.lineTo((he +3) + 30, coordY + 30);
                 ctx.stroke();
                 ctx.closePath();
-                h += 6;
+                he += 6;
 
             }
         }
-        h = 0;
+        he = 0;
         for(var i = 1; i < width+30; i++) {
-            if(h + 3 <= t){
+            if(he + 3 <= t){
                 ctx.beginPath();
                 ctx.strokeStyle = '#000';
                 ctx.lineWidth = 1;
-                ctx.moveTo(coordX + 30, heigth + 30 - h);
-                ctx.lineTo(coordX + 30, heigth + 30 - (h + 3));
+                ctx.moveTo(coordX + 30, heigth + 30 - he);
+                ctx.lineTo(coordX + 30, heigth + 30 - (he + 3));
                 ctx.stroke();
-                console.log(h, coordY);
+                console.log(he, coordY);
                 ctx.closePath();
-                h += 6;
+                he += 6;
             }
         }
 
@@ -516,32 +516,32 @@ function draw(){
         ctx.closePath();
 
         //линии из центра
-        var h = 0;
+        var he = 0;
         for(var i = 1; i < width+30; i++) {
-            if(h + 30 < coordX + 30){
+            if(he + 30 < coordX + 30){
                 ctx.beginPath();
                 ctx.strokeStyle = '#000';
                 ctx.lineWidth = 1;
-                ctx.moveTo(h + 30, coordY + 30);
-                ctx.lineTo((h +3) + 30, coordY + 30);
+                ctx.moveTo(he + 30, coordY + 30);
+                ctx.lineTo((he +3) + 30, coordY + 30);
                 ctx.stroke();
                 ctx.closePath();
-                h += 6;
+                he += 6;
 
             }
         }
-        h = 0;
+        he = 0;
         for(var i = 1; i < width+30; i++) {
-            if(h + 3 <= t){
+            if(he + 3 <= t){
                 ctx.beginPath();
                 ctx.strokeStyle = '#000';
                 ctx.lineWidth = 1;
-                ctx.moveTo(coordX + 30, heigth + 30 - h);
-                ctx.lineTo(coordX + 30, heigth + 30 - (h + 3));
+                ctx.moveTo(coordX + 30, heigth + 30 - he);
+                ctx.lineTo(coordX + 30, heigth + 30 - (he + 3));
                 ctx.stroke();
-                console.log(h, coordY);
+                console.log(he, coordY);
                 ctx.closePath();
-                h += 6;
+                he += 6;
             }
         }
 
@@ -552,6 +552,7 @@ function draw(){
             var inputX = item.querySelector('.inputX').value;
             var inputY = item.querySelector('.inputY').value;
             var inputD = item.querySelector('.inputD').value;
+            console.log(inputX, inputY, inputD);
             procX = inputX * 100 / w;
             procY = inputY * 100 / h;
             inputX = Math.round(procX * width / 100);
@@ -564,6 +565,7 @@ function draw(){
 
             var proc = heigth * 100 / h;
             inputD = Math.round(proc * inputD / 100);
+            console.log(inputX, inputY, inputD);
             ctx.save();
             ctx.beginPath();
             ctx.arc(+inputX+30, +inputY+30, inputD/2, 0, 2*Math.PI, true);
@@ -588,7 +590,6 @@ function draw(){
                     ctx.stroke();
                     ctx.closePath();
                     he += 6;
-
                 }
             }
             he = 0;
@@ -909,7 +910,11 @@ $(function(){
         if(sideD){
             profileLenght += +height;
         }
-        var glueingPerimeter = (profileLenght + +$('#profile-heigth').val()) * 2;
+        if(profileLenght > 0){
+            var glueingPerimeter = (profileLenght + +$('#profile-heigth').val()) * 2;
+        }else{
+            var glueingPerimeter = 0;
+        }
         if(sideA && sideB){
             adjacentCut += +$('#profile-heigth').val()
         }
@@ -927,7 +932,7 @@ $(function(){
             materialQty = ( (profileLenght * +$('#profile-heigth').val()) + (width * height) )/1000000 * 1.5;
             materialQty = materialQty.toFixed(2);
         }else{
-            materialQty =( (width * height) + (profileLenght * +$('#profile-heigth').val()) + ($('#gluing-width').val() * profileLenght )) / 1000000 * 1.5
+            materialQty =( (width * height) + (profileLenght * +$('#profile-heigth').val()) + ($('#gluing-width').val() * profileLenght )) / 1000000 * 1.5;
             materialQty = materialQty.toFixed(2);
         }
 
@@ -936,18 +941,15 @@ $(function(){
 
         gidrorezCutQty= 0;
         gidrorezCutQty += (perimeter - (+sideA + +sideB + +sideC + +sideD));
-        console.log('1', gidrorezCutQty);
         gidrorezCutQty += (glueingPerimeter / 2);
-        console.log('2', gidrorezCutQty);
         gidrorezCutQty -= (adjacentCut * 2);
-        console.log('3', gidrorezCutQty);
 
-        console.log('Периметр',perimeter, (+sideA + +sideB + +sideC + +sideD),(glueingPerimeter / 2),(adjacentCut * 2), gidrorezCutQty);
         gidrorezCutQty45 = ((sideA + sideB+ sideC+ sideD) + (glueingPerimeter / 2) + +adjacentCut*2);
-        if($('#profile-option').val() === '1'){
+        if($('#profile-option').val() === '1' && profileLenght > 0){
             gidrorezCutQty += (+$('#gluing-width').val() + +profileLenght );
+            gidrorezCutQty += $('#gluing-width').val() * 2;
             gidrorezCutQty45 += +profileLenght * 2;
-            console.log('после периметра',gidrorezCutQty);
+            console.log('после периметра',gidrorezCutQty45);
         }
         $('.last').each(function(){
             var D = $(this).find('.inputD ').val();
@@ -975,8 +977,8 @@ $(function(){
             '<div>Периметр столешницы: perimeter = '+ perimeter +'</div>'+
             '<div>Длина профиля: profileLenght = '+ profileLenght +'</div>'+
             '<div>Площадь материала: materialQty = '+ materialQty +'</div>' +
-            '<div>gidrorezCutQty = '+ gidrorezCutQty/1000 +'</div>' +
-            '<div>gidrorezCutQty45 = '+ gidrorezCutQty45/1000 +'</div>' +
+            '<div>gidrorezCutQty = '+ gidrorezCutQty +'</div>' +
+            '<div>gidrorezCutQty45 = '+ gidrorezCutQty45 +'</div>' +
             '<div>glueingPerimeter = '+ glueingPerimeter +'</div>' +
             '<div>adjacentCut = '+ adjacentCut +'</div>'
         );
@@ -1039,13 +1041,14 @@ $(function(){
             });
 
             spliceGlueQty  = gidrorezCutQty45 / 2 * bomType.ITEMCONSUMPQTY / bomType.ITEMCONSUMPERQTY /1000;
+            spliceGlueQty.toFixed(3);
 
             $('.parametr').append(
-                '<div>Кличество стыкового клея: spliceGlueQty = '+ spliceGlueQty +'</div>'
+                '<div>Кличество стыкового клея: spliceGlueQty = '+ spliceGlueQty.toFixed(3) +'</div>'
 
             );
 
-            var metProfileQty  = +perimeter;
+            var metProfileQty  = +perimeter/2;
 
             data.forEach(function(item){
                 if(item.BOMTYPE === 1){
@@ -1054,9 +1057,10 @@ $(function(){
             });
 
             profileGlueQty = (+metProfileQty * +bomTypeKley.ITEMCONSUMPQTY  / +bomTypeKley.ITEMCONSUMPERQTY) / 1000000;
+            profileGlueQty.toFixed(3);
 
             $('.parametr').append(
-                '<div>Количество клея для профилей: profileGlueQty = '+ profileGlueQty +'</div>'
+                '<div>Количество клея для профилей: profileGlueQty = '+ profileGlueQty.toFixed(3) +'</div>'
             );
 
             var itemid = $('#material').val();
