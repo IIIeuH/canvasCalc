@@ -147,9 +147,9 @@ module.exports.add = function(req, res, next) {
                         console.error(err.message);
                         return;
                     }
-                    var query = "INSERT INTO contertops (width, heigth, section, joint_vertical, joint_horizontal, section_side, section_height, bottom_glue_width) VALUES (:width, :heigth, :section, :joint_vertical, :joint_horizontal, :section_side, :section_height, :bottom_glue_width)";
+                    var query = "INSERT INTO contertops (width, heigth, section, joint_vertical, joint_horizontal, comments, top_name, section_side, section_height, bottom_glue_width, price) VALUES (:width, :heigth, :section, :joint_vertical, :joint_horizontal, :comments, :top_name, :section_side, :section_height, :bottom_glue_width, :price)";
                     connection.execute(
-                        query, [req.body.width, req.body.heigth, req.body.section, req.body.joinVertical, req.body.joinHorizontal, req.body.sectionSide, req.body.sectionHeight, req.body.bottomGlueWidth], {autoCommit: true},
+                        query, [req.body.width, req.body.heigth, req.body.section, req.body.joinVertical, req.body.joinHorizontal, req.body.comments, req.body.name, req.body.sectionSide, req.body.sectionHeight, req.body.bottomGlueWidth, req.body.price], {autoCommit: true},
                         function (err, result) {
                             if (err) {
                                 doRelease(connection);

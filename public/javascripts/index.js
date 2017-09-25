@@ -15,42 +15,15 @@ window.onload = function(){
     }
     start();
     document.querySelector('#draw').onclick = function(){
+        $('.error').empty();
         var diametr = $('#diameter').val();
         var x = $('#coordinatesX').val();
         var y = $('#coordinatesY').val();
         var width = $('#width').val();
         var height = $('#depth').val();
-        if($('#splice1').val() > width){
-            Snackbar.show({
-                text: 'Стык 1 не может быть больше ширины',
-                textColor: '#d81616',
-                pos: 'top-center',
-                actionText: null
-            });
-        }else if($('#splice2').val() > height){
-            Snackbar.show({
-                text: 'Стык 2 не может быть больше высоты',
-                textColor: '#d81616',
-                pos: 'top-center',
-                actionText: null
-            });
-        }else if(+x && +y < 0){
-            Snackbar.show({
-                text: 'Координаты центра мойки не могут быть отрицательными',
-                textColor: '#d81616',
-                pos: 'top-center',
-                actionText: null
-            });
-        }else if(( +diametr + +x > +width ) || (+diametr + +y > +height) || +diametr + +x > 30){
-            console.log( +diametr + +x < 30);
-            Snackbar.show({
-                text: 'Координаты выходят за рамки',
-                textColor: '#d81616',
-                pos: 'top-center',
-                actionText: null
-            });
+        if(validateDrow() !== false){
+            draw();
         }
-        draw();
     };
     document.querySelector('#moi-form').onchange = function(){
         if(!document.querySelector('#moi-form').value){
@@ -91,6 +64,98 @@ window.onload = function(){
         }
     });
 };
+
+function validateDrow(){
+    var width = +$('#width').val();
+    var splice1 = +$('#splice1').val();
+    var height = +$('#depth').val();
+    var splice2 = +$('#splice2').val();
+    var flag = true;
+    //горизонтальный стык
+    if(splice1 > width){
+        $('.error').append(
+            '<div class="alert alert-danger">' +
+                '<a href="#" class="close" data-dismiss="alert" aria-label="close" title="close">×</a>' +
+                '<strong>Ошибка!</strong> Горизонтальный стык выходит за рамки!' +
+            '</div>'
+        );
+        flag =  false;
+    }else if(splice2 > height){
+        $('.error').append(
+            '<div class="alert alert-danger">' +
+            '<a href="#" class="close" data-dismiss="alert" aria-label="close" title="close">×</a>' +
+            '<strong>Ошибка!</strong> Вертикальный стык выходит за рамки!' +
+            '</div>'
+        );
+        flag =  false;
+    }
+
+    if($('#moi-form').val() === '1'){
+        var cordX = +$('#coordinatesX').val();
+        var cordY = +$('#coordinatesY').val();
+        var D = +$('#diameter').val();
+        if((cordX + D/2) > width || (cordY + D/2) > height || cordY < D/2){
+            $('.error').append(
+                '<div class="alert alert-danger">' +
+                '<a href="#" class="close" data-dismiss="alert" aria-label="close" title="close">×</a>' +
+                '<strong>Ошибка!</strong> Мойка выходит за рамки!' +
+                '</div>'
+            );
+            flag =  false;
+        }
+    }
+
+    if($('#moi-form').val() === '2'){
+        var cordX = +$('#coordinatesX').val();
+        var cordY = +$('#coordinatesY').val();
+        var sideA = +$('#side-a').val();
+        var sideB = +$('#side-b').val();
+        if((cordX + sideA/2) > width || (cordY + sideB/2) > height || cordY < sideB/2){
+            $('.error').append(
+                '<div class="alert alert-danger">' +
+                '<a href="#" class="close" data-dismiss="alert" aria-label="close" title="close">×</a>' +
+                '<strong>Ошибка!</strong> Мойка выходит за рамки!' +
+                '</div>'
+            );
+            flag =  false;
+        }
+    }
+
+
+    if($('#moi-form').val() === '3'){
+        var cordX = +$('#coordinatesX').val();
+        var cordY = +$('#coordinatesY').val();
+        var lots = +$('#lots').val();
+        var sal = +$('#sal').val();
+        if((cordX + lots) > width || (cordY + sal) > height || cordY < sal){
+            $('.error').append(
+                '<div class="alert alert-danger">' +
+                '<a href="#" class="close" data-dismiss="alert" aria-label="close" title="close">×</a>' +
+                '<strong>Ошибка!</strong> Мойка выходит за рамки!' +
+                '</div>'
+            );
+            flag =  false;
+        }
+    }
+    if(document.querySelectorAll('.last').length !== 0) {
+        var mass = document.querySelectorAll('.last');
+        mass.forEach(function (item) {
+            var inputX = +item.querySelector('.inputX').value;
+            var inputY = +item.querySelector('.inputY').value;
+            var inputD = +item.querySelector('.inputD').value;
+            if((inputX + inputD/2) > width || (inputY + inputD/2) > height || inputY < inputD/2){
+                $('.error').append(
+                    '<div class="alert alert-danger">' +
+                    '<a href="#" class="close" data-dismiss="alert" aria-label="close" title="close">×</a>' +
+                    '<strong>Ошибка!</strong> Доп. отверстие выходит за рамки!' +
+                    '</div>'
+                );
+                flag = false;
+            }
+        });
+    }
+    return flag;
+}
 
 function start(){
     heigth = 600;
@@ -265,20 +330,19 @@ function draw(){
     if(x > 0){
         procX = x * 100 / w;
         x = Math.round(procX * width / 100);
-        var h = 0;
+        var he = 0;
         for(var i = 1; i < heigth + 60; i++){
-            if((h+5)+30 < heigth + 30){
+            if((he+5)+30 < heigth + 30){
                 ctx.beginPath();
                 ctx.save();
                 ctx.strokeStyle="#000000";
                 ctx.lineWidth = 0.5;
-                ctx.moveTo(x+30, h+30);
-                ctx.lineTo(x+30, (h+5)+30);
+                ctx.moveTo(x+30, he+30);
+                ctx.lineTo(x+30, (he+5)+30);
                 ctx.stroke();
-                console.log(h);
                 ctx.restore();
                 ctx.closePath();
-                h += 10;
+                he += 10;
             }else if((h+3)+30 < heigth + 60){
                 ctx.beginPath();
                 ctx.save();
@@ -289,9 +353,11 @@ function draw(){
                 ctx.stroke();
                 ctx.restore();
                 ctx.closePath();
-                h += 5;
+                he += 5;
             }
         }
+        ctx.beginPath();
+        ctx.save();
         ctx.moveTo(30, heigth + 45);
         ctx.lineTo(x+30,heigth + 45);
         ctx.fillStyle="#000000";
@@ -299,6 +365,8 @@ function draw(){
         ctx.fillStyle = "#078eff";
         ctx.fillText("стык 1 по X", (x-30)/2, heigth + 43);
         ctx.stroke();
+        ctx.restore();
+        ctx.closePath();
     }
     if(y > 0){
         procY = y * 100 / h;
@@ -307,26 +375,32 @@ function draw(){
         y = Math.round(y * 100)/heigth;
         y = 100 - y;
         y = Math.round((y*heigth)/100);
-        var h = 0;
+        var he = 0;
         for(var i = 1; i < width+30; i++) {
-            if ((h + 5) + 30 < width+60) {
+            if ((he + 5) + 30 < width+60) {
                 ctx.beginPath();
+                ctx.save();
                 ctx.strokeStyle="#000000";
                 ctx.lineWidth = 1;
-                ctx.moveTo(h, y+30);
-                ctx.lineTo(h+5, y+30);
+                ctx.moveTo(he, y+30);
+                ctx.lineTo(he+5, y+30);
                 ctx.stroke();
+                ctx.restore();
                 ctx.closePath();
-                h += 10;
+                he += 10;
             }
             ctx.beginPath();
+            ctx.save();
             ctx.strokeStyle="#078eff";
             ctx.lineWidth = 1;
             ctx.moveTo(0, y+30);
             ctx.lineTo(30, y+30);
             ctx.stroke();
+            ctx.restore();
             ctx.closePath();
         }
+        ctx.beginPath();
+        ctx.save();
         ctx.moveTo(15, heigth + 30);
         ctx.lineTo(15, y + 30);
         ctx.save();
@@ -337,38 +411,52 @@ function draw(){
         ctx.fillText("cтык 2 по Y", 0, 0);
         ctx.restore();
         ctx.stroke();
+        ctx.restore();
+        ctx.closePath();
     }
     if(document.querySelector('#A').checked){
         ctx.beginPath();
+        ctx.save();
         ctx.lineWidth = 5;
         ctx.strokeStyle = 'rgba(0,0,0, 0.4)';
         ctx.moveTo(30, 33);
         ctx.lineTo(width+30, 33);
         ctx.stroke();
+        ctx.restore();
+        ctx.closePath();
     }
     if(document.querySelector('#B').checked){
         ctx.beginPath();
+        ctx.save();
         ctx.lineWidth = 5;
         ctx.strokeStyle = 'rgba(0,0,0, 0.4)';
         ctx.moveTo(width+27, 30);
         ctx.lineTo(width+27, heigth+30);
         ctx.stroke();
+        ctx.restore();
+        ctx.closePath();
     }
     if(document.querySelector('#C').checked){
         ctx.beginPath();
+        ctx.save();
         ctx.lineWidth = 5;
         ctx.strokeStyle = 'rgba(0,0,0, 0.4)';
         ctx.moveTo(30, heigth+27);
         ctx.lineTo(width+30, heigth+27);
         ctx.stroke();
+        ctx.restore();
+        ctx.closePath();
     }
     if(document.querySelector('#D').checked){
         ctx.beginPath();
+        ctx.save();
         ctx.lineWidth = 5;
         ctx.strokeStyle = 'rgba(0,0,0, 0.4)';
         ctx.moveTo(33, 30);
         ctx.lineTo(33, heigth+30);
         ctx.stroke();
+        ctx.restore();
+        ctx.closePath();
     }
     if(document.querySelector('#moi-form').value === '1'){
         var coordX = +document.querySelector('#coordinatesX').value;
@@ -420,7 +508,6 @@ function draw(){
                 ctx.moveTo(coordX + 30, heigth + 30 - he);
                 ctx.lineTo(coordX + 30, heigth + 30 - (he + 3));
                 ctx.stroke();
-                console.log(he, coordY);
                 ctx.closePath();
                 he += 6;
             }
@@ -475,7 +562,6 @@ function draw(){
                 ctx.moveTo(coordX + 30, heigth + 30 - he);
                 ctx.lineTo(coordX + 30, heigth + 30 - (he + 3));
                 ctx.stroke();
-                console.log(he, coordY);
                 ctx.closePath();
                 he += 6;
             }
@@ -539,7 +625,6 @@ function draw(){
                 ctx.moveTo(coordX + 30, heigth + 30 - he);
                 ctx.lineTo(coordX + 30, heigth + 30 - (he + 3));
                 ctx.stroke();
-                console.log(he, coordY);
                 ctx.closePath();
                 he += 6;
             }
@@ -552,7 +637,6 @@ function draw(){
             var inputX = item.querySelector('.inputX').value;
             var inputY = item.querySelector('.inputY').value;
             var inputD = item.querySelector('.inputD').value;
-            console.log(inputX, inputY, inputD);
             procX = inputX * 100 / w;
             procY = inputY * 100 / h;
             inputX = Math.round(procX * width / 100);
@@ -565,7 +649,6 @@ function draw(){
 
             var proc = heigth * 100 / h;
             inputD = Math.round(proc * inputD / 100);
-            console.log(inputX, inputY, inputD);
             ctx.save();
             ctx.beginPath();
             ctx.arc(+inputX+30, +inputY+30, inputD/2, 0, 2*Math.PI, true);
@@ -581,7 +664,6 @@ function draw(){
             var he = 0;
             for(var i = 1; i < width+30; i++) {
                 if(he + 30 < inputX + 30){
-                    console.log(123);
                     ctx.beginPath();
                     ctx.strokeStyle = '#000';
                     ctx.lineWidth = 1;
@@ -657,6 +739,8 @@ $(function(){
         });
 
         var data = {
+            name:               $('#topName').val(),
+            comments:           $('#comments').val(),
             width :             $('#width').val(),
             heigth :            $('#depth').val(),
             section :           $('#profile-option').val(),
@@ -673,13 +757,13 @@ $(function(){
             sideB:              $('#side-b').val(),
             lots:               $('#lots').val(),
             sal:                $('#sal').val(),
-            dop:                JSON.stringify(mas)
+            dop:                JSON.stringify(mas),
+            price:              $('.price h2').text()
         };
         data.sectionSide = '';
         $('input[name=sideProfile]:checked').each(function(){
             data.sectionSide += ($(this).val());
         });
-        console.log(data);
         $.ajax({
            url: '/',
            type: 'PUT',
@@ -828,7 +912,6 @@ $(function(){
 
         asyncData.then(function(Asdata){
             var side = data.SECTION_SIDE.split('');
-            console.log(side);
             $('#width').val(data.WIDTH);
             $('#depth').val(data.HEIGTH);
             $('#profile-option').val(data.SECTION).change();
@@ -840,7 +923,6 @@ $(function(){
             $('#splice1').val(data.JOINT_VERTICAL);
             $('#splice2').val(data.JOINT_HORIZONTAL);
             Asdata.forEach(function(item){
-                console.log(item);
                 if(item.BOTTOM_MOUNT == 1){
                     if(item.ADDON_TYPE_ID == 1){
                         $('#diameter').val(item.ADDON_A);
@@ -873,6 +955,16 @@ $(function(){
 //расчет
 $(function(){
     $('#calc').click(function(){
+        $('.error').empty();
+        if($('#material').val() === ''){
+            $('.error').append(
+                '<div class="alert alert-danger">' +
+                '<a href="#" class="close" data-dismiss="alert" aria-label="close" title="close">×</a>' +
+                '<strong>Ошибка!</strong> Вы не выбрали материал!' +
+                '</div>'
+            );
+            return false;
+        }
         $('.parametr').remove();
         $('#parametr').append('<h2 class="h2 parametr"></h2>');
         var sideA= 0, sideB= 0, sideC= 0, sideD= 0 ;
@@ -949,20 +1041,15 @@ $(function(){
             gidrorezCutQty += (+$('#gluing-width').val() + +profileLenght );
             gidrorezCutQty += $('#gluing-width').val() * 2;
             gidrorezCutQty45 += +profileLenght * 2;
-            console.log('после периметра',gidrorezCutQty45);
         }
         $('.last').each(function(){
             var D = $(this).find('.inputD ').val();
-            console.log('До расчета отверстий',gidrorezCutQty);
             gidrorezCutQty += 2 * Math.PI * (+D/2);
-            console.log('ОТверстия', gidrorezCutQty)
         });
 
         if($('#moi-form').val() === '1'){
             var D = $('#diameter').val();
-            console.log(D);
             gidrorezCutQty += (2 * Math.PI * (+D/2));
-            console.log('Мойка', gidrorezCutQty)
         }
 
         if($('#moi-form').val() === '2'){
@@ -1154,12 +1241,8 @@ $(function(){
                     );
 
                     countertopCost = Math.round(materialCost + profileGlueCost+ spliceGlueCost + profileCost + gidrorezCutCost  + lowerAssemCost);
-                    console.log(materialCost ,profileGlueCost, spliceGlueCost , profileCost, gidrorezCutCost  , lowerAssemCost);
 
-                    //console.log(sideA,sideB,sideC,sideD, profileLenght, perimeter, glueingPerimeter, adjacentCut, materialQty, 'gidrorezCutQty - ' + gidrorezCutQty, 'gidrorezCutQty45 - ' + gidrorezCutQty45);
-                    console.log('Итог = '+ countertopCost, gidrorezCutQty);
-
-                    $('.price h2').text('Итог = '+ countertopCost);
+                    $('.price h2').text(countertopCost);
 
                 })
 

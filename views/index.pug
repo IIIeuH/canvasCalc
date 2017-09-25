@@ -17,6 +17,9 @@ block content
               div(calss='physics-param')
                 h2.h2 Физические параметры
                 .input-group
+                  label(for='topName') Название
+                  input.form-control#topName
+                .input-group
                   label(for='material') Выбор материала
                   select.form-control#material
                 .input-group
@@ -41,6 +44,9 @@ block content
                     option(value='30') 30
                     option(value='40') 40
                     option(value='60') 60
+                .form-group
+                  label(for='comments') Комментарий
+                  textarea.form-control#comments(rows="5")
                 .input-group
                   label.pad Стороны профиля
                   label.checkbox-inline
@@ -119,9 +125,10 @@ block content
       .col-md-9.col-lg-9
         .graph
           canvas#canvas(width='1300', height='700')
+          .error
     .row
       .col-md-6
         .price
-          h2.h2
-      .col-md-6#parametr
-          h2.h2.parametr Список переменных
+          h2.h2 0
+      //.col-md-6#parametr
+      //    h2.h2.parametr Список переменных
