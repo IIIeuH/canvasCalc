@@ -783,3 +783,132 @@ $(function(){
 
 });
 //Конец Единицы измерения
+
+
+
+
+
+//Начало users
+
+$(function(){
+    var select;
+    var string;
+    var users;
+    var top_users = $.ajax({
+        url: "/location",
+        type: 'GET',
+        success: function(data){
+            users = data;
+            select = '<select class="form-control">' +
+                '<option></option>';
+            data.forEach(function (item) {
+                select += '<option value="'+ item.TOP_LOCATION_ID +'">'+ item.TOP_LOCATION_NAME +'</option>';
+            });
+            var select2 = '<select class="form-control"><option></option><option value="0">Обычный</option><option value="1">Администратор</option></select>';
+            select += '</select>';
+            selectItem = select;
+            string = '<tr class="str">' +
+                '<td>' +
+                '<div class="form-group">' +
+                select +
+                '</div>' +
+                '</td>' +
+                '<td>' +
+                '<div class="form-group">' +
+                select2+
+                '</div>' +
+                '</td>' +
+                '<td>' +
+                '<div class="form-group">' +
+                '<input type="text" class="form-control">' +
+                '</div>' +
+                '</td>' +
+                '<td>' +
+                '<div class="form-group">' +
+                '<input type="text" class="form-control">' +
+                '</div>' +
+                '</td>' +
+                '<td>' +
+                '<div class="form-group">' +
+                '<input type="text" class="form-control itemThin">' +
+                '</div>' +
+                '</td>' +
+                '</tr>';
+        },
+        error: function (err) {
+            console.log(err);
+        }
+    });
+    $('#addItemUsers').click(function(){
+
+        $('.addItemtable').append(
+            '<table class="table table-bordered addItemTableUsers">' +
+            '<thead>' +
+            '<th>Местоположение</th>' +
+            '<th>Уровень доступа</th>' +
+            '<th>Логин</th>' +
+            '<th>Пароль</th>' +
+            '<th>Фио</th>' +
+            '</thead>' +
+            '<tbody class="mainTable">' +
+            string+
+            '</tbody>'
+        );
+
+        $(this).addClass('hidden');
+        $('#cancelItemUsers').removeClass('hidden');
+        $('#addTableUsers').removeClass('hidden');
+        $('#saveItemUsers').removeClass('hidden');
+        $('#cancelTableUsers').removeClass('hidden');
+
+
+    });
+
+    //при клике на отмена
+    $('#cancelItemUsers').click(function(){
+        $('.addItemTableUsers').remove();
+        $('#addItemUsers').removeClass('hidden');
+        $(this).addClass('hidden');
+        $('#addTableUsers').addClass('hidden');
+        $('#saveItemUsers').addClass('hidden');
+        $('#cancelTableUsers').addClass('hidden');
+    });
+
+    //при клике сохранить
+    $('#saveItemUsers').click(function(){
+        var data = [];
+        var col = [];
+        $('.str').each(function(i){
+            var mas = [];
+            col.push(i+1);
+            $(this).find('.form-group').children().each(function(){
+                mas.push($(this).val());
+            });
+            data.push(mas);
+        });
+        console.log(data);
+        $.ajax({
+            url: '/admin/top_users/',
+            type: 'POST',
+            data: {data: JSON.stringify(data), col: JSON.stringify(col)},
+            success: function(data){
+                window.location.reload();
+            },
+            error: function(err){
+                console.log(err);
+            }
+        })
+    });
+
+    //при клике на удалить строчку
+    $('#cancelTableUsers').click(function(){
+        $('.str').last().remove();
+    });
+
+    //при клике на добавить строчку
+    $('#addTableUsers').click(function(ev){
+        $('.mainTable').append(string);
+    });
+
+});
+//Конец users

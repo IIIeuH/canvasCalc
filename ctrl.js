@@ -1,25 +1,51 @@
 var oracledb = require('oracledb');
 var async    = require('async');
 var flash = require('connect-flash');
-
+var passport    = require('./passport');
+var bcrypt          = require('./crypto');
 module.exports.main = function(req, res, next) {
-    getData(function(data){
-        res.render('index', { title: 'Express', data: data});
+    res.cookie('user', req.user[0].TOP_USER_ID);
+    getData(req, function(data){
+        res.render('index', { title: 'Express', data: data, user: req.user[0]});
+    });
+};
+
+module.exports.mainRady = function(req, res, next) {
+    getDataRady(req, function(data){
+        res.send(data)
     });
 };
 
 module.exports.login = function(req, res, next) {
     res.render('login', { title: 'Авторизация', message: req.flash('message') });
 };
-module.exports.auth = function(req, res, next) {
-    if(req.body.username === 'admin' && req.body.password === 'admin'){
-        res.redirect('admin');
-    }else if(req.body.username !== 'admin'){
-        res.render('login', { title: 'Авторизация', message: 'Пользователь '+req.body.username+' не найден!'});
-    }else{
-        res.render('login', { title: 'Авторизация', message: 'Пароль введен не верно!'});
-    }
+module.exports.logout = function(req, res, next) {
+    req.logout();
+    res.redirect('/');
 };
+
+// module.exports.registration = function(req, res, next) {
+//     getLocation(function(items){
+//         res.render('registration', { title: 'Регистрация', location: items});
+//     });
+// };
+
+module.exports.reg =
+    passport.authenticate('local-reg',
+        {
+            successRedirect: '/login',
+            failureRedirect: '/registration',
+            failureFlash: true
+        });
+
+
+module.exports.auth = passport.authenticate('local',
+    {
+        successRedirect: '/',
+        failureRedirect: '/login',
+        failureFlash: true
+    });
+        //res.render('login', { title: 'Авторизация', message: 'Пароль введен не верно!'});
 
 module.exports.mainAdmin = function(req, res, next){
     res.render('admin', { title: 'Административная панель'});
@@ -36,6 +62,7 @@ module.exports.SelectBomParams = function(req, res, next){
         res.json(items);
     });
 };
+
 
 module.exports.SelectJobParams = function(req, res, next){
     getJobParams(function(jobParams){
@@ -58,6 +85,12 @@ module.exports.item = function(req, res, next){
 module.exports.uom = function(req, res, next){
     getUoms(function(items){
         res.render('uom', { title: 'Единицы измерения', items: items});
+    });
+};
+
+module.exports.top_users = function(req, res, next){
+    getUsers(function(users){
+        res.render('top_users', { title: 'Пользователи', items: users});
     });
 };
 
@@ -90,8 +123,20 @@ module.exports.addUom = function(req, res, next){
     });
 };
 
+module.exports.addUsers = function(req, res, next){
+    saveUsers(req.body.data, req.body.col,  function(data){
+        res.json(data);
+    });
+};
+
 module.exports.jobuom = function(req, res, next){
     getJobuom(function(data){
+        res.json(data);
+    });
+};
+
+module.exports.location = function(req, res, next){
+    getLocation(function(data){
         res.json(data);
     });
 };
@@ -147,9 +192,10 @@ module.exports.add = function(req, res, next) {
                         console.error(err.message);
                         return;
                     }
-                    var query = "INSERT INTO contertops (width, heigth, section, joint_vertical, joint_horizontal, comments, top_name, section_side, section_height, bottom_glue_width, price) VALUES (:width, :heigth, :section, :joint_vertical, :joint_horizontal, :comments, :top_name, :section_side, :section_height, :bottom_glue_width, :price)";
+                    var itemid = +req.body.itemId;
+                    var query = "merge into contertops a using(select :countertops_id countertops_id, :itemid itemid, :width width, :heigth heigth, :section section, :joint_vertical joint_vertical, :joint_horizontal joint_horizontal, :comments comments, :top_name top_name, :section_side section_side, :section_height section_height, :bottom_glue_width bottom_glue_width, :price price, :top_user_id top_user_id, :saved saved from dual) b ON (a.countertops_id=b.countertops_id and b.countertops_id != 0) WHEN matched then update  SET a.itemid=b.itemid,  a.width=b.width,  a.heigth=b.heigth,  a.section=b.section,  a.joint_vertical=b.joint_vertical,  a.joint_horizontal=b.joint_horizontal,  a.comments=b.comments,  a.top_name=b.top_name,  a.section_side=b.section_side,  a.section_height=b.section_height,  a.bottom_glue_width=b.bottom_glue_width,  a.price=b.price,  a.top_user_id=b.top_user_id, a.saved=b.saved when not matched then insert  (itemid,   width,   heigth,   section,   joint_vertical,   joint_horizontal,   comments,   top_name,   section_side,   section_height,   bottom_glue_width,   price,   top_user_id, saved)  values  (b.itemid,   b.width,   b.heigth,   b.section,   b.joint_vertical,   b.joint_horizontal,   b.comments,   b.top_name,   b.section_side,   b.section_height,   b.bottom_glue_width,   b.price,   b.top_user_id, b.saved)";
                     connection.execute(
-                        query, [req.body.width, req.body.heigth, req.body.section, req.body.joinVertical, req.body.joinHorizontal, req.body.comments, req.body.name, req.body.sectionSide, req.body.sectionHeight, req.body.bottomGlueWidth, req.body.price], {autoCommit: true},
+                        query, [req.body.counterTopId, itemid, req.body.width, req.body.heigth, req.body.section, req.body.joinVertical, req.body.joinHorizontal, req.body.comments, req.body.name, req.body.sectionSide, req.body.sectionHeight, req.body.bottomGlueWidth, req.body.price, req.user[0].TOP_USER_ID, 1], {autoCommit: true},
                         function (err, result) {
                             if (err) {
                                 doRelease(connection);
@@ -172,20 +218,25 @@ module.exports.add = function(req, res, next) {
                         console.error(err.message);
                         return;
                     }
-                    var query = "SELECT MAX(countertops_id) as maxid FROM contertops";
-                    connection.execute(
-                        query, {}, {outFormat: oracledb.OBJECT},
-                        function (err, result) {
-                            if (err) {
+                    if(req.body.counterTopId !== '0'){
+                        cb(null, req.body.counterTopId);
+                    }else{
+                        var query = "SELECT MAX(countertops_id) as maxid FROM contertops";
+                        connection.execute(
+                            query, {}, {outFormat: oracledb.OBJECT},
+                            function (err, result) {
+                                if (err) {
+                                    doRelease(connection);
+                                    console.log(err);
+                                    cb(err);
+                                }
                                 doRelease(connection);
-                                cb(err);
-                            }
-                            doRelease(connection);
-                            cb(null, result.rows[0].MAXID);
-                        });
+                                cb(null, result.rows[0].MAXID);
+                            });
+                    }
                 })
         },
-        function paramsSanteh(maxid, cb ) {
+        function paramsSanteh(counterTopId, cb ) {
             oracledb.getConnection(
                 {
                     user: "tops",
@@ -197,9 +248,10 @@ module.exports.add = function(req, res, next) {
                         console.error(err.message);
                         return;
                     }
-                    var query = "INSERT INTO countertops_addon (addon_type_id, countertops_id, addon_x, addon_y, addon_a, addon_b, bottom_mount) VALUES (:addon_type_id, :countertops_id, :addon_x, :addon_y, :addon_a, :addon_b, :bottom_mount)";
+                    console.log('COUNTEMDDS', counterTopId);
+                    var query = "merge into countertops_addon a using (select :COUNTERTOPS_ADDON_ID COUNTERTOPS_ADDON_ID,:ADDON_TYPE_ID ADDON_TYPE_ID, :COUNTERTOPS_ID COUNTERTOPS_ID, :ADDON_X ADDON_X, :ADDON_Y ADDON_Y, :ADDON_A ADDON_A, :ADDON_B ADDON_B, :BOTTOM_MOUNT BOTTOM_MOUNT from dual) b on (a.COUNTERTOPS_ADDON_ID=b.COUNTERTOPS_ADDON_ID and a.COUNTERTOPS_ID=b.COUNTERTOPS_ID and b.COUNTERTOPS_ID != 0) when matched then update set a.ADDON_TYPE_ID=b.ADDON_TYPE_ID, a.ADDON_X=b.ADDON_X, a.ADDON_Y=b.ADDON_Y, a.ADDON_A=b.ADDON_A, a.ADDON_B=b.ADDON_B, a.BOTTOM_MOUNT=b.BOTTOM_MOUNT when not matched then insert (ADDON_TYPE_ID, COUNTERTOPS_ID, ADDON_X, ADDON_Y, ADDON_A, ADDON_B, BOTTOM_MOUNT) values (b.ADDON_TYPE_ID, b.COUNTERTOPS_ID, b.ADDON_X, b.ADDON_Y, b.ADDON_A, b.ADDON_B, b.BOTTOM_MOUNT)";
                     connection.execute(
-                        query, [req.body.moiForm, maxid, req.body.coordinatesX, req.body.coordinatesY, (req.body.diameter || req.body.sideA || req.body.lots), (req.body.sideB || req.body.sal), req.body.bottomMounting], {autoCommit: true},
+                        query, [req.body.moiFormId, req.body.moiForm, counterTopId, req.body.coordinatesX, req.body.coordinatesY, (req.body.diameter || req.body.sideA || req.body.lots), (req.body.sideB || req.body.sal), req.body.bottomMounting], {autoCommit: true},
                         function (err, result) {
                             if (err) {
                                 console.log(err);
@@ -207,11 +259,11 @@ module.exports.add = function(req, res, next) {
                                 cb(err);
                             }
                             doRelease(connection);
-                            cb(null, maxid);
+                            cb(null, counterTopId);
                         });
                 })
         },
-        function saveDop(maxid, cb ) {
+        function saveDop(counterTopId, cb ) {
             oracledb.getConnection(
                 {
                     user: "tops",
@@ -225,17 +277,15 @@ module.exports.add = function(req, res, next) {
                     }
                     var res = JSON.parse(req.body.dop);
                     async.forEachOf(res, function(item, k, done){
-                        var query = "INSERT INTO countertops_addon (addon_type_id, countertops_id, addon_x, addon_y, addon_a) VALUES (:addon_type_id, :countertops_id, :addon_x, :addon_y, :addon_a)";
-                        console.log(query);
+                        var query = "merge into countertops_addon a using (select :COUNTERTOPS_ADDON_ID COUNTERTOPS_ADDON_ID,:ADDON_TYPE_ID ADDON_TYPE_ID, :COUNTERTOPS_ID COUNTERTOPS_ID, :ADDON_X ADDON_X, :ADDON_Y ADDON_Y, :ADDON_A ADDON_A, :ADDON_B ADDON_B, :BOTTOM_MOUNT BOTTOM_MOUNT from dual) b on (a.COUNTERTOPS_ADDON_ID=b.COUNTERTOPS_ADDON_ID and a.COUNTERTOPS_ID=b.COUNTERTOPS_ID and b.COUNTERTOPS_ID!=0) when matched then update set a.ADDON_TYPE_ID=b.ADDON_TYPE_ID, a.ADDON_X=b.ADDON_X, a.ADDON_Y=b.ADDON_Y, a.ADDON_A=b.ADDON_A, a.ADDON_B=b.ADDON_B, a.BOTTOM_MOUNT=b.BOTTOM_MOUNT when not matched then insert (ADDON_TYPE_ID, COUNTERTOPS_ID, ADDON_X, ADDON_Y, ADDON_A, ADDON_B, BOTTOM_MOUNT) values (b.ADDON_TYPE_ID, b.COUNTERTOPS_ID, b.ADDON_X, b.ADDON_Y, b.ADDON_A, b.ADDON_B, b.BOTTOM_MOUNT)";
                         connection.execute(
-                            query, [9999, maxid, item.inputX, item.inputY, item.inputD], {autoCommit: true},
+                            query, [item.dopId, 9999, counterTopId, item.inputX, item.inputY, item.inputD, null, null], {autoCommit: true},
                             function (err, result) {
                                 if (err) {
                                     console.log(err);
                                     doRelease(connection);
                                     cb(err);
                                 }
-                                console.log(result);
                                 doRelease(connection);
                                 done();
                             });
@@ -247,15 +297,13 @@ module.exports.add = function(req, res, next) {
         }
     ], function(err, result){
         if(err) {
-            console.log('Данные не записаны в CONTERTOPS!' + err);
             res.json(err);
         }
-        console.log('Данные успешно записаны в CONTERTOPS!');
         res.json('Данные успешно записаны в CONTERTOPS!');
     });
 };
 
-function getData(cb) {
+function getData(req, cb) {
     oracledb.getConnection(
         {
             user: "tops",
@@ -267,7 +315,91 @@ function getData(cb) {
                 console.error(err.message);
                 return;
             }
-            var query = "SELECT * FROM contertops";
+            var query = "SELECT * FROM contertops WHERE top_user_id = " + req.user[0].TOP_USER_ID;
+            connection.execute(
+                query, {}, { outFormat: oracledb.OBJECT},
+                function (err, ress) {
+                    if (err) {
+                        console.error(err);
+                        doRelease(connection);
+                        cb(err);
+                    }
+                    if(ress.rows.length){
+                        var query = "SELECT * FROM countertops_addon WHERE countertops_id ="+ress.rows[0].COUNTERTOPS_ID;
+                        connection.execute(
+                            query, {}, { outFormat: oracledb.OBJECT},
+                            function (err, result) {
+                                if (err) {
+                                    console.error(err);
+                                    doRelease(connection);
+                                }
+                                doRelease(connection);
+                                ress.rows.push(result.rows);
+                                cb(ress.rows);
+                            });
+                    }else{
+                        doRelease(connection);
+                        cb(ress.rows);
+                    }
+                });
+        });
+}
+
+function getDataRady(req, cb) {
+    oracledb.getConnection(
+        {
+            user: "tops",
+            password: "tops",
+            connectString: "(DESCRIPTION =(ADDRESS_LIST = (ADDRESS = (PROTOCOL = TCP)(HOST = webdb.terracorp.ru)(PORT = 1521)))(CONNECT_DATA = (SID = WEBDB)(SERVER = DEDICATED)))"
+        },
+        function (err, connection) {
+            if (err) {
+                console.error(err.message);
+                return;
+            }
+            var query = "SELECT * FROM contertops WHERE top_user_id = " + req.user[0].TOP_USER_ID+" AND countertops_id =" + req.body.id;
+            connection.execute(
+                query, {}, { outFormat: oracledb.OBJECT},
+                function (err, ress) {
+                    if (err) {
+                        console.error(err);
+                        doRelease(connection);
+                        cb(err);
+                    }
+                    if(ress.rows.length){
+                        var query = "SELECT * FROM countertops_addon WHERE countertops_id ="+ress.rows[0].COUNTERTOPS_ID;
+                        connection.execute(
+                            query, {}, { outFormat: oracledb.OBJECT},
+                            function (err, result) {
+                                if (err) {
+                                    console.error(err);
+                                    doRelease(connection);
+                                }
+                                doRelease(connection);
+                                ress.rows.push(result.rows);
+                                cb(ress.rows);
+                            });
+                    }else{
+                        doRelease(connection);
+                        cb(ress.rows);
+                    }
+                });
+        });
+}
+
+function getLocation(cb) {
+    oracledb.getConnection(
+        {
+            user: "tops",
+            password: "tops",
+            connectString: "(DESCRIPTION =(ADDRESS_LIST = (ADDRESS = (PROTOCOL = TCP)(HOST = webdb.terracorp.ru)(PORT = 1521)))(CONNECT_DATA = (SID = WEBDB)(SERVER = DEDICATED)))"
+        },
+        function (err, connection) {
+            if (err) {
+                console.error(err.message);
+                return;
+            }
+            var query = "SELECT * FROM top_locations";
             connection.execute(
                 query, {}, { outFormat: oracledb.OBJECT},
                 function (err, result) {
@@ -634,6 +766,56 @@ function saveUom(req, col, cb){
         });
 }
 
+//Сохранение в таблицу Users
+function saveUsers(req, col, cb){
+    oracledb.getConnection(
+        {
+            user: "tops",
+            password: "tops",
+            connectString: "(DESCRIPTION =(ADDRESS_LIST = (ADDRESS = (PROTOCOL = TCP)(HOST = webdb.terracorp.ru)(PORT = 1521)))(CONNECT_DATA = (SID = WEBDB)(SERVER = DEDICATED)))"
+        },
+        function (err, connection) {
+            if (err) {
+                console.error(err.message);
+                return;
+            }
+            req = JSON.parse(req);
+            col = JSON.parse(col);
+            var query = [];
+            query.push("INSERT ALL ");
+            req.forEach(function(item, i){
+                item[0] = +item[0];
+                item[1] = +item[1];
+                item[2] = "'" + item[2]+"'";
+                item[3] = "'" + bcrypt.encrypt(item[3])+"'";
+                item[4] = "'" + item[4]+"'";
+                query.push("INTO top_users (top_location_id, top_user_level, top_user, top_user_password, top_user_fio) VALUES");
+                query.push("(");
+                for(var i = 0; i < item.length; i ++){
+                    query.push(item[i]);
+                    query.push(",");
+                }
+                delete query[query.length-1];
+                query.push(")");
+            });
+            query.push('SELECT 1 FROM DUAL');
+            query = query.join(' ');
+            console.log(query);
+            connection.execute(
+                query, {}, {autoCommit: true},
+                function (err, result) {
+                    if (err) {
+                        console.log(err);
+                        doRelease(connection);
+                        cb(err);
+                    }
+                    console.log(result);
+                    doRelease(connection);
+                    cb(result);
+                });
+        });
+}
+
 module.exports.draw = function(req, res){
     oracledb.getConnection(
         {
@@ -734,6 +916,34 @@ function getUoms(cb){
                 return;
             }
             var query = "SELECT * FROM uom";
+            connection.execute(
+                query, {}, { outFormat: oracledb.OBJECT},
+                function (err, result) {
+                    if (err) {
+                        console.error(err);
+                        doRelease(connection);
+                        cb(err);
+                    }
+                    doRelease(connection);
+                    cb(result.rows);
+                });
+        });
+}
+
+//получение всей таблицы TOP_USERS
+function getUsers(cb){
+    oracledb.getConnection(
+        {
+            user: "tops",
+            password: "tops",
+            connectString: "(DESCRIPTION =(ADDRESS_LIST = (ADDRESS = (PROTOCOL = TCP)(HOST = webdb.terracorp.ru)(PORT = 1521)))(CONNECT_DATA = (SID = WEBDB)(SERVER = DEDICATED)))"
+        },
+        function (err, connection) {
+            if (err) {
+                console.error(err.message);
+                return;
+            }
+            var query = "SELECT * FROM top_users WHERE top_user_id > 2";
             connection.execute(
                 query, {}, { outFormat: oracledb.OBJECT},
                 function (err, result) {

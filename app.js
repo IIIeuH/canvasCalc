@@ -5,15 +5,23 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var conf = require('./setting');
-//var passport = require('./passport');
+var passport = require('./passport');
 var flash = require('connect-flash');
 var session = require('express-session');
+var oracleDbStore = require('express-oracle-session')(session);
 
 var index = require('./routes/index');
 var users = require('./routes/users');
 
 var app = express();
 
+var options = {
+    user: "tops",
+    password: "tops",
+    connectString: "(DESCRIPTION =(ADDRESS_LIST = (ADDRESS = (PROTOCOL = TCP)(HOST = 192.168.13.120)(PORT = 1521)))(CONNECT_DATA = (SID = WEBDB)(SERVER = DEDICATED)))"
+};
+
+var sessionStore = new oracleDbStore(options);
 
 app.listen(conf.port, function(){
   console.log('server is run on port '+ conf.port);
@@ -30,15 +38,20 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(cookieParser());
 
-app.use(session({ cookie: { maxAge: 60000 },
-    secret: 'secretik',
-    resave: false,
-    saveUninitialized: false}));
+app.use(session({
+    cookie: {maxAge: null},
+    secret: 'SecretKey',
+    key: 'session_name',
+    resave: true,
+    saveUninitialized: true,
+    store: sessionStore
+}));
 
-// Passport:
-// app.use(passport.initialize());
-// app.use(passport.session());
+
+app.use(passport.initialize());
+app.use(passport.session());
 app.use(flash());
+
 
 
 

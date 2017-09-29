@@ -1,0 +1,32 @@
+extends layout
+
+block content
+    .container
+        .row
+            .col-md-offset-3.col-md-6
+                h2.h2
+                    p.bg-danger=message
+                .row
+                    .col-md-12
+                        .form
+                            form.form-horizontal(method="POST")
+                                .form-group
+                                    label.control-label(for="location") Наименование местоположени
+                                    select#location.form-control(name="location")
+                                        option
+                                        each item in location
+                                            option(value=item.TOP_LOCATION_ID) #{item.TOP_LOCATION_NAME}
+                                .form-group
+                                    label.control-label(for="username") Логин
+                                    input#username.form-control(type='text', placeholder='Ведите пароль', name="username")
+                                .form-group
+                                    label.control-label(for="pwd1") Пароль
+                                    input#pwd1.form-control(type='password', placeholder='Ведите пароль', name="pwd1")
+                                .form-group
+                                    label.control-label(for="pwd2") Пароль еще раз
+                                    input#pwd2.form-control(type='password', placeholder='Ведите пароль', name="pwd2")
+                                .form-group
+                                    label.control-label(for="fio") ФИО
+                                    input#fio.form-control(type='text', placeholder='Ведите ФИО', name="fio")
+                                    a.btn.btn-default.registration(href="/login") Назад
+                                    button.btn.btn-success.next(type="button") Отправить

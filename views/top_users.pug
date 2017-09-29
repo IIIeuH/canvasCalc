@@ -1,0 +1,28 @@
+extends layoutAdmin
+
+block content
+    button.btn.btn-warning(type="button", id="addItemUsers") Добавить
+    button.btn.btn-success.hidden(type="button", id="addTableUsers") Добавить строчку
+    button.btn.btn-warning.hidden(type="button", id="cancelTableUsers") Убрать строчку
+    button.btn.btn-info.hidden(type="button", id="saveItemUsers") Сохранить
+    button.btn.btn-danger.hidden(type="button", id="cancelItemUsers") Отменить
+    .addItemtable
+    .container-fuild
+        .row
+            .col-md-12
+                table.table.table-hover.table-bordered.table-condensed
+                    thead
+                        th Местоположение
+                        th Уровень доступа
+                        th Логин
+                        th Пароль
+                        th ФИО
+                    tbody
+                        each item in items
+                            tr
+                                td=item.TOP_LOCATION_ID
+                                td=item.TOP_USER_LEVEL
+                                td=item.TOP_USER
+                                td=item.TOP_USER_PASSWORD
+                                td=item.TOP_USER_FIO
+                                    button(type="button", data-id=item.TOP_USER_ID, data-nameid="TOP_USER_ID", class="close", aria-hidden="true") &times;

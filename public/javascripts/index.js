@@ -3,7 +3,6 @@
 var ctx;
 var width;
 var heigth;
-var dashList = [3, 3]; //пунктирная линия 3 на 3 пикселя
 window.onload = function(){
     var canvas = document.getElementById('canvas');
     if(!document.querySelector('#moi-form').value){
@@ -13,6 +12,8 @@ window.onload = function(){
     if (canvas.getContext) {
         ctx = canvas.getContext('2d');
     }
+    canvas.setAttribute('width', 1300);
+    canvas.setAttribute('height', 700);
     start();
     document.querySelector('#draw').onclick = function(){
         $('.error').empty();
@@ -63,6 +64,18 @@ window.onload = function(){
             $('#gluing').removeClass('hidden');
         }
     });
+
+    // $('#canvas').mousemove(function(e){
+    //     // положение элемента
+    //     var pos = $(this).offset();
+    //     console.log((e.pageX*100)/draw().width+500, pos.left, pos.top);
+    //     var elem_left = pos.left;
+    //     var elem_top = pos.top;
+    //     // положение курсора внутри элемента
+    //     var Xinner = draw().width - elem_left;
+    //     var Yinner = e.pageY - elem_top;
+    //     console.log("X: " + Xinner + " Y: " + Yinner); // вывод результата в консоль
+    // });
 };
 
 function validateDrow(){
@@ -689,6 +702,10 @@ function draw(){
             }
         });
     }
+    var coorder = {};
+    coorder.width = width;
+    coorder.heigth = heigth;
+    return coorder;
 }
 
 var count;
@@ -696,7 +713,7 @@ function addDop(){
     var dopChild = $('#dopChild');
     count = Number($('.last').last().find('td:first-child ').text());
     count += 1;
-    dopChild.append("<tr class='last'><td>"+ count +"</td><td><input class='inputX form-control'></td><td><input class='inputY form-control'></td><td><input class='inputD form-control'></td></tr></table>");
+    dopChild.append("<tr class='last'><td>"+ count +"</td><td><input class='inputX form-control'></td><td><input class='inputY form-control'></td><td><input class='inputD form-control'></td><td class='hidden'><input class='dopId hidden'></td></tr></table>");
 }
 function drop(){
     var elem = document.getElementsByClassName('last');
@@ -731,6 +748,7 @@ $(function(){
         var mas = [];
         tab.forEach(function(item){
             var dop = {
+                dopId:  item.querySelector('.dopId').value,
                 inputX: item.querySelector('.inputX').value,
                 inputY: item.querySelector('.inputY').value,
                 inputD: item.querySelector('.inputD').value
@@ -758,7 +776,10 @@ $(function(){
             lots:               $('#lots').val(),
             sal:                $('#sal').val(),
             dop:                JSON.stringify(mas),
-            price:              $('.price h2').text()
+            price:              $('.price h2').text(),
+            itemId:             $('#material').val(),
+            counterTopId:       $('#ready').val(),
+            moiFormId:          $('#idFormMoi').val()
         };
         data.sectionSide = '';
         $('input[name=sideProfile]:checked').each(function(){
@@ -845,17 +866,11 @@ $(function(){
                     '<option value="'+(inputSelect.ITEMTHIN + 60)+'">'+(inputSelect.ITEMTHIN + 60)+'</option>' +
                     '</select>';
             }
-            $('.profile-heigth').replaceWith(elem);
+            $('#profile-heigth').remove();
+            $('#sel').append(elem);
         });
     });
-});
-//END Выбор высоты профиля исходя из типа материала
-
-
-//при изменении варианта профиля его высота должна пресчитаться
-
-$(function(){
-    $('#profile-option').change(function(){
+    $('.input-group').on('change','#profile-option', function(){
         var elem;
         var inputSelect;
         var itemid = $('#material').val();
@@ -877,77 +892,121 @@ $(function(){
                 }
                 if($('#profile-option').val() === '0') {
                     elem =
-                        '<select class="form-control  profile-heigth" id="profile-heigth">' +
+                        '<select class="form-control profile-heigth" id="profile-heigth">' +
                         '<option value="'+(inputSelect.ITEMTHIN + 20)+'">'+(inputSelect.ITEMTHIN + 20)+'</option>' +
                         '<option value="'+(inputSelect.ITEMTHIN + 30)+'">'+(inputSelect.ITEMTHIN + 30)+'</option>' +
                         '<option value="'+(inputSelect.ITEMTHIN + 40)+'">'+(inputSelect.ITEMTHIN + 40)+'</option>' +
                         '<option value="'+(inputSelect.ITEMTHIN + 60)+'">'+(inputSelect.ITEMTHIN + 60)+'</option>' +
                         '</select>';
                 }
-                $('.profile-heigth').replaceWith(elem);
+                $('#profile-heigth').remove();
+                $('#sel').append(elem);
             });
         }
     });
+});
+//END Выбор высоты профиля исходя из типа материала
+
+
+//при изменении варианта профиля его высота должна пресчитаться
+
+$(function(){
+
 });
 
 //END при изменении варианта профиля его высота должна пресчитаться
 
 //Обработка изменения селекта с готовыми решениями
 
+function getCookie(name) {
+    var cookie = " " + document.cookie;
+    var search = " " + name + "=";
+    var setStr = null;
+    var offset = 0;
+    var end = 0;
+    if (cookie.length > 0) {
+        offset = cookie.indexOf(search);
+        if (offset != -1) {
+            offset += search.length;
+            end = cookie.indexOf(";", offset);
+            if (end == -1) {
+                end = cookie.length;
+            }
+            setStr = unescape(cookie.substring(offset, end));
+        }
+    }
+    return(setStr);
+}
+
 $(function(){
-    $('.ready').change(function(ev){
+    $('#ready').on('change', function(){
+        var data = $(this).val() || 0;
         $('.last').remove();
-        $('input[name=sideProfile]').prop('checked', false);;
-        var data = JSON.parse($(this).val());
+        $('input[name=sideProfile]').prop('checked', false);
         var asyncData = $.ajax({
             url: '/draw',
             type: 'POST',
-            data: {id: data.COUNTERTOPS_ID},
+            data: {id: data},
             success: function(data){
             },
             error: function(err){
                 console.log(err);
             }
         });
-
         asyncData.then(function(Asdata){
-            var side = data.SECTION_SIDE.split('');
-            $('#width').val(data.WIDTH);
-            $('#depth').val(data.HEIGTH);
-            $('#profile-option').val(data.SECTION).change();
-            $('#gluing-width').val(data.BOTTOM_GLUE_WIDTH);
-            $('#profile-heigth').val(data.SECTION_HEIGHT);
-            side.forEach(function(item){
-                $("input:checkbox[value='"+item+"']").prop("checked", "checked");
-            });
-            $('#splice1').val(data.JOINT_VERTICAL);
-            $('#splice2').val(data.JOINT_HORIZONTAL);
-            Asdata.forEach(function(item){
-                if(item.BOTTOM_MOUNT == 1){
-                    if(item.ADDON_TYPE_ID == 1){
-                        $('#diameter').val(item.ADDON_A);
+            if(Asdata.length){
+                var side = Asdata[0].SECTION_SIDE.split('');
+                $('#topName').val(Asdata[0].TOP_NAME);
+                $('#material').val(Asdata[0].ITEMID).change();
+                $('#profile-option').val(Asdata[0].SECTION).change();
+                $('#width').val(Asdata[0].WIDTH);
+                $('#depth').val(Asdata[0].HEIGTH);
+
+                $('#gluing-width').val(Asdata[0].BOTTOM_GLUE_WIDTH);
+
+                setTimeout(function(){
+                    $('#profile-heigth').val(Asdata[0].SECTION_HEIGHT);
+                },10);
+
+                $('#comments').val(Asdata[0].COMMENTS);
+                side.forEach(function(item){
+                    $("input:checkbox[value='"+item+"']").prop("checked", "checked");
+                });
+                $('#splice1').val(Asdata[0].JOINT_VERTICAL);
+                $('#splice2').val(Asdata[0].JOINT_HORIZONTAL);
+                //$("#profile-heigth option[value=" + Asdata[0].SECTION_HEIGHT + "]").attr('selected', 'true').text(Asdata[0].SECTION_HEIGHT);
+                Asdata[1].forEach(function(item){
+                    if(item.BOTTOM_MOUNT === 0 || item.BOTTOM_MOUNT === 1){
+                        $('#idFormMoi').val(item.COUNTERTOPS_ADDON_ID);
+                        if(item.ADDON_TYPE_ID === 1){
+                            $("#moi-form [value='1']").attr("selected", "selected");
+                            $('#diameter').val(item.ADDON_A);
+                        }
+                        if(item.ADDON_TYPE_ID == 2){
+                            $("#moi-form [value='2']").attr("selected", "selected");
+                            $('#side-a').val(item.ADDON_A);
+                            $('#side-b').val(item.ADDON_B);
+                        }
+                        if(item.ADDON_TYPE_ID === 3){
+                            $("#moi-form [value='3']").attr("selected", "selected");
+                            $('#lots').val(item.ADDON_A);
+                            $('#sal').val(item.ADDON_B);
+                        }
+                        $('#moi-form').val(item.ADDON_TYPE_ID).change();
+                        $('#coordinatesX').val(item.ADDON_X);
+                        $('#coordinatesY').val(item.ADDON_Y);
+                        $('input[name=bottomMounting]').prop("checked", "checked");
                     }
-                    if(item.ADDON_TYPE_ID == 2){
-                        $('#side-a').val(item.ADDON_A);
-                        $('#side-b').val(item.ADDON_B);
+                    if(item.ADDON_TYPE_ID === 9999){
+                        $('#dop').click();
+                        $('.inputX').last().val(item.ADDON_X);
+                        $('.inputY').last().val(item.ADDON_Y);
+                        $('.inputD').last().val(item.ADDON_A);
+                        $('.dopId').last().val(item.COUNTERTOPS_ADDON_ID);
                     }
-                    if(item.ADDON_TYPE_ID == 3){
-                        $('#lots').val(item.ADDON_A);
-                        $('#sal').val(item.ADDON_B);
-                    }
-                    $('#moi-form').val(item.ADDON_TYPE_ID).change();
-                    $('#coordinatesX').val(item.ADDON_X);
-                    $('#coordinatesY').val(item.ADDON_Y);
-                    $('input[name=bottomMounting]').prop("checked", "checked");
-                }
-                else{
-                    $('#dop').click();
-                    $('.inputX').last().val(item.ADDON_X);
-                    $('.inputY').last().val(item.ADDON_Y);
-                    $('.inputD').last().val(item.ADDON_A);
-                }
-            });
-            $('#draw').click();
+                });
+                $('#draw').click();
+            }
         });
     });
 });
@@ -1253,4 +1312,3 @@ $(function(){
     });
 
 });
-
