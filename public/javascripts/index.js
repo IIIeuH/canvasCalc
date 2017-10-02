@@ -474,6 +474,8 @@ function draw(){
     if(document.querySelector('#moi-form').value === '1'){
         var coordX = +document.querySelector('#coordinatesX').value;
         var coordY = +document.querySelector('#coordinatesY').value;
+        var coorXOut = coordX;
+        var coorYOut = coordY;
         var diametr = +document.querySelector('#diameter').value;
         procX = coordX * 100 / w;
         procY = coordY * 100 / h;
@@ -494,6 +496,16 @@ function draw(){
         ctx.fillStyle = '#fff';
         ctx.lineWidth = 1;
         ctx.fill();
+        ctx.stroke();
+        ctx.restore();
+        ctx.closePath();
+        //Подпись координа
+        ctx.beginPath();
+        ctx.save();
+        ctx.fillStyle = "#000";
+        ctx.font = "11px Helvetica";
+        ctx.lineWidth = 1;
+        ctx.fillText(coorXOut+";"+coorYOut, coordX +15, coordY+15);
         ctx.stroke();
         ctx.restore();
         ctx.closePath();
@@ -529,6 +541,8 @@ function draw(){
     if(document.querySelector('#moi-form').value === '2'){
         var coordX = +document.querySelector('#coordinatesX').value;
         var coordY = +document.querySelector('#coordinatesY').value;
+        var coorXOut = coordX;
+        var coorYOut = coordY;
         var sideA = +document.querySelector('#side-a').value;
         var sideB = +document.querySelector('#side-b').value;
         procX = coordX * 100 / w;
@@ -550,7 +564,16 @@ function draw(){
         ctx.lineWidth = 1;
         ctx.fillRect(+coordX + 30 -(sideA / 2), +coordY + 30 -(sideB / 2), sideA, sideB);
         ctx.strokeRect(+coordX + 30 -(sideA / 2), +coordY + 30 -(sideB / 2), sideA, sideB);
-
+        //Подпись координа
+        ctx.beginPath();
+        ctx.save();
+        ctx.fillStyle = "#000";
+        ctx.font = "11px Helvetica";
+        ctx.lineWidth = 1;
+        ctx.fillText(coorXOut+";"+coorYOut, coordX +15, coordY+15);
+        ctx.stroke();
+        ctx.restore();
+        ctx.closePath();
         //линии из центра
         var he = 0;
         for(var i = 1; i < width+30; i++) {
@@ -585,6 +608,8 @@ function draw(){
     if(document.querySelector('#moi-form').value === '3'){
         var coordX = +document.querySelector('#coordinatesX').value;
         var coordY = +document.querySelector('#coordinatesY').value;
+        var coorXOut = coordX;
+        var coorYOut = coordY;
         var lots = +document.querySelector('#lots').value;
         var sal = +document.querySelector('#sal').value;
         procX = coordX * 100 / w;
@@ -613,7 +638,16 @@ function draw(){
         ctx.stroke();
         ctx.restore();
         ctx.closePath();
-
+        //Подпись координа
+        ctx.beginPath();
+        ctx.save();
+        ctx.fillStyle = "#000";
+        ctx.font = "11px Helvetica";
+        ctx.lineWidth = 1;
+        ctx.fillText(coorXOut+";"+coorYOut, coordX +15, coordY+15);
+        ctx.stroke();
+        ctx.restore();
+        ctx.closePath();
         //линии из центра
         var he = 0;
         for(var i = 1; i < width+30; i++) {
@@ -650,6 +684,8 @@ function draw(){
             var inputX = item.querySelector('.inputX').value;
             var inputY = item.querySelector('.inputY').value;
             var inputD = item.querySelector('.inputD').value;
+            var coorXOut = inputX;
+            var coorYOut = inputY;
             procX = inputX * 100 / w;
             procY = inputY * 100 / h;
             inputX = Math.round(procX * width / 100);
@@ -672,7 +708,17 @@ function draw(){
             ctx.stroke();
             ctx.restore();
             ctx.closePath();
-
+            //Подпись координа
+            ctx.beginPath();
+            ctx.save();
+            ctx.fillStyle = "#000";
+            ctx.font = "11px Helvetica";
+            ctx.lineWidth = 1;
+            ctx.fillText(coorXOut+";"+coorYOut, inputX +15, inputY+15);
+            ctx.stroke();
+            ctx.restore();
+            ctx.closePath();
+            //линии из центра
             //линии из центра
             var he = 0;
             for(var i = 1; i < width+30; i++) {
