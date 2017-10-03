@@ -10,6 +10,17 @@ module.exports.main = function(req, res, next) {
     });
 };
 
+module.exports.mainRes = function(req, res, next) {
+    res.render('resAdmin', { title: 'Express'});
+};
+
+module.exports.mainResAjax = function(req, res, next) {
+    getDataRadyAdmin(req, function (data) {
+        res.json(data);
+    })
+};
+
+
 module.exports.mainRady = function(req, res, next) {
     getDataRady(req, function(data){
         res.send(data)
@@ -141,9 +152,21 @@ module.exports.location = function(req, res, next){
     });
 };
 
+module.exports.getUsers = function(req, res, next){
+    getUsers(function(data){
+        res.json(data);
+    });
+};
+
 module.exports.jobParams = function(req, res, next){
     getJobParams(function(jobParams){
         res.render('jobparams', { title: 'Параметры работ', jobParams: jobParams});
+    });
+};
+
+module.exports.saveItems = function(req, res, next){
+    getCounterTops(function(items){
+        res.render('saveItems', { title: 'Параметры работ', items: items});
     });
 };
 
@@ -387,6 +410,48 @@ function getDataRady(req, cb) {
         });
 }
 
+function getDataRadyAdmin(req, cb) {
+    oracledb.getConnection(
+        {
+            user: "tops",
+            password: "tops",
+            connectString: "(DESCRIPTION =(ADDRESS_LIST = (ADDRESS = (PROTOCOL = TCP)(HOST = webdb.terracorp.ru)(PORT = 1521)))(CONNECT_DATA = (SID = WEBDB)(SERVER = DEDICATED)))"
+        },
+        function (err, connection) {
+            if (err) {
+                console.error(err.message);
+                return;
+            }
+            var query = "SELECT * FROM contertops  WHERE countertops_id =" + req.body.id;
+            connection.execute(
+                query, {}, { outFormat: oracledb.OBJECT},
+                function (err, ress) {
+                    if (err) {
+                        console.error(err);
+                        doRelease(connection);
+                        cb(err);
+                    }
+                    if(ress.rows.length){
+                        var query = "SELECT * FROM countertops_addon WHERE countertops_id ="+ress.rows[0].COUNTERTOPS_ID;
+                        connection.execute(
+                            query, {}, { outFormat: oracledb.OBJECT},
+                            function (err, result) {
+                                if (err) {
+                                    console.error(err);
+                                    doRelease(connection);
+                                }
+                                doRelease(connection);
+                                ress.rows.push(result.rows);
+                                cb(ress.rows);
+                            });
+                    }else{
+                        doRelease(connection);
+                        cb(ress.rows);
+                    }
+                });
+        });
+}
+
 function getLocation(cb) {
     oracledb.getConnection(
         {
@@ -414,6 +479,32 @@ function getLocation(cb) {
         });
 }
 
+function getUsers(cb) {
+    oracledb.getConnection(
+        {
+            user: "tops",
+            password: "tops",
+            connectString: "(DESCRIPTION =(ADDRESS_LIST = (ADDRESS = (PROTOCOL = TCP)(HOST = webdb.terracorp.ru)(PORT = 1521)))(CONNECT_DATA = (SID = WEBDB)(SERVER = DEDICATED)))"
+        },
+        function (err, connection) {
+            if (err) {
+                console.error(err.message);
+                return;
+            }
+            var query = "SELECT * FROM top_users";
+            connection.execute(
+                query, {}, { outFormat: oracledb.OBJECT},
+                function (err, result) {
+                    if (err) {
+                        console.error(err);
+                        doRelease(connection);
+                        cb(err);
+                    }
+                    doRelease(connection);
+                    cb(result.rows);
+                });
+        });
+}
 
 function saveItems(req, col, cb){
     oracledb.getConnection(
@@ -872,6 +963,34 @@ function getItems(cb){
         });
 }
 
+
+//Получение данных из таблицы COUNTERTOPS
+function getCounterTops(cb){
+    oracledb.getConnection(
+        {
+            user: "tops",
+            password: "tops",
+            connectString: "(DESCRIPTION =(ADDRESS_LIST = (ADDRESS = (PROTOCOL = TCP)(HOST = webdb.terracorp.ru)(PORT = 1521)))(CONNECT_DATA = (SID = WEBDB)(SERVER = DEDICATED)))"
+        },
+        function (err, connection) {
+            if (err) {
+                console.error(err.message);
+                return;
+            }
+            var query = "SELECT * FROM contertops";
+            connection.execute(
+                query, {}, { outFormat: oracledb.OBJECT},
+                function (err, result) {
+                    if (err) {
+                        console.error(err);
+                        doRelease(connection);
+                        cb(err);
+                    }
+                    doRelease(connection);
+                    cb(result.rows);
+                });
+        });
+}
 
 //получение всей таблицы jobpparams
 function getJobParams(cb){

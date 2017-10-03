@@ -1,0 +1,127 @@
+extends layout
+block content
+    script(src="../../javascripts/index.js")
+    script(src="../../javascripts/resAdmin.js")
+    .container-fluid
+        a.btn.btn-info(href="/admin/saveItems/") Назад
+        .row
+            .col-md-3.col-lg-3
+                .wrap
+                    .row
+                        .col-md-12
+                            div(calss='physics-param')
+                                h2.h2 Физические параметры
+                                .input-group
+                                    label(for='topName') Название
+                                    input.form-control#topName
+                                .input-group
+                                    label(for='material') Выбор материала
+                                    select.form-control#material
+                                .input-group
+                                    label(for='width') Ширина, мм.
+                                    input.form-control#width(type='number', value='1200')
+                                .input-group
+                                    label(for='depth') Глубина, мм.
+                                    input.form-control#depth(type='number', value='600')
+                                .input-group
+                                    label(for='profile-option') Вариант профиля
+                                    select.form-control#profile-option
+                                        option(value='1') с подклейкой
+                                        option(value='0', selected='') без подклейки
+                                #gluing
+                                    .input-group
+                                        label(for='gluing-width') Ширина нижней подклейки
+                                        input.form-control#gluing-width(type='number', value='70')
+                                .input-group
+                                    label#sel(for='profile-heigth') Высота профиля, мм.
+                                    select.form-control.profile-heigth#profile-heigth
+                                        option(value='20', selected) 20
+                                        option(value='30') 30
+                                        option(value='40') 40
+                                        option(value='60') 60
+                                .form-group
+                                    label(for='comments') Комментарий
+                                    textarea.form-control#comments(rows="5")
+                                .input-group
+                                    label.pad Стороны профиля
+                                    label.checkbox-inline
+                                        input#A(type='checkbox', name='sideProfile', value='A')
+                                        |  A
+                                    label.checkbox-inline
+                                        input#B(type='checkbox', name='sideProfile', value='B')
+                                        |  B
+                                    label.checkbox-inline
+                                        input#C(type='checkbox', name='sideProfile', value='C')
+                                        |  C
+                                    label.checkbox-inline
+                                        input#D(type='checkbox', name='sideProfile', value='D')
+                                        |  D
+                                .input-group
+                                    label(for='splice1') Расположение горизонтального стыка, мм.
+                                    input.form-control#splice1(type='number')
+                                .input-group
+                                    label(for='splice2') Расположение вертикальногос стыка, мм.
+                                    input.form-control#splice2(type='number')
+                    .row
+                        .col-md-12
+                            .parameters-of-sanitary
+                                h2.h2 Параметры сантехники и отверстия
+                                .input-group
+                                    label(for='moi-form') Форма мойки
+                                    input.hidden#idFormMoi(value="0")
+                                    select.form-control#moi-form
+                                        option(value='')
+                                        option(value='1') Круглая
+                                        option(value='2') Прямоугольная
+                                        option(value='3') Эллипс
+                                #hid
+                                    .input-group
+                                        label(for='coordinatesX') Координаты центра мойки по оси X, мм.
+                                        input.form-control#coordinatesX(type='number')
+                                    .input-group
+                                        label(for='coordinatesY') Координаты центра мойки по оси Y, мм.
+                                        input.form-control#coordinatesY(type='number')
+                                    label.checkbox-inline
+                                        input(type='checkbox', name='bottomMounting', value="1")
+                                        | Нижнего монтажа
+                                    .side-group
+                                        .input-group
+                                            label(for='side-a') Сторона A, мм.
+                                            input.form-control#side-a(type='number')
+                                        .input-group
+                                            label(for='side-b') Сторона B, мм.
+                                            input.form-control#side-b(type='number')
+                                    .input-group.diameter-group
+                                        label(for='diameter') Диаметр, мм.
+                                        input.form-control#diameter(type='number')
+                                    .lots-group
+                                        .input-group
+                                            label(for='lots') Длина большой полуоси, мм.
+                                            input.form-control#lots(type='number')
+                                        .input-group
+                                            label(for='sal') Длина малой полуоси, мм.
+                                            input.form-control#sal(type='number')
+                    .row
+                        .col-md-12
+                            h2 Доп. отверстия
+                            table.table.table-striped.table-bordered.table-condensed
+                                thead
+                                    th Номер отверстия
+                                    th X
+                                    th Y
+                                    th D
+                                tbody#dopChild
+                            button.pad.btn.btn-default#dop(onclick='addDop()') Добавить
+                            button.pad.btn.btn-default#drop(onclick='drop()') Удалить
+                    .row
+                        .col-md-12
+                            button.pad.btn.btn-info#draw Нарисовать
+                            button.pad.btn.btn-warning#calc  Расчитать
+            .col-md-9.col-lg-9
+                .graph
+                    canvas#canvas
+                    .error
+        .row
+            .col-md-6
+                .price
+                    h2.h2 0

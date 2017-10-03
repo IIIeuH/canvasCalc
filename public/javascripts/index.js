@@ -824,7 +824,7 @@ $(function(){
             dop:                JSON.stringify(mas),
             price:              $('.price h2').text(),
             itemId:             $('#material').val(),
-            counterTopId:       $('#ready').val(),
+            counterTopId:       getCookie('refere') || 0,
             moiFormId:          $('#idFormMoi').val()
         };
         data.sectionSide = '';
@@ -1303,7 +1303,7 @@ $(function(){
                 );
 
                 var _jobParams = $.ajax({
-                    url: 'selectjobparams',
+                    url: '/selectjobparams',
                     type: 'GET',
                     success: function (data) {
                         console.log(data);
@@ -1358,4 +1358,157 @@ $(function(){
 
     });
 
+});
+
+// function newWind(){
+//
+//     window.open('/', '_blank');
+//     var data = getCookie('nomenK');
+//     $('.last').remove();
+//     $('input[name=sideProfile]').prop('checked', false);
+//     var asyncData = $.ajax({
+//         url: '/draw',
+//         type: 'POST',
+//         data: {id: data},
+//         success: function(data){
+//         },
+//         error: function(err){
+//             console.log(err);
+//         }
+//     });
+//     asyncData.then(function(Asdata){
+//         if(Asdata.length){
+//             var side = Asdata[0].SECTION_SIDE.split('');
+//             $('#topName').val(Asdata[0].TOP_NAME);
+//             $('#material').val(Asdata[0].ITEMID).change();
+//             $('#profile-option').val(Asdata[0].SECTION).change();
+//             $('#width').val(Asdata[0].WIDTH);
+//             $('#depth').val(Asdata[0].HEIGTH);
+//
+//             $('#gluing-width').val(Asdata[0].BOTTOM_GLUE_WIDTH);
+//
+//             setTimeout(function(){
+//                 $('#profile-heigth').val(Asdata[0].SECTION_HEIGHT);
+//             },10);
+//
+//             $('#comments').val(Asdata[0].COMMENTS);
+//             side.forEach(function(item){
+//                 $("input:checkbox[value='"+item+"']").prop("checked", "checked");
+//             });
+//             $('#splice1').val(Asdata[0].JOINT_VERTICAL);
+//             $('#splice2').val(Asdata[0].JOINT_HORIZONTAL);
+//             $('.price').find('h2').text(Asdata[0].PRICE);
+//             //$("#profile-heigth option[value=" + Asdata[0].SECTION_HEIGHT + "]").attr('selected', 'true').text(Asdata[0].SECTION_HEIGHT);
+//             Asdata[1].forEach(function(item){
+//                 if(item.BOTTOM_MOUNT === 0 || item.BOTTOM_MOUNT === 1){
+//                     $('#idFormMoi').val(item.COUNTERTOPS_ADDON_ID);
+//                     if(item.ADDON_TYPE_ID === 1){
+//                         $("#moi-form [value='1']").attr("selected", "selected");
+//                         $('#diameter').val(item.ADDON_A);
+//                     }
+//                     if(item.ADDON_TYPE_ID == 2){
+//                         $("#moi-form [value='2']").attr("selected", "selected");
+//                         $('#side-a').val(item.ADDON_A);
+//                         $('#side-b').val(item.ADDON_B);
+//                     }
+//                     if(item.ADDON_TYPE_ID === 3){
+//                         $("#moi-form [value='3']").attr("selected", "selected");
+//                         $('#lots').val(item.ADDON_A);
+//                         $('#sal').val(item.ADDON_B);
+//                     }
+//                     $('#moi-form').val(item.ADDON_TYPE_ID).change();
+//                     $('#coordinatesX').val(item.ADDON_X);
+//                     $('#coordinatesY').val(item.ADDON_Y);
+//                     $('input[name=bottomMounting]').prop("checked", "checked");
+//                 }
+//                 if(item.ADDON_TYPE_ID === 9999){
+//                     $('#dop').click();
+//                     $('.inputX').last().val(item.ADDON_X);
+//                     $('.inputY').last().val(item.ADDON_Y);
+//                     $('.inputD').last().val(item.ADDON_A);
+//                     $('.dopId').last().val(item.COUNTERTOPS_ADDON_ID);
+//                 }
+//             });
+//             $('#draw').click();
+//         }
+//     });
+// }
+
+$(function(){
+    $('#modal').click(function(){
+        $('#saveModal').arcticmodal();
+    });
+    $('.clickSave').click(function(){
+        var data = $(this).find('.itemNameId').text() || 0;
+        document.cookie = 'refere='+data;
+        $('.last').remove();
+        $('input[name=sideProfile]').prop('checked', false);
+        var asyncData = $.ajax({
+            url: '/draw',
+            type: 'POST',
+            data: {id: data},
+            success: function(data){
+            },
+            error: function(err){
+                console.log(err);
+            }
+        });
+        asyncData.then(function(Asdata){
+            if(Asdata.length){
+                var side = Asdata[0].SECTION_SIDE.split('');
+                $('#topName').val(Asdata[0].TOP_NAME);
+                $('#material').val(Asdata[0].ITEMID).change();
+                $('#profile-option').val(Asdata[0].SECTION).change();
+                $('#width').val(Asdata[0].WIDTH);
+                $('#depth').val(Asdata[0].HEIGTH);
+
+                $('#gluing-width').val(Asdata[0].BOTTOM_GLUE_WIDTH);
+
+                setTimeout(function(){
+                    $('#profile-heigth').val(Asdata[0].SECTION_HEIGHT);
+                },10);
+
+                $('#comments').val(Asdata[0].COMMENTS);
+                side.forEach(function(item){
+                    $("input:checkbox[value='"+item+"']").prop("checked", "checked");
+                });
+                $('#splice1').val(Asdata[0].JOINT_VERTICAL);
+                $('#splice2').val(Asdata[0].JOINT_HORIZONTAL);
+                $('.price').find('h2').text(Asdata[0].PRICE);
+                //$("#profile-heigth option[value=" + Asdata[0].SECTION_HEIGHT + "]").attr('selected', 'true').text(Asdata[0].SECTION_HEIGHT);
+                Asdata[1].forEach(function(item){
+                    if(item.BOTTOM_MOUNT === 0 || item.BOTTOM_MOUNT === 1){
+                        $('#idFormMoi').val(item.COUNTERTOPS_ADDON_ID);
+                        if(item.ADDON_TYPE_ID === 1){
+                            $("#moi-form [value='1']").attr("selected", "selected");
+                            $('#diameter').val(item.ADDON_A);
+                        }
+                        if(item.ADDON_TYPE_ID == 2){
+                            $("#moi-form [value='2']").attr("selected", "selected");
+                            $('#side-a').val(item.ADDON_A);
+                            $('#side-b').val(item.ADDON_B);
+                        }
+                        if(item.ADDON_TYPE_ID === 3){
+                            $("#moi-form [value='3']").attr("selected", "selected");
+                            $('#lots').val(item.ADDON_A);
+                            $('#sal').val(item.ADDON_B);
+                        }
+                        $('#moi-form').val(item.ADDON_TYPE_ID).change();
+                        $('#coordinatesX').val(item.ADDON_X);
+                        $('#coordinatesY').val(item.ADDON_Y);
+                        $('input[name=bottomMounting]').prop("checked", "checked");
+                    }
+                    if(item.ADDON_TYPE_ID === 9999){
+                        $('#dop').click();
+                        $('.inputX').last().val(item.ADDON_X);
+                        $('.inputY').last().val(item.ADDON_Y);
+                        $('.inputD').last().val(item.ADDON_A);
+                        $('.dopId').last().val(item.COUNTERTOPS_ADDON_ID);
+                    }
+                });
+                $('#draw').click();
+                $.arcticmodal('close');
+            }
+        });
+    });
 });

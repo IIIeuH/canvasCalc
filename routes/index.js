@@ -22,11 +22,21 @@ function authAdm(req, res, next) {
     }
 }
 
+function guest(req, res, next) {
+
+    if (req.isAuthenticated()) {
+        return next();
+    }else{
+        res.redirect('/login');
+    }
+}
 
 /* GET home page. */
 router.get('/', auth, ctrl.main);
+router.get('/res/:id', authAdm, ctrl.mainRes);
 router.put('/', auth, ctrl.add);
 router.post('/draw', auth, ctrl.mainRady);
+router.post('/drawAdmin', authAdm, ctrl.mainResAjax);
 
 
 //авторизация
@@ -48,6 +58,7 @@ router.get('/selectitems',  ctrl.SelectItems);
 router.get('/selectbomparams',  ctrl.SelectBomParams);
 router.get('/selectjobparams',  ctrl.SelectJobParams);
 router.get('/location',  ctrl.location);
+router.get('/users',  ctrl.getUsers);
 
 //admin routs
 router.get('/admin', authAdm, ctrl.mainAdmin);
@@ -56,6 +67,7 @@ router.get('/admin/jobparams/', authAdm, ctrl.jobParams);
 router.get('/admin/bomparams/', authAdm, ctrl.bomParams);
 router.get('/admin/uom/', authAdm,  ctrl.uom);
 router.get('/admin/top_users/', authAdm,  ctrl.top_users);
+router.get('/admin/saveItems/', authAdm,  ctrl.saveItems);
 
 //сохранение данных
 router.post('/admin/items/',  ctrl.addItems);

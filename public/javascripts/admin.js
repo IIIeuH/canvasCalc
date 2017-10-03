@@ -912,3 +912,62 @@ $(function(){
 
 });
 //Конец users
+
+//Начало Сохраненные вариант
+$(function(){
+    var users = $.ajax({
+        url: '/users',
+        type: 'GET',
+        success: function(data){
+        },
+        error: function(err){
+            console.log(err);
+        }
+    });
+    users.then(function(data){
+        data.forEach(function(item){
+            $('.userNameAdmin').each(function(){
+                if(item.TOP_USER_ID == $(this).text()){
+                    console.log(item.TOP_USER);
+                    $(this).text(item.TOP_USER);
+                }
+            });
+
+        });
+
+    });
+});
+//Конец Сохраненные вариант
+
+
+
+function getCookie(name) {
+    var cookie = " " + document.cookie;
+    var search = " " + name + "=";
+    var setStr = null;
+    var offset = 0;
+    var end = 0;
+    if (cookie.length > 0) {
+        offset = cookie.indexOf(search);
+        if (offset != -1) {
+            offset += search.length;
+            end = cookie.indexOf(";", offset);
+            if (end == -1) {
+                end = cookie.length;
+            }
+            setStr = unescape(cookie.substring(offset, end));
+        }
+    }
+    return(setStr);
+}
+
+
+//start redirect for admin
+$(function(){
+    $('.mouseClick').click(function(){
+        document.cookie = 'redId='+$(this).find('.idRedirect').text() +'; path=/;';
+        var data = getCookie('redId') || 0;
+        window.open('/res/'+data, '_blank');
+    });
+});
+//end redirect for admin

@@ -1,8 +1,12 @@
 extends layout
 block content
-  script(src="./javascripts/index.js")
+  script(src="../../javascripts/index.js")
   .container-fluid
-    a.btn.btn-info(href="/logout") Выход
+    if user.TOP_USER_LEVEL === 2
+      h2.h2 Вы зашли под гостевой учетной записью! Для сохранения результатов Вам необходимо
+        a(href="/login") &nbsp;автаризоваться!
+    if user.TOP_USER_LEVEL !== 2
+      a.btn.btn-info(href="/logout") Выход
     -console.log(user);
     if user.TOP_USER_LEVEL === 1
       a.btn.btn-warning(href="/admin") Админка
@@ -10,13 +14,30 @@ block content
       .col-md-3.col-lg-3
         .wrap
           .row
-            .col-md-12
-              h2.h2 Сохраненные варианты
-              select.form-control#ready
-                option(value=0)
-                each item in data
-                  if !item.length
-                    option(value=item.COUNTERTOPS_ID)=item.TOP_NAME
+            if user.TOP_USER_LEVEL !== 2
+              div(style="display: none;")
+                .box-modal#saveModal
+                  .box-modal_close.arcticmodal-close закрыть
+                  table.table.table-hover
+                    thead
+                      th Дата
+                      th Название
+                    tbody
+                      each item in data
+                        if !item.length
+                          tr.clickSave(style="cursor:pointer")
+                            td Date
+                            td=item.TOP_NAME
+                            td.itemNameId.hidden=item.COUNTERTOPS_ID
+              //.col-md-12
+              //  h2.h2 Сохраненные варианты
+              //  select.form-control#ready
+              //    option(value=0)
+              //    each item in data
+              //      if !item.length
+              //        option(value=item.COUNTERTOPS_ID)=item.TOP_NAME
+              .col-md-12
+                button.btn.btn-success(type="button" id="modal") Сохраненные варианты
             .col-md-12
               div(calss='physics-param')
                 h2.h2 Физические параметры
@@ -126,7 +147,8 @@ block content
             .col-md-12
               button.pad.btn.btn-info#draw Нарисовать
               button.pad.btn.btn-warning#calc  Расчитать
-              button.pad.btn.btn-success#save  Сохранить
+              if user.TOP_USER_LEVEL !== 2
+                button.pad.btn.btn-success#save  Сохранить
       .col-md-9.col-lg-9
         .graph
           canvas#canvas

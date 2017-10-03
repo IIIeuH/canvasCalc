@@ -1,0 +1,19 @@
+extends layoutAdmin
+
+block content
+    .container-fuild
+        .row
+            .col-md-12
+                table.table.table-hover.table-bordered
+                    thead
+                        th Дата
+                        th User
+                        th Name
+                    tbody
+                        each item in items
+                            -console.log(item)
+                            tr(style="cursor:pointer").mouseClick
+                                td Дата
+                                td.userNameAdmin=item.TOP_USER_ID
+                                td=item.TOP_NAME
+                                td.hidden.idRedirect=item.COUNTERTOPS_ID
