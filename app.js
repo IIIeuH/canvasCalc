@@ -14,6 +14,7 @@ var index = require('./routes/index');
 var users = require('./routes/users');
 
 var app = express();
+app.locals.moment = require('moment');
 
 var options = {
     user: "tops",

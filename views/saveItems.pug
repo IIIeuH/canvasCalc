@@ -13,7 +13,7 @@ block content
                         each item in items
                             -console.log(item)
                             tr(style="cursor:pointer").mouseClick
-                                td Дата
+                                td=moment(item.TOPDATE).format('DD.MM.YYYY')
                                 td.userNameAdmin=item.TOP_USER_ID
                                 td=item.TOP_NAME
                                 td.hidden.idRedirect=item.COUNTERTOPS_ID

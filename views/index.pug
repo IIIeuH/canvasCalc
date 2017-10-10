@@ -26,7 +26,7 @@ block content
                       each item in data
                         if !item.length
                           tr.clickSave(style="cursor:pointer")
-                            td Date
+                            td=moment(item.TOPDATE).format('DD.MM.YYYY')
                             td=item.TOP_NAME
                             td.itemNameId.hidden=item.COUNTERTOPS_ID
               //.col-md-12
@@ -69,9 +69,6 @@ block content
                     option(value='30') 30
                     option(value='40') 40
                     option(value='60') 60
-                .form-group
-                  label(for='comments') Комментарий
-                  textarea.form-control#comments(rows="5")
                 .input-group
                   label.pad Стороны профиля
                   label.checkbox-inline
@@ -152,6 +149,9 @@ block content
       .col-md-9.col-lg-9
         .graph
           canvas#canvas
+          .form-group
+            label(for='comments') Комментарий
+            textarea.form-control#comments(rows="5")
           .error
     .row
       .col-md-6
