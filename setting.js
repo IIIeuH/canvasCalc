@@ -1,5 +1,5 @@
 var conf = {
-  port: 3217
+  port: 80
 };
 
 module.exports = conf;
