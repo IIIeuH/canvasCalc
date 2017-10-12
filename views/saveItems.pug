@@ -6,6 +6,7 @@ block content
             .col-md-12
                 table.table.table-hover.table-bordered
                     thead
+                        th Id
                         th Дата
                         th User
                         th Name
@@ -13,6 +14,7 @@ block content
                         each item in items
                             -console.log(item)
                             tr(style="cursor:pointer").mouseClick
+                                td=item.COUNTERTOPS_ID
                                 td=moment(item.TOPDATE).format('DD.MM.YYYY')
                                 td.userNameAdmin=item.TOP_USER_ID
                                 td=item.TOP_NAME

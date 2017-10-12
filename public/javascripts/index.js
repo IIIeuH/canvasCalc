@@ -1455,6 +1455,7 @@ $(function(){
         });
         asyncData.then(function(Asdata){
             if(Asdata.length){
+                $('.idNameTable').text(Asdata[0].COUNTERTOPS_ID);
                 var side = Asdata[0].SECTION_SIDE.split('');
                 $('#topName').val(Asdata[0].TOP_NAME);
                 $('#material').val(Asdata[0].ITEMID).change();
