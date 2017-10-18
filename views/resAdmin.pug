@@ -4,12 +4,29 @@ block content
     script(src="../../javascripts/resAdmin.js")
     .container-fluid
         a.btn.btn-info(href="/admin/saveItems/") Назад
-        .row
-            .col-md-3.col-lg-3
+        .row(style="display: flex; flex-wrap: wrap")
+            .col-md-12.col-lg-12.col-sm-12.col-xs-12
                 .wrap
+                    //.row
+                    //    .col-lg-12.col-md-12
+                    //         //div(style="display: none;")
+                    //         //   .box-modal#saveModal
+                    //         //       .box-modal_close.arcticmodal-close закрыть
+                    //         //       table.table.table-hover
+                    //         //           thead
+                    //         //               th Дата
+                    //         //               th Название
+                    //         //           tbody
+                    //         //               each item in data
+                    //         //                   if !item.length
+                    //         //                       tr.clickSave(style="cursor:pointer")
+                    //         //                           td=moment(item.TOPDATE).format('DD.MM.YYYY')
+                    //         //                           td=item.TOP_NAME
+                    //         //                           td.itemNameId.hidden=item.COUNTERTOPS_ID
+                    //        .idNameTable.h3
                     .row
-                        .col-md-12
-                            div(calss='physics-param')
+                        .col-md-12.col-lg-12
+                            div(class='physics-param')
                                 h2.h2 Физические параметры
                                 .input-group
                                     label(for='topName') Название
@@ -39,9 +56,12 @@ block content
                                         option(value='30') 30
                                         option(value='40') 40
                                         option(value='60') 60
-                                .form-group
-                                    label(for='comments') Комментарий
-                                    textarea.form-control#comments(rows="5")
+                                .input-group
+                                    label(for='splice1') Расположение вертикального стыка, мм.
+                                    input.form-control#splice1(type='number')
+                                .input-group
+                                    label(for='splice2') Расположение горизонтального стыка, мм.
+                                    input.form-control#splice2(type='number')
                                 .input-group
                                     label.pad Стороны профиля
                                     label.checkbox-inline
@@ -56,14 +76,11 @@ block content
                                     label.checkbox-inline
                                         input#D(type='checkbox', name='sideProfile', value='D')
                                         |  D
-                                .input-group
-                                    label(for='splice1') Расположение горизонтального стыка, мм.
-                                    input.form-control#splice1(type='number')
-                                .input-group
-                                    label(for='splice2') Расположение вертикальногос стыка, мм.
-                                    input.form-control#splice2(type='number')
                     .row
-                        .col-md-12
+                        .col-md-3
+                            .form-group
+                                label(for='comments') Комментарий
+                                textarea.form-control#comments(rows="5")
                             .parameters-of-sanitary
                                 h2.h2 Параметры сантехники и отверстия
                                 .input-group
@@ -81,9 +98,6 @@ block content
                                     .input-group
                                         label(for='coordinatesY') Координаты центра мойки по оси Y, мм.
                                         input.form-control#coordinatesY(type='number')
-                                    label.checkbox-inline
-                                        input(type='checkbox', name='bottomMounting', value="1")
-                                        | Нижнего монтажа
                                     .side-group
                                         .input-group
                                             label(for='side-a') Сторона A, мм.
@@ -101,27 +115,31 @@ block content
                                         .input-group
                                             label(for='sal') Длина малой полуоси, мм.
                                             input.form-control#sal(type='number')
-                    .row
-                        .col-md-12
-                            h2 Доп. отверстия
-                            table.table.table-striped.table-bordered.table-condensed
-                                thead
-                                    th Номер отверстия
-                                    th X
-                                    th Y
-                                    th D
-                                tbody#dopChild
-                            button.pad.btn.btn-default#dop(onclick='addDop()') Добавить
-                            button.pad.btn.btn-default#drop(onclick='drop()') Удалить
-                    .row
-                        .col-md-12
-                            button.pad.btn.btn-info#draw Нарисовать
-                            button.pad.btn.btn-warning#calc  Расчитать
-            .col-md-9.col-lg-9
-                .graph
-                    canvas#canvas
-                    .error
-        .row
-            .col-md-6
-                .price
-                    h2.h2 0
+                                    .input-group
+                                        label.pad Нижнего монтажа
+                                        label.checkbox-inline
+                                            input(type='checkbox', name='bottomMounting', value="1")
+                                            | &nbsp;
+                                .dopotver
+                                    //h2 Доп. отверстия
+                                    table.table.table-striped.table-bordered.table-condensed
+                                        thead
+                                            th Номер отверстия
+                                            th X
+                                            th Y
+                                            th D
+                                        tbody#dopChild
+                                    button.pad.btn.btn-default#dop(onclick='addDop()') Добавить
+                                    button.pad.btn.btn-default#drop(onclick='drop()') Удалить
+                                .price
+                                    h2.h2 0
+                                button.pad.btn.btn-info.hidden#draw Нарисовать
+                                button.pad.btn.btn-warning#calc  Расчитать
+                                //if user.TOP_USER_LEVEL !== 2
+                                //    button.pad.btn.btn-success#save  Сохранить
+                                button.pad.btn.btn-primary#print  Печать
+                        .col-md-9
+                            .info
+                            .error
+                            .graph
+                                canvas#canvas

@@ -1,0 +1,24 @@
+extends layoutAdmin
+
+block content
+    .container-fluid
+        button.btn.btn-warning(type="button", id="addItemLoc") Добавить
+        button.btn.btn-success.hidden(type="button", id="addTableLoc") Добавить строчку
+        button.btn.btn-warning.hidden(type="button", id="cancelTableLoc") Убрать строчку
+        button.btn.btn-info.hidden(type="button", id="saveItemLoc") Сохранить
+        button.btn.btn-danger.hidden(type="button", id="cancelItemLoc") Отменить
+        .addItemtableLoc
+    .container-fluid
+        .row
+            .col-md-12
+                table.table.table-hover.table-bordered.table-condensed
+                    thead
+                        th Название
+                        th Редактировать/удалить
+                    tbody
+                        each item in items
+                            tr
+                                td=item.TOP_LOCATION_NAME
+                                td
+                                    button(type="button", data-id=item.TOP_LOCATION_ID, data-nameid="TOP_LOCATION_ID", class="close", aria-hidden="true") &times;
+                                    button(type="button", data-red=item.TOP_LOCATION_ID, class="redactorLoc", aria-hidden="true" id=item.TOP_LOCATION_ID) &#9998;

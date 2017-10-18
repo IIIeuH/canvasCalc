@@ -1,8 +1,37 @@
 body {
-  padding: 50px;
+  padding: 0;
+  margin: 0;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
-
+@media print {
+  @page {
+    margin: 1cm;
+  }
+  button.btn, a.btn {display: none;}
+  canvas {width: 1000px; height: 500px}
+}
+.info{
+  margin: 20px;
+}
+.error{
+  margin: 20px;
+}
+.btnAdmin{
+  margin-top: 20px;
+  margin-right: 20px;
+}
+.logout{
+  float: right;
+  margin-top: 20px;
+}
+.input-group{
+  float: left;
+  padding-right: 5px;
+  width: 315px;
+}
+.top{
+  float: left;
+}
 a {
   color: #00B7FF;
 }
@@ -73,6 +102,81 @@ button.redactorBom{
   text-shadow: 0 1px 0 #fff;
   filter: alpha(opacity=20);
   opacity: .5;
+}
+button.redactorUom{
+  -webkit-appearance: none;
+  padding: 0;
+  padding-right: 5px;
+  cursor: pointer;
+  background: 0 0;
+  border: 0;
+}
+.redactorUom{
+  float: right;
+  font-size: 21px;
+  font-weight: 700;
+  line-height: 1;
+  color: #000;
+  text-shadow: 0 1px 0 #fff;
+  filter: alpha(opacity=20);
+  opacity: .5;
+}
+.redactorUser{
+  float: right;
+  font-size: 21px;
+  font-weight: 700;
+  line-height: 1;
+  color: #000;
+  text-shadow: 0 1px 0 #fff;
+  filter: alpha(opacity=20);
+  opacity: .5;
+}
+button.redactorUser{
+  -webkit-appearance: none;
+  padding: 0;
+  padding-right: 5px;
+  cursor: pointer;
+  background: 0 0;
+  border: 0;
+}
+.redactorLoc{
+  float: right;
+  font-size: 21px;
+  font-weight: 700;
+  line-height: 1;
+  color: #000;
+  text-shadow: 0 1px 0 #fff;
+  filter: alpha(opacity=20);
+  opacity: .5;
+}
+button.redactorLoc{
+  -webkit-appearance: none;
+  padding: 0;
+  padding-right: 5px;
+  cursor: pointer;
+  background: 0 0;
+  border: 0;
+}
+.sendMail{
+  float: right;
+  font-size: 21px;
+  font-weight: 700;
+  line-height: 1;
+  color: #000;
+  text-shadow: 0 1px 0 #fff;
+  filter: alpha(opacity=20);
+  opacity: .5;
+}
+button.sendMail{
+  -webkit-appearance: none;
+  padding: 0;
+  padding-right: 5px;
+  cursor: pointer;
+  background: 0 0;
+  border: 0;
+}
+.generator:hover{
+  cursor: pointer;
 }
 .graph{
   width: 100%;

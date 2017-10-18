@@ -3,6 +3,16 @@ var async    = require('async');
 var flash = require('connect-flash');
 var passport    = require('./passport');
 var bcrypt          = require('./crypto');
+var mailer = require('nodemailer');
+
+var transporter = mailer.createTransport({
+    service: 'yandex.ru',
+    auth: {
+        user: 'terra.notification@yandex.ru',
+        pass: 'W4QFdLVWlHtd'
+    }
+});
+
 module.exports.main = function(req, res, next) {
     res.cookie('user', req.user[0].TOP_USER_ID);
     getData(req, function(data){
@@ -105,6 +115,13 @@ module.exports.top_users = function(req, res, next){
     });
 };
 
+module.exports.topLocations = function(req, res, next){
+    topLocations(function(location){
+        res.render('topLocation', { title: 'Местоположение', items: location});
+    });
+};
+
+
 module.exports.itemType = function(req, res, next){
     getItemType(function(data){
         res.json(data);
@@ -136,6 +153,12 @@ module.exports.addUom = function(req, res, next){
 
 module.exports.addUsers = function(req, res, next){
     saveUsers(req.body.data, req.body.col,  function(data){
+        res.json(data);
+    });
+};
+
+module.exports.addTopLocations = function(req, res, next){
+    addTopLocations(req.body.data, req.body.col,  function(data){
         res.json(data);
     });
 };
@@ -200,6 +223,62 @@ module.exports.updateBomParams = function(req, res, next) {
     })
 };
 
+module.exports.updateUom = function(req, res, next) {
+    updateUom(req.body.data, req.body.id, 'uom', function (data) {
+        res.json(data);
+    })
+};
+
+module.exports.updateUsers = function(req, res, next) {
+    updateUsers(req.body.data, req.body.id, 'top_users', function (data) {
+        res.json(data);
+    })
+};
+
+module.exports.updateTopLocation = function(req, res, next) {
+    updateTopLocation(req.body.data, req.body.id, 'top_locations', function (data) {
+        res.json(data);
+    })
+};
+
+module.exports.mail = function(req, res, next) {
+    oracledb.getConnection(
+        {
+            user: "tops",
+            password: "tops",
+            connectString: "(DESCRIPTION =(ADDRESS_LIST = (ADDRESS = (PROTOCOL = TCP)(HOST = webdb.terracorp.ru)(PORT = 1521)))(CONNECT_DATA = (SID = WEBDB)(SERVER = DEDICATED)))"
+        },
+        function (err, connection) {
+            if (err) {
+                console.error(err.message);
+                return;
+            }
+            var query = "SELECT * FROM top_users WHERE top_user_id = " + req.query.id;
+            connection.execute(
+                query, {}, { outFormat: oracledb.OBJECT},
+                function (err, ress) {
+                    if (err) {
+                        console.error(err);
+                        doRelease(connection);
+                    }
+                        doRelease(connection);
+                        console.log(ress.rows[0].TOP_USER_EMAIL);
+                        transporter.sendMail({
+                            from: '<terra.notification@yandex.ru>',
+                            to: ress.rows[0].TOP_USER_EMAIL,
+                            subject: 'Пароль от калькулятора',
+                            text: 'Ваш пароль ' + bcrypt.decrypt(ress.rows[0].TOP_USER_PASSWORD),
+                            html: '<p>Ваш пароль ' + bcrypt.decrypt(ress.rows[0].TOP_USER_PASSWORD)+'</p>'
+                        }, function(err, data){
+                            if(err) console.log(err);
+                            res.json(ress.rows[0]);
+                        });
+
+                });
+        });
+
+};
+
 
 module.exports.add = function(req, res, next) {
     async.waterfall([
@@ -216,6 +295,7 @@ module.exports.add = function(req, res, next) {
                         return;
                     }
                     var itemid = +req.body.itemId;
+                    console.log(req.body);
                     var query = "merge into contertops a using(select :countertops_id countertops_id, :itemid itemid, :width width, :heigth heigth, :section section, :joint_vertical joint_vertical, :joint_horizontal joint_horizontal, :comments comments, :top_name top_name, :section_side section_side, :section_height section_height, :bottom_glue_width bottom_glue_width, :price price, :top_user_id top_user_id, :saved saved from dual) b ON (a.countertops_id=b.countertops_id and b.countertops_id != 0) WHEN matched then update  SET a.itemid=b.itemid,  a.width=b.width,  a.heigth=b.heigth,  a.section=b.section,  a.joint_vertical=b.joint_vertical,  a.joint_horizontal=b.joint_horizontal,  a.comments=b.comments,  a.top_name=b.top_name,  a.section_side=b.section_side,  a.section_height=b.section_height,  a.bottom_glue_width=b.bottom_glue_width,  a.price=b.price,  a.top_user_id=b.top_user_id, a.saved=b.saved when not matched then insert  (itemid,   width,   heigth,   section,   joint_vertical,   joint_horizontal,   comments,   top_name,   section_side,   section_height,   bottom_glue_width,   price,   top_user_id, saved)  values  (b.itemid,   b.width,   b.heigth,   b.section,   b.joint_vertical,   b.joint_horizontal,   b.comments,   b.top_name,   b.section_side,   b.section_height,   b.bottom_glue_width,   b.price,   b.top_user_id, b.saved)";
                     connection.execute(
                         query, [req.body.counterTopId, itemid, req.body.width, req.body.heigth, req.body.section, req.body.joinVertical, req.body.joinHorizontal, req.body.comments, req.body.name, req.body.sectionSide, req.body.sectionHeight, req.body.bottomGlueWidth, req.body.price, req.user[0].TOP_USER_ID, 1], {autoCommit: true},
@@ -244,7 +324,7 @@ module.exports.add = function(req, res, next) {
                     if(req.body.counterTopId !== '0'){
                         cb(null, req.body.counterTopId);
                     }else{
-                        var query = "SELECT MAX(countertops_id) as maxid FROM contertops";
+                        var query = "SELECT * FROM contertops WHERE countertops_id = " + req.body.counterTopId;
                         connection.execute(
                             query, {}, {outFormat: oracledb.OBJECT},
                             function (err, result) {
@@ -271,7 +351,6 @@ module.exports.add = function(req, res, next) {
                         console.error(err.message);
                         return;
                     }
-                    console.log('COUNTEMDDS', counterTopId);
                     var query = "merge into countertops_addon a using (select :COUNTERTOPS_ADDON_ID COUNTERTOPS_ADDON_ID,:ADDON_TYPE_ID ADDON_TYPE_ID, :COUNTERTOPS_ID COUNTERTOPS_ID, :ADDON_X ADDON_X, :ADDON_Y ADDON_Y, :ADDON_A ADDON_A, :ADDON_B ADDON_B, :BOTTOM_MOUNT BOTTOM_MOUNT from dual) b on (a.COUNTERTOPS_ADDON_ID=b.COUNTERTOPS_ADDON_ID and a.COUNTERTOPS_ID=b.COUNTERTOPS_ID and b.COUNTERTOPS_ID != 0) when matched then update set a.ADDON_TYPE_ID=b.ADDON_TYPE_ID, a.ADDON_X=b.ADDON_X, a.ADDON_Y=b.ADDON_Y, a.ADDON_A=b.ADDON_A, a.ADDON_B=b.ADDON_B, a.BOTTOM_MOUNT=b.BOTTOM_MOUNT when not matched then insert (ADDON_TYPE_ID, COUNTERTOPS_ID, ADDON_X, ADDON_Y, ADDON_A, ADDON_B, BOTTOM_MOUNT) values (b.ADDON_TYPE_ID, b.COUNTERTOPS_ID, b.ADDON_X, b.ADDON_Y, b.ADDON_A, b.ADDON_B, b.BOTTOM_MOUNT)";
                     connection.execute(
                         query, [req.body.moiFormId, req.body.moiForm, counterTopId, req.body.coordinatesX, req.body.coordinatesY, (req.body.diameter || req.body.sideA || req.body.lots), (req.body.sideB || req.body.sal), req.body.bottomMounting], {autoCommit: true},
@@ -299,23 +378,40 @@ module.exports.add = function(req, res, next) {
                         return;
                     }
                     var res = JSON.parse(req.body.dop);
-                    async.forEachOf(res, function(item, k, done){
-                        var query = "merge into countertops_addon a using (select :COUNTERTOPS_ADDON_ID COUNTERTOPS_ADDON_ID,:ADDON_TYPE_ID ADDON_TYPE_ID, :COUNTERTOPS_ID COUNTERTOPS_ID, :ADDON_X ADDON_X, :ADDON_Y ADDON_Y, :ADDON_A ADDON_A, :ADDON_B ADDON_B, :BOTTOM_MOUNT BOTTOM_MOUNT from dual) b on (a.COUNTERTOPS_ADDON_ID=b.COUNTERTOPS_ADDON_ID and a.COUNTERTOPS_ID=b.COUNTERTOPS_ID and b.COUNTERTOPS_ID!=0) when matched then update set a.ADDON_TYPE_ID=b.ADDON_TYPE_ID, a.ADDON_X=b.ADDON_X, a.ADDON_Y=b.ADDON_Y, a.ADDON_A=b.ADDON_A, a.ADDON_B=b.ADDON_B, a.BOTTOM_MOUNT=b.BOTTOM_MOUNT when not matched then insert (ADDON_TYPE_ID, COUNTERTOPS_ID, ADDON_X, ADDON_Y, ADDON_A, ADDON_B, BOTTOM_MOUNT) values (b.ADDON_TYPE_ID, b.COUNTERTOPS_ID, b.ADDON_X, b.ADDON_Y, b.ADDON_A, b.ADDON_B, b.BOTTOM_MOUNT)";
+                    console.log('COUNTEMDDS', counterTopId, res);
+                    if(res.length > 0){
+                        async.forEachOf(res, function(item, k, done){
+                            var query = "merge into countertops_addon a using (select :COUNTERTOPS_ADDON_ID COUNTERTOPS_ADDON_ID,:ADDON_TYPE_ID ADDON_TYPE_ID, :COUNTERTOPS_ID COUNTERTOPS_ID, :ADDON_X ADDON_X, :ADDON_Y ADDON_Y, :ADDON_A ADDON_A, :ADDON_B ADDON_B, :BOTTOM_MOUNT BOTTOM_MOUNT from dual) b on (a.COUNTERTOPS_ADDON_ID=b.COUNTERTOPS_ADDON_ID and a.COUNTERTOPS_ID=b.COUNTERTOPS_ID and b.COUNTERTOPS_ID!=0) when matched then update set a.ADDON_TYPE_ID=b.ADDON_TYPE_ID, a.ADDON_X=b.ADDON_X, a.ADDON_Y=b.ADDON_Y, a.ADDON_A=b.ADDON_A, a.ADDON_B=b.ADDON_B, a.BOTTOM_MOUNT=b.BOTTOM_MOUNT when not matched then insert (ADDON_TYPE_ID, COUNTERTOPS_ID, ADDON_X, ADDON_Y, ADDON_A, ADDON_B, BOTTOM_MOUNT) values (b.ADDON_TYPE_ID, b.COUNTERTOPS_ID, b.ADDON_X, b.ADDON_Y, b.ADDON_A, b.ADDON_B, b.BOTTOM_MOUNT)";
+                            connection.execute(
+                                query, [item.dopId || null, 9999, counterTopId, item.inputX || null, item.inputY || null, item.inputD || null, null, null], {autoCommit: true},
+                                function (err, result) {
+                                    if (err) {
+                                        console.log(err);
+                                        doRelease(connection);
+                                        cb(err);
+                                    }
+                                    doRelease(connection);
+                                    done();
+                                });
+                        }, function(err){
+                            if(err) console.log(err);
+                            cb(null);
+                        });
+                    }else{
+                        var query = "DELETE FROM countertops_addon WHERE countertops_id = " + counterTopId;
+                        console.log(query);
                         connection.execute(
-                            query, [item.dopId, 9999, counterTopId, item.inputX, item.inputY, item.inputD, null, null], {autoCommit: true},
-                            function (err, result) {
+                            query,
+                            function (err) {
                                 if (err) {
                                     console.log(err);
                                     doRelease(connection);
                                     cb(err);
                                 }
                                 doRelease(connection);
-                                done();
+                                cb();
                             });
-                    }, function(err){
-                        if(err) console.log(err);
-                        cb(null);
-                    });
+                    }
                 })
         }
     ], function(err, result){
@@ -705,6 +801,145 @@ function updateBomParams(req, id, col, cb){
 
 //конец обновления спецификации
 
+//начало обновления Uom
+function updateUom(req, id, col, cb){
+    oracledb.getConnection(
+        {
+            user: "tops",
+            password: "tops",
+            connectString: "(DESCRIPTION =(ADDRESS_LIST = (ADDRESS = (PROTOCOL = TCP)(HOST = webdb.terracorp.ru)(PORT = 1521)))(CONNECT_DATA = (SID = WEBDB)(SERVER = DEDICATED)))"
+        },
+        function (err, connection) {
+            if (err) {
+                console.error(err.message);
+                return;
+            }
+            req = JSON.parse(req);
+            console.log(req[0],req, id,col);
+            var query = [];
+            query.push("UPDATE " + col);
+            query.push("SET");
+            query.push("uom = :uom");
+            query.push("WHERE uoms_id= :uoms_id");
+            query = query.join(' ');
+            console.log(query);
+            connection.execute(
+                query, {
+                    uoms_id: id,
+                    uom: req[0]
+                }, {autoCommit: true},
+                function (err, result) {
+                    if (err) {
+                        console.log(err);
+                        doRelease(connection);
+                        cb(err);
+                    }
+                    console.log(result);
+                    doRelease(connection);
+                    cb(result);
+                });
+        });
+}
+
+//конец обновления Uom
+
+
+//начало обновления Users
+function updateUsers(req, id, col, cb){
+    oracledb.getConnection(
+        {
+            user: "tops",
+            password: "tops",
+            connectString: "(DESCRIPTION =(ADDRESS_LIST = (ADDRESS = (PROTOCOL = TCP)(HOST = webdb.terracorp.ru)(PORT = 1521)))(CONNECT_DATA = (SID = WEBDB)(SERVER = DEDICATED)))"
+        },
+        function (err, connection) {
+            if (err) {
+                console.error(err.message);
+                return;
+            }
+            req = JSON.parse(req);
+            console.log(req[0],req, id,col);
+            var query = [];
+            query.push("UPDATE " + col);
+            query.push("SET");
+            query.push("top_location_id = :top_location_id,");
+            query.push("top_user_level = :top_user_level,");
+            query.push("top_user = :top_user,");
+            query.push("top_user_fio = :top_user_fio,");
+            query.push("top_user_address = :top_user_address,");
+            query.push("top_user_phone = :top_user_phone,");
+            query.push("top_user_email = :top_user_email");
+            query.push("WHERE top_user_id= :top_user_id");
+            query = query.join(' ');
+            connection.execute(
+                query, {
+                    top_user_id: id,
+                    top_location_id: req[0],
+                    top_user_level: req[1],
+                    top_user: req[2],
+                    top_user_fio: req[3],
+                    top_user_address: req[4],
+                    top_user_phone: req[5],
+                    top_user_email: req[6]
+                }, {autoCommit: true},
+                function (err, result) {
+                    if (err) {
+                        console.log(err);
+                        doRelease(connection);
+                        cb(err);
+                    }
+                    console.log(result);
+                    doRelease(connection);
+                    cb(result);
+                });
+        });
+}
+
+//конец обновления Users
+
+
+//начало обновления Top_locations
+function updateTopLocation(req, id, col, cb){
+    oracledb.getConnection(
+        {
+            user: "tops",
+            password: "tops",
+            connectString: "(DESCRIPTION =(ADDRESS_LIST = (ADDRESS = (PROTOCOL = TCP)(HOST = webdb.terracorp.ru)(PORT = 1521)))(CONNECT_DATA = (SID = WEBDB)(SERVER = DEDICATED)))"
+        },
+        function (err, connection) {
+            if (err) {
+                console.error(err.message);
+                return;
+            }
+            req = JSON.parse(req);
+            console.log(req[0],req, id,col);
+            var query = [];
+            query.push("UPDATE " + col);
+            query.push("SET");
+            query.push("top_location_name = :top_location_name");
+            query.push("WHERE top_location_id= :top_location_id");
+            query = query.join(' ');
+            connection.execute(
+                query, {
+                    top_location_id: id,
+                    top_location_name: req[0]
+                }, {autoCommit: true},
+                function (err, result) {
+                    if (err) {
+                        console.log(err);
+                        doRelease(connection);
+                        cb(err);
+                    }
+                    console.log(result);
+                    doRelease(connection);
+                    cb(result);
+                });
+        });
+}
+
+//конец обновления Top_locations
+
+
 //Сохранение в таблицу jobparams
 function saveJobParams(req, col, cb){
     oracledb.getConnection(
@@ -880,7 +1115,10 @@ function saveUsers(req, col, cb){
                 item[2] = "'" + item[2]+"'";
                 item[3] = "'" + bcrypt.encrypt(item[3])+"'";
                 item[4] = "'" + item[4]+"'";
-                query.push("INTO top_users (top_location_id, top_user_level, top_user, top_user_password, top_user_fio) VALUES");
+                item[5] = "'" + item[5]+"'";
+                item[6] = "'" + item[6]+"'";
+                item[7] = "'" + item[7]+"'";
+                query.push("INTO top_users (top_location_id, top_user_level, top_user, top_user_password, top_user_fio, top_user_address, top_user_phone, top_user_email) VALUES");
                 query.push("(");
                 for(var i = 0; i < item.length; i ++){
                     query.push(item[i]);
@@ -892,6 +1130,56 @@ function saveUsers(req, col, cb){
             query.push('SELECT 1 FROM DUAL');
             query = query.join(' ');
             console.log(query);
+            connection.execute(
+                query, {}, {autoCommit: true},
+                function (err, result) {
+                    if (err) {
+                        console.log(err);
+                        doRelease(connection);
+                        cb(err);
+                    }
+                    console.log(result);
+                    doRelease(connection);
+                    cb(result);
+                });
+        });
+}
+
+//Сохранение в таблицу TOP_LOCATIONS
+function addTopLocations(req, col, cb){
+    oracledb.getConnection(
+        {
+            user: "tops",
+            password: "tops",
+            connectString: "(DESCRIPTION =(ADDRESS_LIST = (ADDRESS = (PROTOCOL = TCP)(HOST = webdb.terracorp.ru)(PORT = 1521)))(CONNECT_DATA = (SID = WEBDB)(SERVER = DEDICATED)))"
+        },
+        function (err, connection) {
+            if (err) {
+                console.error(err.message);
+                return;
+            }
+            req = JSON.parse(req);
+            col = JSON.parse(col);
+            var query = [];
+            console.log(req);
+            query.push("INSERT ALL ");
+            req.forEach(function(item, i){
+                query.push("INTO top_locations (top_location_name) VALUES");
+                query.push("(");
+                for(var i = 0; i < item.length; i ++){
+                    if(i === 0){
+                        query.push("'"+item[i]+"'");
+                        query.push(",");
+                    }else{
+                        query.push(+item[i]);
+                        query.push(",");
+                    }
+                }
+                delete query[query.length-1];
+                query.push(")");
+            });
+            query.push('SELECT 1 FROM DUAL');
+            query = query.join(' ');
             connection.execute(
                 query, {}, {autoCommit: true},
                 function (err, result) {
@@ -1063,6 +1351,34 @@ function getUsers(cb){
                 return;
             }
             var query = "SELECT * FROM top_users WHERE top_user_id > 2";
+            connection.execute(
+                query, {}, { outFormat: oracledb.OBJECT},
+                function (err, result) {
+                    if (err) {
+                        console.error(err);
+                        doRelease(connection);
+                        cb(err);
+                    }
+                    doRelease(connection);
+                    cb(result.rows);
+                });
+        });
+}
+
+//получение всей таблицы TOP_LOCATIONS
+function topLocations(cb){
+    oracledb.getConnection(
+        {
+            user: "tops",
+            password: "tops",
+            connectString: "(DESCRIPTION =(ADDRESS_LIST = (ADDRESS = (PROTOCOL = TCP)(HOST = webdb.terracorp.ru)(PORT = 1521)))(CONNECT_DATA = (SID = WEBDB)(SERVER = DEDICATED)))"
+        },
+        function (err, connection) {
+            if (err) {
+                console.error(err.message);
+                return;
+            }
+            var query = "SELECT * FROM top_locations";
             connection.execute(
                 query, {}, { outFormat: oracledb.OBJECT},
                 function (err, result) {

@@ -63,7 +63,8 @@ function(req, username, password, done) {
                     if (!result.rows.length) {
                         return done(null, false, req.flash('message','Пользователь '+username+' не найден!'));
                     }
-                    if( bcrypt.decrypt(password, result.rows[0].TOP_USER_PASSWORD)){
+                    if(password == bcrypt.decrypt(result.rows[0].TOP_USER_PASSWORD)){
+                    //if( bcrypt.decrypt(password, result.rows[0].TOP_USER_PASSWORD)){
                         return done(null, result.rows[0]);
                     }else{
                         return done(null, false, req.flash('message','Пароль введен не верно!'));

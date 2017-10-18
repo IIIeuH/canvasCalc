@@ -68,6 +68,7 @@ router.get('/admin/bomparams/', authAdm, ctrl.bomParams);
 router.get('/admin/uom/', authAdm,  ctrl.uom);
 router.get('/admin/top_users/', authAdm,  ctrl.top_users);
 router.get('/admin/saveItems/', authAdm,  ctrl.saveItems);
+router.get('/admin/top_locations/', authAdm,  ctrl.topLocations);
 
 //сохранение данных
 router.post('/admin/items/',  ctrl.addItems);
@@ -75,13 +76,20 @@ router.post('/admin/jobparams/',  ctrl.addJobParams);
 router.post('/admin/bomparams/',  ctrl.addBomParams);
 router.post('/admin/uom/',  ctrl.addUom);
 router.post('/admin/top_users/',  ctrl.addUsers);
+router.post('/admin/top_locations/',  ctrl.addTopLocations);
 
 //обновление данных
 router.put('/admin/items',  ctrl.updateItems);
 router.put('/admin/jobparams',  ctrl.updateJobParams);
 router.put('/admin/bomparams',  ctrl.updateBomParams);
+router.put('/admin/uom',  ctrl.updateUom);
+router.put('/admin/top_users',  ctrl.updateUsers);
+router.put('/admin/top_locations',  ctrl.updateTopLocation);
 
 //дулаение итема
 router.delete('/delete',  ctrl.del);
+//отправка почты
+router.get('/mail',  ctrl.mail);
+
 
 module.exports = router;

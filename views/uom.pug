@@ -1,13 +1,14 @@
 extends layoutAdmin
 
 block content
-    button.btn.btn-warning(type="button", id="addItemUom") Добавить
-    button.btn.btn-success.hidden(type="button", id="addTableUom") Добавить строчку
-    button.btn.btn-warning.hidden(type="button", id="cancelTableUom") Убрать строчку
-    button.btn.btn-info.hidden(type="button", id="saveItemUom") Сохранить
-    button.btn.btn-danger.hidden(type="button", id="cancelItemUom") Отменить
-    .addItemtable
-    .container-fuild
+    .container-fluid
+        button.btn.btn-warning(type="button", id="addItemUom") Добавить
+        button.btn.btn-success.hidden(type="button", id="addTableUom") Добавить строчку
+        button.btn.btn-warning.hidden(type="button", id="cancelTableUom") Убрать строчку
+        button.btn.btn-info.hidden(type="button", id="saveItemUom") Сохранить
+        button.btn.btn-danger.hidden(type="button", id="cancelItemUom") Отменить
+        .addItemtable
+    .container-fluid
         .row
             .col-md-12
                 table.table.table-hover.table-bordered.table-condensed
@@ -20,3 +21,4 @@ block content
                                 td=item.UOM
                                 td
                                     button(type="button", data-id=item.UOMS_ID, data-nameid="UOMS_ID" class="close", aria-hidden="true") &times;
+                                    button(type="button", data-red=item.UOMS_ID, class="redactorUom", aria-hidden="true" id=item.UOMS_ID) &#9998;

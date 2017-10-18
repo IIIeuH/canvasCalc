@@ -55,7 +55,11 @@ $(function(){
             });
             $('#splice1').val(Asdata[0].JOINT_VERTICAL);
             $('#splice2').val(Asdata[0].JOINT_HORIZONTAL);
-            $('.price').find('h2').text(Asdata[0].PRICE);
+            $('.price').find('h2').text(Asdata[0].PRICE).priceFormat({
+                prefix: '',
+                centsLimit: 0,
+                suffix: ' руб.'
+            });
             //$("#profile-heigth option[value=" + Asdata[0].SECTION_HEIGHT + "]").attr('selected', 'true').text(Asdata[0].SECTION_HEIGHT);
             Asdata[1].forEach(function(item){
                 if(item.BOTTOM_MOUNT === 0 || item.BOTTOM_MOUNT === 1){

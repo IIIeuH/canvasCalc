@@ -26,6 +26,83 @@ window.onload = function(){
             draw();
         }
     };
+    $('#width').change(function() {
+        if(validateDrow() !== false){
+            draw();
+        }
+    });
+    $('#depth').change(function() {
+        if(validateDrow() !== false){
+            draw();
+        }
+    });
+    $('.checkbox-inline').click(function(){
+        if(validateDrow() !== false){
+            draw();
+        }
+    });
+    $('#splice1').change(function(){
+        if(validateDrow() !== false){
+            draw();
+        }
+    });
+    $('#splice2').change(function(){
+        if(validateDrow() !== false){
+            draw();
+        }
+    });
+    $('#coordinatesX').change(function(){
+        if(validateDrow() !== false){
+            draw();
+        }
+    });
+    $('#coordinatesY').change(function(){
+        if(validateDrow() !== false){
+            draw();
+        }
+    });
+    $('#diameter').change(function(){
+        if(validateDrow() !== false){
+            draw();
+        }
+    });
+    $('#side-a').change(function(){
+        if(validateDrow() !== false){
+            draw();
+        }
+    });
+    $('#side-b').change(function(){
+        if(validateDrow() !== false){
+            draw();
+        }
+    });
+    $('#lots').change(function(){
+        if(validateDrow() !== false){
+            draw();
+        }
+    });
+    $('#sal').change(function(){
+        if(validateDrow() !== false){
+            draw();
+        }
+    });
+    $(document).on('change', '.inputX', function(){
+        if(validateDrow() !== false){
+            draw();
+        }
+    });
+    $(document).on('change', '.inputY', function(){
+        if(validateDrow() !== false){
+            draw();
+        }
+    });
+    $(document).on('change', '.inputD', function(){
+        if(validateDrow() !== false){
+            draw();
+        }
+    });
+
+
     document.querySelector('#moi-form').onchange = function(){
         if(!document.querySelector('#moi-form').value){
             document.querySelector('#hid').classList.add('hidden');
@@ -64,21 +141,11 @@ window.onload = function(){
             $('#gluing').removeClass('hidden');
         }
     });
-
-    // $('#canvas').mousemove(function(e){
-    //     // положение элемента
-    //     var pos = $(this).offset();
-    //     console.log((e.pageX*100)/draw().width+500, pos.left, pos.top);
-    //     var elem_left = pos.left;
-    //     var elem_top = pos.top;
-    //     // положение курсора внутри элемента
-    //     var Xinner = draw().width - elem_left;
-    //     var Yinner = e.pageY - elem_top;
-    //     console.log("X: " + Xinner + " Y: " + Yinner); // вывод результата в консоль
-    // });
 };
 
 function validateDrow(){
+    $('.error').empty();
+    $('.info').empty();
     var width = +$('#width').val();
     var splice1 = +$('#splice1').val();
     var height = +$('#depth').val();
@@ -247,6 +314,7 @@ function draw(){
     var w = width;
     var h = heigth;
     if(width > 1200){
+        count = 0;
         while(width > 1200){
             width = width - 1;
             count +=1;
@@ -258,10 +326,12 @@ function draw(){
         procY = heigth * 100 / h;
     }
     if(heigth > 600){
+        count = 0;
         while(heigth > 600){
             heigth = heigth - 1;
             count +=1;
         }
+
         procX = count * 100 / h;
         width = ((100-procX) * width)/100;
         procX = width * 100 / h;
@@ -356,17 +426,17 @@ function draw(){
                 ctx.restore();
                 ctx.closePath();
                 he += 10;
-            }else if((h+3)+30 < heigth + 60){
+            }else if((he+3)+30 < heigth + 60){
                 ctx.beginPath();
                 ctx.save();
                 ctx.strokeStyle="#078eff";
                 ctx.lineWidth = 1;
-                ctx.moveTo(x+30, h+30);
-                ctx.lineTo(x+30, (h+5)+30);
+                ctx.moveTo(x+30, he+30);
+                ctx.lineTo(x+30, (he+10)+30);
                 ctx.stroke();
                 ctx.restore();
                 ctx.closePath();
-                he += 5;
+                he += 10;
             }
         }
         ctx.beginPath();
@@ -376,7 +446,7 @@ function draw(){
         ctx.fillStyle="#000000";
         ctx.font = "italic 11pt Arial";
         ctx.fillStyle = "#078eff";
-        ctx.fillText("стык 1 по X", (x-30)/2, heigth + 43);
+        ctx.fillText("стык 1 по X, "+$('#splice1').val()+" мм.", (x-30)/2, heigth + 43);
         ctx.stroke();
         ctx.restore();
         ctx.closePath();
@@ -417,11 +487,11 @@ function draw(){
         ctx.moveTo(15, heigth + 30);
         ctx.lineTo(15, y + 30);
         ctx.save();
-        ctx.translate(13, (heigth+70) - n/2);
+        ctx.translate(13, (heigth + y + 60)/2);
         ctx.rotate(270*Math.PI/180);
         ctx.font = "italic 11pt Arial";
         ctx.fillStyle = "#078eff";
-        ctx.fillText("cтык 2 по Y", 0, 0);
+        ctx.fillText("cтык 2 по Y, "+$('#splice2').val()+" мм.", 0, 0);
         ctx.restore();
         ctx.stroke();
         ctx.restore();
@@ -505,7 +575,7 @@ function draw(){
         ctx.fillStyle = "#000";
         ctx.font = "11px Helvetica";
         ctx.lineWidth = 1;
-        ctx.fillText(coorXOut+";"+coorYOut, coordX +15, coordY+15);
+        ctx.fillText("D("+diametr+")"+coorXOut+";"+coorYOut, coordX , coordY+15);
         ctx.stroke();
         ctx.restore();
         ctx.closePath();
@@ -570,7 +640,7 @@ function draw(){
         ctx.fillStyle = "#000";
         ctx.font = "11px Helvetica";
         ctx.lineWidth = 1;
-        ctx.fillText(coorXOut+";"+coorYOut, coordX +15, coordY+15);
+        ctx.fillText("("+sideA+"x"+sideB+")"+coorXOut+";"+coorYOut, coordX, coordY+15);
         ctx.stroke();
         ctx.restore();
         ctx.closePath();
@@ -644,7 +714,7 @@ function draw(){
         ctx.fillStyle = "#000";
         ctx.font = "11px Helvetica";
         ctx.lineWidth = 1;
-        ctx.fillText(coorXOut+";"+coorYOut, coordX +15, coordY+15);
+        ctx.fillText("a("+lots+") b("+sal+") "+coorXOut+";"+coorYOut, coordX, coordY+15);
         ctx.stroke();
         ctx.restore();
         ctx.closePath();
@@ -684,6 +754,7 @@ function draw(){
             var inputX = item.querySelector('.inputX').value;
             var inputY = item.querySelector('.inputY').value;
             var inputD = item.querySelector('.inputD').value;
+            var d = inputD;
             var coorXOut = inputX;
             var coorYOut = inputY;
             procX = inputX * 100 / w;
@@ -714,7 +785,7 @@ function draw(){
             ctx.fillStyle = "#000";
             ctx.font = "11px Helvetica";
             ctx.lineWidth = 1;
-            ctx.fillText(coorXOut+";"+coorYOut, inputX +15, inputY+15);
+            ctx.fillText("d("+d+")"+coorXOut+";"+coorYOut, inputX, inputY+15);
             ctx.stroke();
             ctx.restore();
             ctx.closePath();
@@ -751,6 +822,7 @@ function draw(){
     var coorder = {};
     coorder.width = width;
     coorder.heigth = heigth;
+    console.log(width, heigth);
     return coorder;
 }
 
@@ -768,6 +840,7 @@ function drop(){
 }
 
 $(function(){
+
     var width,              //Ширина
         heigth,             //Высота
         section,            //Вариант профиля
@@ -822,7 +895,7 @@ $(function(){
             lots:               $('#lots').val(),
             sal:                $('#sal').val(),
             dop:                JSON.stringify(mas),
-            price:              $('.price h2').text(),
+            price:              $('.price h2').text().replace(/[^0-9]/gim,''),
             itemId:             $('#material').val(),
             counterTopId:       getCookie('refere') || 0,
             moiFormId:          $('#idFormMoi').val()
@@ -894,6 +967,12 @@ $(function(){
                     inputSelect = item;
                 }
             });
+            $('.info').append(
+                '<div class="alert alert-info">' +
+                '<a href="#" class="close" data-dismiss="alert" aria-label="close" title="close">×</a>' +
+                '<strong>Внимание!</strong> Максимальная ширина столешницы без стыка не более '+inputSelect.ITEMWIDTH+' мм.' +
+                '</div>'
+            );
             if($('#profile-option').val() === '1') {
                 elem =
                     '<select class="form-control profile-heigth" id="profile-heigth">' +
@@ -916,6 +995,46 @@ $(function(){
             $('#sel').append(elem);
         });
     });
+
+    $('#width').change(function() {
+        var inputSelect;
+        var itemid = $('#material').val();
+        var that = $(this);
+        items.then(function (data) {
+            data.forEach(function (item) {
+                if (item.ITEMID == itemid) {
+                    inputSelect = item;
+                }
+            });
+            if(inputSelect){
+                if (inputSelect.ITEMWIDTH < that.val()) {
+                    $('#splice1').val(inputSelect.ITEMWIDTH);
+                    draw();
+                }
+            }
+        });
+    });
+
+    $('#depth').change(function() {
+        var inputSelect;
+        var itemid = $('#material').val();
+        var that = $(this);
+        items.then(function (data) {
+            data.forEach(function (item) {
+                if (item.ITEMID == itemid) {
+                    inputSelect = item;
+                }
+            });
+            if(inputSelect){
+                if (inputSelect.ITEMHEIGHT < that.val()) {
+                    $('#splice2').val(inputSelect.ITEMHEIGHT);
+                    draw();
+                }
+            }
+        });
+    });
+
+
     $('.input-group').on('change','#profile-option', function(){
         var elem;
         var inputSelect;
@@ -1348,7 +1467,12 @@ $(function(){
 
                     countertopCost = Math.round(materialCost + profileGlueCost+ spliceGlueCost + profileCost + gidrorezCutCost  + lowerAssemCost);
 
-                    $('.price h2').text(countertopCost);
+                    //console.log(materialCost , profileGlueCost, spliceGlueCost , profileCost , gidrorezCutCost  , lowerAssemCost);
+                    $('.price h2').text(countertopCost).priceFormat({
+                        prefix: '',
+                        centsLimit: 0,
+                        suffix: ' руб.'
+                    });
 
                 })
 
@@ -1356,6 +1480,11 @@ $(function(){
 
         });
 
+    });
+    $('.price h2').priceFormat({
+        prefix: '',
+        centsLimit: 0,
+        suffix: ' руб.'
     });
 
 });
@@ -1475,7 +1604,11 @@ $(function(){
                 });
                 $('#splice1').val(Asdata[0].JOINT_VERTICAL);
                 $('#splice2').val(Asdata[0].JOINT_HORIZONTAL);
-                $('.price').find('h2').text(Asdata[0].PRICE);
+                $('.price').find('h2').text(Asdata[0].PRICE).priceFormat({
+                    prefix: '',
+                    centsLimit: 0,
+                    suffix: ' руб.'
+                });
                 //$("#profile-heigth option[value=" + Asdata[0].SECTION_HEIGHT + "]").attr('selected', 'true').text(Asdata[0].SECTION_HEIGHT);
                 Asdata[1].forEach(function(item){
                     if(item.BOTTOM_MOUNT === 0 || item.BOTTOM_MOUNT === 1){
@@ -1508,8 +1641,12 @@ $(function(){
                     }
                 });
                 $('#draw').click();
+                $('#calc').click();
                 $.arcticmodal('close');
             }
         });
+    });
+    $('#print').click(function(){
+        window.print();
     });
 });

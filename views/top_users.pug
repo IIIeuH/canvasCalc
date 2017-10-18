@@ -1,13 +1,14 @@
 extends layoutAdmin
 
 block content
-    button.btn.btn-warning(type="button", id="addItemUsers") Добавить
-    button.btn.btn-success.hidden(type="button", id="addTableUsers") Добавить строчку
-    button.btn.btn-warning.hidden(type="button", id="cancelTableUsers") Убрать строчку
-    button.btn.btn-info.hidden(type="button", id="saveItemUsers") Сохранить
-    button.btn.btn-danger.hidden(type="button", id="cancelItemUsers") Отменить
-    .addItemtable
-    .container-fuild
+    .container-fluid
+        button.btn.btn-warning(type="button", id="addItemUsers") Добавить
+        button.btn.btn-success.hidden(type="button", id="addTableUsers") Добавить строчку
+        button.btn.btn-warning.hidden(type="button", id="cancelTableUsers") Убрать строчку
+        button.btn.btn-info.hidden(type="button", id="saveItemUsers") Сохранить
+        button.btn.btn-danger.hidden(type="button", id="cancelItemUsers") Отменить
+        .addItemtable
+    .container-fluid
         .row
             .col-md-12
                 table.table.table-hover.table-bordered.table-condensed
@@ -15,14 +16,24 @@ block content
                         th Местоположение
                         th Уровень доступа
                         th Логин
-                        th Пароль
+                        //th Пароль
                         th ФИО
+                        th Адрес
+                        th Телефон
+                        th Email
+                        th Редактировать/удалить
                     tbody
                         each item in items
                             tr
-                                td=item.TOP_LOCATION_ID
-                                td=item.TOP_USER_LEVEL
+                                td.locationName=item.TOP_LOCATION_ID
+                                td.userRole=item.TOP_USER_LEVEL
                                 td=item.TOP_USER
-                                td=item.TOP_USER_PASSWORD
+                                //td.pwdDis=item.TOP_USER_PASSWORD
                                 td=item.TOP_USER_FIO
+                                td=item.TOP_USER_ADDRESS
+                                td=item.TOP_USER_PHONE
+                                td=item.TOP_USER_EMAIL
+                                td
                                     button(type="button", data-id=item.TOP_USER_ID, data-nameid="TOP_USER_ID", class="close", aria-hidden="true") &times;
+                                    button(type="button", data-red=item.TOP_USER_ID, class="redactorUser", aria-hidden="true" id=item.TOP_USER_ID) &#9998;
+                                    button(type="button", data-mail=item.TOP_USER_EMAIL, data-id=item.TOP_USER_ID, class="sendMail", aria-hidden="true") &#9993;
