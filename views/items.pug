@@ -2,17 +2,39 @@ extends layoutAdmin
 
 block content
     .container-fluid
-        button.btn.btn-warning(type="button", id="addItem") Добавить
-        button.btn.btn-success.hidden(type="button", id="addTable") Добавить строчку
-        button.btn.btn-warning.hidden(type="button", id="cancelTable") Убрать строчку
-        button.btn.btn-info.hidden(type="button", id="saveItem") Сохранить
-        button.btn.btn-danger.hidden(type="button", id="cancelItem") Отменить
+        .row
+            .col-md-4
+                button.btn.btn-warning(type="button", id="addItem") Добавить
+                button.btn.btn-success.hidden(type="button", id="addTable") Добавить строчку
+                button.btn.btn-warning.hidden(type="button", id="cancelTable") Убрать строчку
+                button.btn.btn-info.hidden.saveItem(type="button") Сохранить
+                button.btn.btn-danger.hidden(type="button", id="cancelItem") Отменить
+            .col-md-2
+                .file_upload
+                    button.btn.btn-info(type="button" data-loading-text="Обработка...") Загрузить
+                    div Файл не выбран
+                    input(type="file" id="upload")
+        div(style="display: none;")
+            .box-modal#loadCsv
+                .box-modal_close.arcticmodal-close закрыть
+                table.table.table-bordered.table-hover#tablem
+                    thead
+                        th Axapta ID
+                        th Имя
+                        th Тип материала
+                        th Толщина
+                        th Высота
+                        th Ширина
+                        th Цена
+                    tbody#csvContent
+                button.saveItem.btn.btn-danger(type="button") Подтверждение
         .addItemtable
     .container-fluid
         .row
             .col-md-12
                 table.table.table-hover.table-bordered.table-condensed
                     thead
+                        th AxaptaId
                         th ItemName(Название)
                         th ItemType(Тип)
                         th ItemHeight(Высота, мм)
@@ -23,6 +45,7 @@ block content
                     tbody
                         each item in items
                             tr
+                                td=item.ITEM_AX_ID
                                 td=item.ITEMNAME
                                 td.itemType=item.ITEM_TYPES_ID
                                 td=item.ITEMHEIGHT

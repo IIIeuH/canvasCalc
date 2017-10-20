@@ -90,6 +90,8 @@ router.put('/admin/top_locations',  ctrl.updateTopLocation);
 router.delete('/delete',  ctrl.del);
 //отправка почты
 router.get('/mail',  ctrl.mail);
+//Загрузка csv
+router.post('/upload', ctrl.upload);
 
 
 module.exports = router;

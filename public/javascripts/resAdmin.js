@@ -58,7 +58,14 @@ $(function(){
             $('.price').find('h2').text(Asdata[0].PRICE).priceFormat({
                 prefix: '',
                 centsLimit: 0,
-                suffix: ' руб.'
+                suffix: ' руб.',
+                thousandsSeparator: ' '
+            });
+            $('.pricedoubl').find('h2').text(Asdata[0].PRICE).priceFormat({
+                prefix: '',
+                centsLimit: 0,
+                suffix: ' руб.',
+                thousandsSeparator: ' '
             });
             //$("#profile-heigth option[value=" + Asdata[0].SECTION_HEIGHT + "]").attr('selected', 'true').text(Asdata[0].SECTION_HEIGHT);
             Asdata[1].forEach(function(item){

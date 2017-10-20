@@ -9,6 +9,8 @@ var passport = require('./passport');
 var flash = require('connect-flash');
 var session = require('express-session');
 var oracleDbStore = require('express-oracle-session')(session);
+var multipart = require('connect-multiparty');
+var multipartMiddleware = multipart();
 
 var index = require('./routes/index');
 var users = require('./routes/users');
@@ -38,6 +40,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(cookieParser());
+app.use(multipartMiddleware);
 
 app.use(session({
     cookie: {maxAge: null},

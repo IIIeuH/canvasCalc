@@ -967,29 +967,46 @@ $(function(){
                     inputSelect = item;
                 }
             });
+            if(inputSelect.ITEMWIDTH < +$('#width').val() || inputSelect.ITEMHEIGHT < +$('#depth').val()){
+                $('.hidwidth').removeClass('hidden')
+            }else{
+                $('.hidwidth').addClass('hidden')
+            }
+            $('.info').empty();
             $('.info').append(
                 '<div class="alert alert-info">' +
                 '<a href="#" class="close" data-dismiss="alert" aria-label="close" title="close">×</a>' +
                 '<strong>Внимание!</strong> Максимальная ширина столешницы без стыка не более '+inputSelect.ITEMWIDTH+' мм.' +
                 '</div>'
             );
+            $('.warning').empty();
+            $('.warning').append(
+                '<div class="alert alert-warning">' +
+                '<a href="#" class="close" data-dismiss="alert" aria-label="close" title="close">×</a>' +
+                '<p>Материал: '+inputSelect.ITEMNAME+', Высота: '+inputSelect.ITEMHEIGHT+' Ширина: '+inputSelect.ITEMWIDTH+', Толщина: '+inputSelect.ITEMTHIN+'</p>' +
+                '</div>'
+            );
             if($('#profile-option').val() === '1') {
                 elem =
+                    '<div class="input-group" style="width: 150px;">'+
                     '<select class="form-control profile-heigth" id="profile-heigth">' +
                     '<option value="'+((inputSelect.ITEMTHIN * 2) + 20)+'">'+((inputSelect.ITEMTHIN * 2) + 20)+'</option>' +
                     '<option value="'+((inputSelect.ITEMTHIN * 2) + 30)+'">'+((inputSelect.ITEMTHIN * 2) + 30)+'</option>' +
                     '<option value="'+((inputSelect.ITEMTHIN * 2) + 40)+'">'+((inputSelect.ITEMTHIN * 2) + 40)+'</option>' +
                     '<option value="'+((inputSelect.ITEMTHIN * 2) + 60)+'">'+((inputSelect.ITEMTHIN * 2) + 60)+'</option>' +
-                    '</select>';
+                    '</select>'+
+                    '</div>';
             }
             if($('#profile-option').val() === '0') {
                 elem =
+                    '<div class="input-group" style="width: 150px;">'+
                     '<select class="form-control  profile-heigth" id="profile-heigth">' +
                     '<option value="'+(inputSelect.ITEMTHIN + 20)+'">'+(inputSelect.ITEMTHIN + 20)+'</option>' +
                     '<option value="'+(inputSelect.ITEMTHIN + 30)+'">'+(inputSelect.ITEMTHIN + 30)+'</option>' +
                     '<option value="'+(inputSelect.ITEMTHIN + 40)+'">'+(inputSelect.ITEMTHIN + 40)+'</option>' +
                     '<option value="'+(inputSelect.ITEMTHIN + 60)+'">'+(inputSelect.ITEMTHIN + 60)+'</option>' +
-                    '</select>';
+                    '</select>'+
+                    '</div>';
             }
             $('#profile-heigth').remove();
             $('#sel').append(elem);
@@ -1139,7 +1156,18 @@ $(function(){
                 });
                 $('#splice1').val(Asdata[0].JOINT_VERTICAL);
                 $('#splice2').val(Asdata[0].JOINT_HORIZONTAL);
-                $('.price').find('h2').text(Asdata[0].PRICE);
+                $('.price').find('h2').text(Asdata[0].PRICE).priceFormat({
+                    prefix: '',
+                    centsLimit: 0,
+                    suffix: ' руб.',
+                    thousandsSeparator: ' '
+                });
+                $('.pricedoubl').find('h2').text(Asdata[0].PRICE).priceFormat({
+                    prefix: '',
+                    centsLimit: 0,
+                    suffix: ' руб.',
+                    thousandsSeparator: ' '
+                });
                 //$("#profile-heigth option[value=" + Asdata[0].SECTION_HEIGHT + "]").attr('selected', 'true').text(Asdata[0].SECTION_HEIGHT);
                 Asdata[1].forEach(function(item){
                     if(item.BOTTOM_MOUNT === 0 || item.BOTTOM_MOUNT === 1){
@@ -1360,7 +1388,25 @@ $(function(){
 
             );
 
-            var metProfileQty  = +perimeter/2;
+            var itemid = $('#material').val();
+            var metProfileQty = null;
+            items.then(function(item){
+                item.forEach(function(it){
+                    if (it.ITEMID == itemid) {
+                        if($('#install-option').val() === 'Консоль'){
+                            metProfileQty  = perimeter;
+                        }
+                        if($('#install-option').val() === 'Консоль' && it.ITEMTHIN > 12){
+                            metProfileQty  = 0;
+                        }
+                        if($('#install-option').val() === 'Мебельные базы'){
+                            metProfileQty = perimeter+(width/600*heigth);
+                        }
+                    }
+                });
+
+            });
+
 
             data.forEach(function(item){
                 if(item.BOMTYPE === 1){
@@ -1371,11 +1417,8 @@ $(function(){
             profileGlueQty = (+metProfileQty * +bomTypeKley.ITEMCONSUMPQTY  / +bomTypeKley.ITEMCONSUMPERQTY) / 1000000;
             profileGlueQty.toFixed(3);
 
-            $('.parametr').append(
-                '<div>Количество клея для профилей: profileGlueQty = '+ profileGlueQty.toFixed(3) +'</div>'
-            );
 
-            var itemid = $('#material').val();
+
             var inputSelect;
             items.then(function(data) {
                 data.forEach(function (item) {
@@ -1471,7 +1514,14 @@ $(function(){
                     $('.price h2').text(countertopCost).priceFormat({
                         prefix: '',
                         centsLimit: 0,
-                        suffix: ' руб.'
+                        suffix: ' руб.',
+                        thousandsSeparator: ' '
+                    });
+                    $('.pricedoubl h2').text(countertopCost).priceFormat({
+                        prefix: '',
+                        centsLimit: 0,
+                        suffix: ' руб.',
+                        thousandsSeparator: ' '
                     });
 
                 })
@@ -1484,9 +1534,15 @@ $(function(){
     $('.price h2').priceFormat({
         prefix: '',
         centsLimit: 0,
-        suffix: ' руб.'
+        suffix: ' руб.',
+        thousandsSeparator: ' '
     });
-
+    $('.pricedoubl h2').priceFormat({
+        prefix: '',
+        centsLimit: 0,
+        suffix: ' руб.',
+        thousandsSeparator: ' '
+    });
 });
 
 // function newWind(){
@@ -1607,7 +1663,14 @@ $(function(){
                 $('.price').find('h2').text(Asdata[0].PRICE).priceFormat({
                     prefix: '',
                     centsLimit: 0,
-                    suffix: ' руб.'
+                    suffix: ' руб.',
+                    thousandsSeparator: ' '
+                });
+                $('.pricedoubl').find('h2').text(Asdata[0].PRICE).priceFormat({
+                    prefix: '',
+                    centsLimit: 0,
+                    suffix: ' руб.',
+                    thousandsSeparator: ' '
                 });
                 //$("#profile-heigth option[value=" + Asdata[0].SECTION_HEIGHT + "]").attr('selected', 'true').text(Asdata[0].SECTION_HEIGHT);
                 Asdata[1].forEach(function(item){
@@ -1641,7 +1704,7 @@ $(function(){
                     }
                 });
                 $('#draw').click();
-                $('#calc').click();
+                //$('#calc').click();
                 $.arcticmodal('close');
             }
         });

@@ -21,6 +21,11 @@ var itemType = $.ajax({
         string = '<tr class="str">' +
             '<td>' +
             '<div class="form-group">' +
+            '<input type="text" class="form-control">' +
+            '</div>' +
+            '</td>' +
+            '<td>' +
+            '<div class="form-group">' +
             '<input type="text" class="form-control itemName">' +
             '</div>' +
             '</td>' +
@@ -56,21 +61,6 @@ var itemType = $.ajax({
     }
 });
 
-// var locationName = $.ajax({
-//     url: "/location",
-//     type: 'GET',
-//     success: function(data){
-//         itemType = data;
-//         select = '<select class="form-control">' +
-//             '<option></option>';
-//         data.forEach(function (item) {
-//             select += '<option value="'+ item.TOP_LOCATION_ID +'">'+ item.TOP_LOCATION_NAME +'</option>';
-//         });
-//     },
-//     error: function (err) {
-//         console.log(err);
-//     }
-// });
 
 $(function(){
     //itemType с цифр на названия
@@ -78,7 +68,6 @@ $(function(){
         $.each($('tr').find('td.itemType'), function(){
             var that = $(this);
             data.forEach(function(item){
-                console.log(that.text(), item.ITEM_TYPES_ID);
                 if(that.text() == item.ITEM_TYPES_ID){
                     that.text(item.ITEM_TYPE);
                 }
@@ -92,6 +81,7 @@ $(function(){
         $('.addItemtable').append(
             '<table class="table table-bordered addItemTable">' +
                 '<thead>' +
+                    '<th>axapta_id</th>' +
                     '<th>ItemName(Название)</th>' +
                     '<th>ItemType(Тип)</th>' +
                     '<th>ItemHeight(Высота, мм)</th>' +
@@ -107,7 +97,7 @@ $(function(){
         $(this).addClass('hidden');
         $('#cancelItem').removeClass('hidden');
         $('#addTable').removeClass('hidden');
-        $('#saveItem').removeClass('hidden');
+        $('.saveItem').removeClass('hidden');
         $('#cancelTable').removeClass('hidden');
 
 
@@ -119,12 +109,12 @@ $(function(){
         $('#addItem').removeClass('hidden');
         $(this).addClass('hidden');
         $('#addTable').addClass('hidden');
-        $('#saveItem').addClass('hidden');
+        $('.saveItem').addClass('hidden');
         $('#cancelTable').addClass('hidden');
     });
 
     //при клике сохранить
-    $('#saveItem').click(function(){
+    $('.saveItem').click(function(){
         var data = [];
         var col = [];
         $('.str').each(function(i){
@@ -156,7 +146,6 @@ $(function(){
 
     //при клике на добавить строчку
     $('#addTable').click(function(ev){
-        console.log($(this));
         ev.preventDefault();
         $('.mainTable').append(string);
     });
@@ -165,7 +154,6 @@ $(function(){
     $('.close').click(function(){
         var id = $(this).data('id');
         var nameId = $(this).data('nameid');
-        console.log(nameId);
         var table = window.location.pathname.split('/')[2];
         var res = confirm("Вы действительно хотите удалить эту строчку?");
         if(res){
@@ -189,18 +177,14 @@ $(function(){
         var id = $(this).data('red');
         var tr = $(this).parent().parent();
         var td = tr.children('td');
-        console.log(tr);
-        console.log(td);
         var text = [];
         $.each(td, function(i){
             text.push($(this).text());
-            console.log($(this));
             if(!$(this).is(':has(button)')){
                 $(this).empty();
                 $(this).append('<input type="text" class="form-control" value="'+ text[i] +'">');
             }
             if($(this).is('.itemType')){
-                console.log($(this));
                 $(this).empty();
                 $(this).append(select);
                 $('select :contains('+text[i]+')').first().attr("selected", "selected");
@@ -229,10 +213,8 @@ $(function(){
         //обработка клика на кнопку сохранить
         $(document).on('click', '#saveRedactor', function(){
             var btn = $('#'+id);
-            console.log(btn);
             var tr = btn.parent().parent();
             var td = tr.children('td');
-            console.log(td);
             var saveItem = [];
             $.each(td, function(i){
                 if(!$(this).is(':has(button)')){
@@ -379,7 +361,6 @@ $(function(){
             });
             data.push(mas);
         });
-        console.log(data);
         $.ajax({
             url: '/admin/jobparams/',
             type: 'POST',
@@ -416,7 +397,6 @@ $(function(){
                 $(this).append('<input type="text" class="form-control" value="'+ text[i] +'">');
             }
             if($(this).is('.jobUomsId')){
-                console.log($(this));
                 $(this).empty();
                 $(this).append(select);
                 $('select :contains('+text[i]+')').first().attr("selected", "selected");
@@ -445,17 +425,14 @@ $(function(){
         //обработка клика на кнопку сохранить
         $(document).on('click', '#saveRedactor', function(){
             var btn = $('#'+id);
-            console.log(btn);
             var tr = btn.parent().parent();
             var td = tr.children('td');
-            console.log(td);
             var saveItem = [];
             $.each(td, function(i){
                 if(!$(this).is(':has(button)')){
                     saveItem.push($(this).find(':first-child').val());
                 }
             });
-            console.log(saveItem);
             $.ajax({
                 type: 'PUT',
                 data: {data: JSON.stringify(saveItem), id: id},
@@ -499,11 +476,9 @@ $(function(){
 
 
     items.then(function(data){
-        console.log(data);
         $.each($('tr').find('td.nomen'), function(){
             var that = $(this);
             data.forEach(function(item){
-                console.log(that.text(), item.ITEM_TYPES_ID);
                 if(that.text() == item.ITEMID){
                     that.text(item.ITEMNAME);
                 }
@@ -612,7 +587,6 @@ $(function(){
             });
             data.push(mas);
         });
-        console.log(data);
         $.ajax({
             url: '/admin/bomparams/',
             type: 'POST',
@@ -670,7 +644,6 @@ $(function(){
                 $(this).find('select :contains('+text[i]+')').last().attr("selected", "selected");
             }
         });
-        console.log(text);
         //создание кнопок
         $('.addItemtable').before(
             '<button class="btn btn-danger" type="button" id="cancelRedactor"> Отменить' +
@@ -693,17 +666,14 @@ $(function(){
         //обработка клика на кнопку сохранить
         $(document).on('click', '#saveRedactor', function(){
             var btn = $('#'+id);
-            console.log(btn);
             var tr = btn.parent().parent();
             var td = tr.children('td');
-            console.log(td);
             var saveItem = [];
             $.each(td, function(i){
                 if(!$(this).is(':has(button)')){
                     saveItem.push($(this).find(':first-child').val());
                 }
             });
-            console.log(saveItem);
             $.ajax({
                 type: 'PUT',
                 data: {data: JSON.stringify(saveItem), id: id},
@@ -731,7 +701,6 @@ $(function(){
                 $(this).append('<input type="text" class="form-control" value="'+ text[i] +'">');
             }
         });
-        console.log(text);
         //создание кнопок
         $('.addItemtable').before(
             '<button class="btn btn-danger" type="button" id="cancelRedactor"> Отменить' +
@@ -754,17 +723,14 @@ $(function(){
         //обработка клика на кнопку сохранить
         $(document).on('click', '#saveRedactor', function(){
             var btn = $('#'+id);
-            console.log(btn);
             var tr = btn.parent().parent();
             var td = tr.children('td');
-            console.log(td);
             var saveItem = [];
             $.each(td, function(i){
                 if(!$(this).is(':has(button)')){
                     saveItem.push($(this).find(':first-child').val());
                 }
             });
-            console.log(saveItem);
             $.ajax({
                 type: 'PUT',
                 data: {data: JSON.stringify(saveItem), id: id},
@@ -838,7 +804,6 @@ $(function(){
             });
             data.push(mas);
         });
-        console.log(data);
         $.ajax({
             url: '/admin/uom/',
             type: 'POST',
@@ -986,7 +951,6 @@ $(function(){
             });
             data.push(mas);
         });
-        console.log(data);
         $.ajax({
             url: '/admin/top_users/',
             type: 'POST',
@@ -1080,17 +1044,14 @@ $(function(){
         //обработка клика на кнопку сохранить
         $(document).on('click', '#saveRedactor', function () {
             var btn = $('#' + id);
-            console.log(btn);
             var tr = btn.parent().parent();
             var td = tr.children('td');
-            console.log(td);
             var saveItem = [];
             $.each(td, function (i) {
                 if (!$(this).is(':has(button)')) {
                     saveItem.push($(this).find(':first-child').val());
                 }
             });
-            console.log(saveItem);
             $.ajax({
                 type: 'PUT',
                 data: {data: JSON.stringify(saveItem), id: id},
@@ -1161,7 +1122,6 @@ $(function(){
             });
             data.push(mas);
         });
-        console.log(data);
         $.ajax({
             url: '/admin/top_locations/',
             type: 'POST',
@@ -1221,17 +1181,14 @@ $(function(){
         //обработка клика на кнопку сохранить
         $(document).on('click', '#saveRedactor', function () {
             var btn = $('#' + id);
-            console.log(btn);
             var tr = btn.parent().parent();
             var td = tr.children('td');
-            console.log(td);
             var saveItem = [];
             $.each(td, function (i) {
                 if (!$(this).is(':has(button)')) {
                     saveItem.push($(this).find(':first-child').val());
                 }
             });
-            console.log(saveItem);
             $.ajax({
                 type: 'PUT',
                 data: {data: JSON.stringify(saveItem), id: id},
@@ -1262,7 +1219,6 @@ $(function(){
         data.forEach(function(item){
             $('.userNameAdmin').each(function(){
                 if(item.TOP_USER_ID == $(this).text()){
-                    console.log(item.TOP_USER);
                     $(this).text(item.TOP_USER);
                 }
             });
@@ -1328,6 +1284,77 @@ $(function(){
             }
         });
     });
+
+    //Загрузка CSV
+    $('.file_upload button').click(function(){
+        var input = $('#upload').prop('files')[0];
+        var data = new FormData();
+        data.append('csv', input);
+        $.ajax({
+            url: '/upload',
+            type: 'POST',
+            data: data,
+            enctype: 'multipart/form-data',
+            processData: false,
+            contentType: false,
+            beforeSend: function(){
+                $('.file_upload button').button('loading');
+            },
+            success: function(data){
+                $('.file_upload button').button('reset');
+                $('#loadCsv').arcticmodal({
+                    afterOpen: function(){
+                        data.forEach(function(item){
+                            $('#csvContent').append(
+                                '<tr class="str">'+
+                                '<td>' +
+                                    '<div class="form-group">' +
+                                        '<input type="text" class="form-control" value="'+item.ITEM_AX_ID+'">' +
+                                    '</div>' +
+                                '</td>' +
+                                '<td>' +
+                                '<div class="form-group">' +
+                                '<input type="text" class="form-control" value="'+item.ITEMNAME+'">' +
+                                '</div>' +
+                                '</td>' +
+                                '<td>' +
+                                '<div class="form-group">' +
+                                '<input type="text" class="form-control" value="'+item.ITEM_TYPES_ID+'">' +
+                                '</div>' +
+                                '</td>' +
+                                '<td>' +
+                                '<div class="form-group">' +
+                                '<input type="text" class="form-control" value="'+item.ITEMHEIGHT+'">' +
+                                '</div>' +
+                                '</td>' +
+                                '<td>' +
+                                '<div class="form-group">' +
+                                '<input type="text" class="form-control" value="'+item.ITEMWIDTH+'">' +
+                                '</div>' +
+                                '</td>' +
+                                '<td>' +
+                                '<div class="form-group">' +
+                                '<input type="text" class="form-control" value="'+item.ITEMTHIN+'">' +
+                                '</div>' +
+                                '</td>' +
+                                '<td>' +
+                                '<div class="form-group">' +
+                                '<input type="text" class="form-control" value="'+item.ITEMPRICE+'">' +
+                                '</div>' +
+                                '</td>'
+                            );
+                        });
+                    }
+                });
+                console.log(data);
+            },
+            error: function(err){
+                console.log(err);
+            }
+        });
+    });
+
+
 });
 //генерация пароля
 function str_rand() {

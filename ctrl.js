@@ -4,6 +4,7 @@ var flash = require('connect-flash');
 var passport    = require('./passport');
 var bcrypt          = require('./crypto');
 var mailer = require('nodemailer');
+var csv=require('csvtojson');
 
 var transporter = mailer.createTransport({
     service: 'yandex.ru',
@@ -241,6 +242,62 @@ module.exports.updateTopLocation = function(req, res, next) {
     })
 };
 
+module.exports.upload = function(req, res, next) {
+    console.log(req.files);
+    csvFilePath=req.files.csv.path;
+    console.log(csvFilePath);
+    function ItemReady(axaptaItemId, name, thin, price){
+        this.ITEM_AX_ID = axaptaItemId;
+        this.ITEMNAME = name;
+        this.ITEMTHIN = thin;
+        this.ITEM_TYPES_ID = 1;
+        this.ITEMPRICE = price;
+        this.ITEMHEIGHT = 0;
+        this.ITEMWIDTH = 0;
+    }
+    var masReady = [];
+    var string = '';
+    csv()
+    .fromFile(csvFilePath)
+    .on('json', function(jsonObj){
+        console.log(jsonObj.name);
+        string += "'"+jsonObj.name + "',";
+    })
+    .on('done',function(error){
+        if(error) console.log(error);
+        string = string.substring(0, string.length - 1);
+        console.log(string);
+        oracledb.getConnection(
+            {
+                user: "tops",
+                password: "tops",
+                connectString: "(DESCRIPTION =(ADDRESS_LIST = (ADDRESS = (PROTOCOL = TCP)(HOST = webdb.terracorp.ru)(PORT = 1521)))(CONNECT_DATA = (SID = WEBDB)(SERVER = DEDICATED)))"
+            },
+            function (err, connection) {
+                if (err) {
+                    console.error(err.message);
+                    return;
+                }
+                var query = "select pr.itemrelation, i_tab.itemname, case when ( REGEXP_SUBSTR(i_tab.ItemThicknessId, '(([0-9]+.{1}[0-9]+)|[0-9]+)', 1, 1) is null) then 0 else to_number( REGEXP_SUBSTR(i_tab.ItemThicknessId, '(([0-9]+.{1}[0-9]+)|[0-9]+)', 1, 1), '9999.9999' ) end AS itemthicknessId, case when (t_exr.Currencycode != 'RUR' ) then (pr.Amount * t_exr.exchrate /100) else pr.Amount end as AmountMST from pricedisctable@ax.terracorp.ru pr join (select sum_exr.exchrate, dt_exr.FROMDATE, sum_exr.todate, dt_exr.Currencycode, dt_exr.Dataareaid from (select max(FROMDATE) AS FROMDATE , Exr.Currencycode, Exr.Dataareaid from ExchRates@Ax.terracorp.ru Exr group by Exr.Currencycode, Exr.Dataareaid ) dt_exr join ExchRates@ax.terracorp.ru sum_exr on SUBSTR(NLS_LOWER(sum_exr.DATAAREAID),1,3) = SUBSTR(NLS_LOWER(dt_exr.DATAAREAID),1,3) and sum_exr.fromdate = dt_exr.FROMDATE and SUBSTR(NLS_LOWER(sum_exr.CURRENCYCODE),1,3) = SUBSTR(NLS_LOWER(dt_exr.CURRENCYCODE),1,3) ) t_exr on t_exr.dataareaid = pr.dataareaid and t_exr.Currencycode = pr.currency join inventtable@ax.terracorp.ru i_tab on SUBSTR(NLS_LOWER(i_tab.DATAAREAID),1,3) = SUBSTR(NLS_LOWER(pr.DATAAREAID),1,3) and SUBSTR(NLS_LOWER(i_tab.ITEMID),1,20) = SUBSTR(NLS_LOWER(pr.itemrelation),1,20) where pr.relation = 4 and accountrelation = 'РОЗН' and pr.itemrelation in ("+string+") and pr.dataareaid = 'rel'";
+                connection.execute(
+                    query, {}, { outFormat: oracledb.OBJECT},
+                    function (err, ress) {
+                        if (err) {
+                            console.error(err);
+                            doRelease(connection);
+                        }
+                        doRelease(connection);
+                        ress.rows.forEach(function(item){
+                            var obj = {};
+                            obj = new ItemReady(item.ITEMRELATION, item.ITEMNAME, item.ITEMTHICKNESSID, item.AMOUNTMST)
+                            masReady.push(obj);
+                        });
+                        res.json(masReady);
+                    });
+            });
+    })
+};
+
 module.exports.mail = function(req, res, next) {
     oracledb.getConnection(
         {
@@ -378,8 +435,9 @@ module.exports.add = function(req, res, next) {
                         return;
                     }
                     var res = JSON.parse(req.body.dop);
-                    console.log('COUNTEMDDS', counterTopId, res);
-                    if(res.length > 0){
+                    console.log('COUNTEMDDS', counterTopId, req.body.dop);
+                    req.body.dop = JSON.parse(req.body.dop);
+                    if(req.body.dop.length > 0){
                         async.forEachOf(res, function(item, k, done){
                             var query = "merge into countertops_addon a using (select :COUNTERTOPS_ADDON_ID COUNTERTOPS_ADDON_ID,:ADDON_TYPE_ID ADDON_TYPE_ID, :COUNTERTOPS_ID COUNTERTOPS_ID, :ADDON_X ADDON_X, :ADDON_Y ADDON_Y, :ADDON_A ADDON_A, :ADDON_B ADDON_B, :BOTTOM_MOUNT BOTTOM_MOUNT from dual) b on (a.COUNTERTOPS_ADDON_ID=b.COUNTERTOPS_ADDON_ID and a.COUNTERTOPS_ID=b.COUNTERTOPS_ID and b.COUNTERTOPS_ID!=0) when matched then update set a.ADDON_TYPE_ID=b.ADDON_TYPE_ID, a.ADDON_X=b.ADDON_X, a.ADDON_Y=b.ADDON_Y, a.ADDON_A=b.ADDON_A, a.ADDON_B=b.ADDON_B, a.BOTTOM_MOUNT=b.BOTTOM_MOUNT when not matched then insert (ADDON_TYPE_ID, COUNTERTOPS_ID, ADDON_X, ADDON_Y, ADDON_A, ADDON_B, BOTTOM_MOUNT) values (b.ADDON_TYPE_ID, b.COUNTERTOPS_ID, b.ADDON_X, b.ADDON_Y, b.ADDON_A, b.ADDON_B, b.BOTTOM_MOUNT)";
                             connection.execute(
@@ -398,7 +456,7 @@ module.exports.add = function(req, res, next) {
                             cb(null);
                         });
                     }else{
-                        var query = "DELETE FROM countertops_addon WHERE countertops_id = " + counterTopId;
+                        var query = "DELETE FROM countertops_addon WHERE countertops_id = " + counterTopId + " AND addon_type_id = 9999";
                         console.log(query);
                         connection.execute(
                             query,
@@ -620,15 +678,14 @@ function saveItems(req, col, cb){
                 var query = [];
                 query.push("INSERT ALL ");
                 req.forEach(function(item, i){
-                    query.push("INTO items (ITEMNAME, ITEM_TYPES_ID, ITEMHEIGHT, ITEMWIDTH, ITEMTHIN, ITEMPRICE) VALUES");
+                    query.push("INTO items (ITEM_AX_ID, ITEMNAME, ITEM_TYPES_ID, ITEMHEIGHT, ITEMWIDTH, ITEMTHIN, ITEMPRICE) VALUES");
                     query.push("(");
                     for(var i = 0; i < item.length; i ++){
-                        if(i === 0){
+                        if(i === 0 || i === 1){
                             query.push("'"+item[i]+"'");
                             query.push(",");
                         }else{
                             query.push(+item[i]);
-                            console.log(typeof +item[i]);
                             query.push(",");
                         }
                     }
@@ -637,6 +694,7 @@ function saveItems(req, col, cb){
                 });
                 query.push('SELECT 1 FROM DUAL');
                 query = query.join(' ');
+                console.log(query);
                 connection.execute(
                     query, {}, {autoCommit: true},
                     function (err, result) {
@@ -666,10 +724,11 @@ function updateItems(req, id, col, cb){
                 return;
             }
             req = JSON.parse(req);
-            console.log(req, id,col);
+            console.log('REQ' + req);
             var query = [];
             query.push("UPDATE " + col);
             query.push("SET ");
+            query.push("item_ax_id = :item_ax_id,");
             query.push("itemname = :itemname,");
             query.push("item_types_id = :itemTypesId,");
             query.push("itemheight = :itemheight,");
@@ -682,12 +741,13 @@ function updateItems(req, id, col, cb){
             connection.execute(
                 query, {
                     id: id,
-                    itemname: req[0],
-                    itemTypesId:  +req[1],
-                    itemheight:  +req[2],
-                    itemwidth:  +req[3],
-                    itemthin:  +req[4],
-                    itemprice: +req[5]
+                    item_ax_id: req[0],
+                    itemname: req[1],
+                    itemTypesId:  +req[2],
+                    itemheight:  +req[3],
+                    itemwidth:  +req[4],
+                    itemthin:  +req[5],
+                    itemprice: +req[6]
                 }, {autoCommit: true},
                 function (err, result) {
                     if (err) {

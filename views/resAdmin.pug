@@ -27,39 +27,45 @@ block content
                     .row
                         .col-md-12.col-lg-12
                             div(class='physics-param')
-                                h2.h2 Физические параметры
-                                .input-group
+                                h2.h2.noprint Физические параметры
+                                h2.h2.printer(style="display: none") Расчет стоимости изделия
+                                .input-group.w200
                                     label(for='topName') Название
                                     input.form-control#topName
-                                .input-group
+                                .input-group.w200
                                     label(for='material') Выбор материала
                                     select.form-control#material
-                                .input-group
+                                .input-group.w110
                                     label(for='width') Ширина, мм.
                                     input.form-control#width(type='number', value='1200')
-                                .input-group
+                                .input-group.w110
                                     label(for='depth') Глубина, мм.
                                     input.form-control#depth(type='number', value='600')
-                                .input-group
+                                .input-group.w150
                                     label(for='profile-option') Вариант профиля
                                     select.form-control#profile-option
                                         option(value='1') с подклейкой
                                         option(value='0', selected='') без подклейки
+                                .input-group.w150
+                                    label(for='profile-option') Вариант установки
+                                    select.form-control#install-option
+                                        option(value='Консоль' selected) Консоль
+                                        option(value='Мебельные базы') Мебельные базы
                                 #gluing
-                                    .input-group
+                                    .input-group.w200
                                         label(for='gluing-width') Ширина нижней подклейки
                                         input.form-control#gluing-width(type='number', value='70')
-                                .input-group
+                                .input-group.w200
                                     label#sel(for='profile-heigth') Высота профиля, мм.
                                     select.form-control.profile-heigth#profile-heigth
                                         option(value='20', selected) 20
                                         option(value='30') 30
                                         option(value='40') 40
                                         option(value='60') 60
-                                .input-group
+                                .input-group.hidden.hidwidth
                                     label(for='splice1') Расположение вертикального стыка, мм.
                                     input.form-control#splice1(type='number')
-                                .input-group
+                                .input-group.hidden.hidwidth
                                     label(for='splice2') Расположение горизонтального стыка, мм.
                                     input.form-control#splice2(type='number')
                                 .input-group
@@ -131,7 +137,7 @@ block content
                                         tbody#dopChild
                                     button.pad.btn.btn-default#dop(onclick='addDop()') Добавить
                                     button.pad.btn.btn-default#drop(onclick='drop()') Удалить
-                                .price
+                                .price.noprint
                                     h2.h2 0
                                 button.pad.btn.btn-info.hidden#draw Нарисовать
                                 button.pad.btn.btn-warning#calc  Расчитать
@@ -143,3 +149,5 @@ block content
                             .error
                             .graph
                                 canvas#canvas
+                            .pricedoubl.printer(style="display:none;")
+                                h2.h2 0
