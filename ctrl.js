@@ -135,6 +135,12 @@ module.exports.addItems = function(req, res, next){
     });
 };
 
+module.exports.addItemsCSV = function(req, res, next){
+    saveItemsCSV(req.body.data, req.body.col,  function(data){
+        res.json(data);
+    });
+};
+
 module.exports.addJobParams = function(req, res, next){
     saveJobParams(req.body.data, req.body.col,  function(data){
         res.json(data);
@@ -246,25 +252,25 @@ module.exports.upload = function(req, res, next) {
     console.log(req.files);
     csvFilePath=req.files.csv.path;
     console.log(csvFilePath);
-    function ItemReady(axaptaItemId, name, thin, price){
+    function ItemReady(axaptaItemId, name, thin, price, width, height){
         this.ITEM_AX_ID = axaptaItemId;
         this.ITEMNAME = name;
         this.ITEMTHIN = thin;
         this.ITEM_TYPES_ID = 1;
         this.ITEMPRICE = price;
-        this.ITEMHEIGHT = 0;
-        this.ITEMWIDTH = 0;
+        this.ITEMHEIGHT = width;
+        this.ITEMWIDTH = height;
     }
     var masReady = [];
     var string = '';
     csv()
     .fromFile(csvFilePath)
     .on('json', function(jsonObj){
-        console.log(jsonObj.name);
-        string += "'"+jsonObj.name + "',";
+        console.log(jsonObj.itemid);
+        string += "'"+jsonObj.itemid + "',";
     })
-    .on('done',function(error){
-        if(error) console.log(error);
+    .on('done',function(error) {
+        if (error) console.log(error);
         string = string.substring(0, string.length - 1);
         console.log(string);
         oracledb.getConnection(
@@ -278,22 +284,56 @@ module.exports.upload = function(req, res, next) {
                     console.error(err.message);
                     return;
                 }
-                var query = "select pr.itemrelation, i_tab.itemname, case when ( REGEXP_SUBSTR(i_tab.ItemThicknessId, '(([0-9]+.{1}[0-9]+)|[0-9]+)', 1, 1) is null) then 0 else to_number( REGEXP_SUBSTR(i_tab.ItemThicknessId, '(([0-9]+.{1}[0-9]+)|[0-9]+)', 1, 1), '9999.9999' ) end AS itemthicknessId, case when (t_exr.Currencycode != 'RUR' ) then (pr.Amount * t_exr.exchrate /100) else pr.Amount end as AmountMST from pricedisctable@ax.terracorp.ru pr join (select sum_exr.exchrate, dt_exr.FROMDATE, sum_exr.todate, dt_exr.Currencycode, dt_exr.Dataareaid from (select max(FROMDATE) AS FROMDATE , Exr.Currencycode, Exr.Dataareaid from ExchRates@Ax.terracorp.ru Exr group by Exr.Currencycode, Exr.Dataareaid ) dt_exr join ExchRates@ax.terracorp.ru sum_exr on SUBSTR(NLS_LOWER(sum_exr.DATAAREAID),1,3) = SUBSTR(NLS_LOWER(dt_exr.DATAAREAID),1,3) and sum_exr.fromdate = dt_exr.FROMDATE and SUBSTR(NLS_LOWER(sum_exr.CURRENCYCODE),1,3) = SUBSTR(NLS_LOWER(dt_exr.CURRENCYCODE),1,3) ) t_exr on t_exr.dataareaid = pr.dataareaid and t_exr.Currencycode = pr.currency join inventtable@ax.terracorp.ru i_tab on SUBSTR(NLS_LOWER(i_tab.DATAAREAID),1,3) = SUBSTR(NLS_LOWER(pr.DATAAREAID),1,3) and SUBSTR(NLS_LOWER(i_tab.ITEMID),1,20) = SUBSTR(NLS_LOWER(pr.itemrelation),1,20) where pr.relation = 4 and accountrelation = 'РОЗН' and pr.itemrelation in ("+string+") and pr.dataareaid = 'rel'";
+                var queryTran = "truncate table items_temp";
                 connection.execute(
-                    query, {}, { outFormat: oracledb.OBJECT},
+                    queryTran, {}, {outFormat: oracledb.OBJECT},
                     function (err, ress) {
                         if (err) {
                             console.error(err);
                             doRelease(connection);
                         }
                         doRelease(connection);
-                        ress.rows.forEach(function(item){
-                            var obj = {};
-                            obj = new ItemReady(item.ITEMRELATION, item.ITEMNAME, item.ITEMTHICKNESSID, item.AMOUNTMST)
-                            masReady.push(obj);
-                        });
-                        res.json(masReady);
+
                     });
+            });
+        oracledb.getConnection(
+            {
+                user: "tops",
+                password: "tops",
+                connectString: "(DESCRIPTION =(ADDRESS_LIST = (ADDRESS = (PROTOCOL = TCP)(HOST = webdb.terracorp.ru)(PORT = 1521)))(CONNECT_DATA = (SID = WEBDB)(SERVER = DEDICATED)))"
+            },
+            function (err, connection) {
+                if (err) {
+                    console.error(err.message);
+                    return;
+                }
+                var query = "insert INTO items_temp (ITEM_AX_ID, ITEMNAME, ITEMTHIN, ITEMPRICE, ITEM_TYPES_ID, ITEMHEIGHT, ITEMWIDTH) select pr.itemrelation, i_tab.itemname, case when ( REGEXP_SUBSTR(i_tab.ItemThicknessId, '(([0-9]+.{1}[0-9]+)|[0-9]+)', 1, 1) is null) then 0 else to_number( REGEXP_SUBSTR(i_tab.ItemThicknessId, '(([0-9]+.{1}[0-9]+)|[0-9]+)', 1, 1), '9999.9999' ) end AS itemthicknessId, case when (t_exr.Currencycode != 'RUR' ) then (pr.Amount * t_exr.exchrate /100) else pr.Amount end as AmountMST, 1, k_size.Length_r as Length, k_size.wight_r as wight from pricedisctable@ax.terracorp.ru pr join (select sum_exr.exchrate, dt_exr.FROMDATE, sum_exr.todate, dt_exr.Currencycode, dt_exr.Dataareaid from (select max(FROMDATE) AS FROMDATE , Exr.Currencycode, Exr.Dataareaid from ExchRates@Ax.terracorp.ru Exr group by Exr.Currencycode, Exr.Dataareaid ) dt_exr join ExchRates@ax.terracorp.ru sum_exr on SUBSTR(NLS_LOWER(sum_exr.DATAAREAID),1,3) = SUBSTR(NLS_LOWER(dt_exr.DATAAREAID),1,3) and sum_exr.fromdate = dt_exr.FROMDATE and SUBSTR(NLS_LOWER(sum_exr.CURRENCYCODE),1,3) = SUBSTR(NLS_LOWER(dt_exr.CURRENCYCODE),1,3) ) t_exr on t_exr.dataareaid = pr.dataareaid and t_exr.Currencycode = pr.currency join inventtable@ax.terracorp.ru i_tab on SUBSTR(NLS_LOWER(i_tab.DATAAREAID),1,3) = SUBSTR(NLS_LOWER(pr.DATAAREAID),1,3) and SUBSTR(NLS_LOWER(i_tab.ITEMID),1,20) = SUBSTR(NLS_LOWER(pr.itemrelation),1,20) join k_ItemSize@ax.terracorp.ru k_size on SUBSTR(NLS_LOWER(i_tab.K_ITEMSIZEID),1,20) = SUBSTR(NLS_LOWER(k_size.K_ITEMSIZEID),1,20) where pr.relation = 4 and accountrelation = 'РОЗН' and pr.dataareaid = 'rel' and pr.itemrelation in ("+string+")";
+                connection.execute(
+                    query, {}, { outFormat: oracledb.OBJECT},
+                    function (err, data) {
+                        if (err) {
+                            console.error(err);
+                            doRelease(connection);
+                        }
+                        var querySelect = "SELECT * FROM items_temp";
+                        connection.execute(
+                            querySelect, {}, {outFormat: oracledb.OBJECT},
+                            function (err, result) {
+                                if (err) {
+                                    console.error(err);
+                                    doRelease(connection);
+                                }
+                                result.rows.forEach(function (item) {
+                                    var obj = {};
+                                    console.log(item);
+                                    obj = new ItemReady(item.ITEM_AX_ID, item.ITEMNAME, item.ITEMTHIN, item.ITEMPRICE, item.ITEMWIDTH, item.ITEMHEIGHT);
+                                    masReady.push(obj);
+                                });
+                                res.json(masReady);
+                                doRelease(connection);
+                            });
+                    });
+
             });
     })
 };
@@ -707,6 +747,79 @@ function saveItems(req, col, cb){
                         doRelease(connection);
                         cb(result);
                     });
+        });
+}
+
+function saveItemsCSV(req, col, cb){
+    oracledb.getConnection(
+        {
+            user: "tops",
+            password: "tops",
+            connectString: "(DESCRIPTION =(ADDRESS_LIST = (ADDRESS = (PROTOCOL = TCP)(HOST = webdb.terracorp.ru)(PORT = 1521)))(CONNECT_DATA = (SID = WEBDB)(SERVER = DEDICATED)))"
+        },
+        function (err, connection) {
+            if (err) {
+                console.error(err.message);
+                return;
+            }
+            req = JSON.parse(req);
+            col = JSON.parse(col);
+            var queryS = "truncate table items_temp";
+            connection.execute(
+                queryS, {}, {autoCommit: true},
+                function (err, result) {
+                    if (err) {
+                        console.log(err);
+                        doRelease(connection);
+                        cb(err);
+                    }
+                    console.log(result);
+                    var query = [];
+                    query.push("INSERT ALL ");
+                    req.forEach(function(item, i){
+                        query.push("INTO items_temp (ITEM_AX_ID, ITEMNAME, ITEM_TYPES_ID, ITEMTHIN, ITEMWIDTH, ITEMHEIGHT, ITEMPRICE) VALUES");
+                        query.push("(");
+                        for(var i = 0; i < item.length; i ++){
+                            if(i === 0 || i === 1){
+                                query.push("'"+item[i]+"'");
+                                query.push(",");
+                            }else{
+                                query.push(+item[i]);
+                                query.push(",");
+                            }
+                        }
+                        delete query[query.length-1];
+                        query.push(")");
+                    });
+                    query.push('SELECT 1 FROM DUAL');
+                    query = query.join(' ');
+                    console.log(query);
+                    connection.execute(
+                        query, {}, {autoCommit: true},
+                        function (err, result) {
+                            if (err) {
+                                console.log(err);
+                                doRelease(connection);
+                                cb(err);
+                            }
+                            console.log(result);
+                            var queryMarge = "merge into items a using (select * from items_temp) b on (a.item_ax_id=b.item_ax_id) when matched then update set a.ITEMNAME=b.ITEMNAME, a.ITEMHEIGHT=b.ITEMHEIGHT, a.ITEMWIDTH=b.ITEMWIDTH, a.ITEMTHIN=b.ITEMTHIN, a.ITEMPRICE=b.ITEMPRICE, a.ITEM_TYPES_ID=b.ITEM_TYPES_ID when not matched then insert (ITEM_AX_ID, ITEMNAME, ITEM_TYPES_ID, ITEMHEIGHT, ITEMWIDTH, ITEMTHIN, ITEMPRICE) values (b.ITEM_AX_ID, b.ITEMNAME, b.ITEM_TYPES_ID, b.ITEMHEIGHT, b.ITEMWIDTH, b.ITEMTHIN, b.ITEMPRICE)";
+                            connection.execute(
+                                queryMarge, {}, {autoCommit: true},
+                                function (err, result) {
+                                    if (err) {
+                                        console.log(err);
+                                        doRelease(connection);
+                                        cb(err);
+                                    } else {
+                                        doRelease(connection);
+                                        cb(result);
+                                    }
+                                });
+                        });
+                });
+            //var query = "INSERT INTO items (itemname, item_types_id, itemheight, itemwidth, itemthin, itemprice) VALUES (:itemname, :item_types_id, :itemheight, :itemwidth, :itemthin, :itemprice)";
+
         });
 }
 

@@ -12,7 +12,8 @@ block content
             .col-md-2
                 .file_upload
                     button.btn.btn-info(type="button" data-loading-text="Обработка...") Загрузить
-                    div Файл не выбран
+                    input(type="text" id="uploadText", placeholder="Выбирите файл...")
+                    //div Файл не выбран
                     input(type="file" id="upload")
         div(style="display: none;")
             .box-modal#loadCsv
@@ -27,7 +28,7 @@ block content
                         th Ширина
                         th Цена
                     tbody#csvContent
-                button.saveItem.btn.btn-danger(type="button") Подтверждение
+                button.saveItemCSV.btn.btn-danger(type="button") Подтверждение
         .addItemtable
     .container-fluid
         .row

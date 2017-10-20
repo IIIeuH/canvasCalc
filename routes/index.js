@@ -72,6 +72,7 @@ router.get('/admin/top_locations/', authAdm,  ctrl.topLocations);
 
 //сохранение данных
 router.post('/admin/items/',  ctrl.addItems);
+router.post('/admin/itemsCSV/',  ctrl.addItemsCSV);
 router.post('/admin/jobparams/',  ctrl.addJobParams);
 router.post('/admin/bomparams/',  ctrl.addBomParams);
 router.post('/admin/uom/',  ctrl.addUom);

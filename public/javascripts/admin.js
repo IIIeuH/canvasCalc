@@ -233,6 +233,34 @@ $(function(){
             })
         });
     });
+
+
+    //Сохранение CSV
+    //при клике сохранить
+    $('.saveItemCSV').click(function(){
+        var data = [];
+        var col = [];
+        $('.str').each(function(i){
+            var mas = [];
+            col.push(i+1);
+            $(this).find('.form-group').children().each(function(){
+                mas.push($(this).val());
+            });
+            data.push(mas);
+        });
+        console.log(data);
+        $.ajax({
+            url: '/admin/itemsCSV/',
+            type: 'POST',
+            data: {data: JSON.stringify(data), col: JSON.stringify(col)},
+            success: function(data){
+                window.location.reload();
+            },
+            error: function(err){
+                console.log(err);
+            }
+        })
+    });
 });
 //Конец параметры материала
 
@@ -1324,17 +1352,17 @@ $(function(){
                                 '</td>' +
                                 '<td>' +
                                 '<div class="form-group">' +
+                                '<input type="text" class="form-control" value="'+item.ITEMTHIN+'">' +
+                                '</div>' +
+                                '</td>' +
+                                '<td>' +
+                                '<div class="form-group">' +
                                 '<input type="text" class="form-control" value="'+item.ITEMHEIGHT+'">' +
                                 '</div>' +
                                 '</td>' +
                                 '<td>' +
                                 '<div class="form-group">' +
                                 '<input type="text" class="form-control" value="'+item.ITEMWIDTH+'">' +
-                                '</div>' +
-                                '</td>' +
-                                '<td>' +
-                                '<div class="form-group">' +
-                                '<input type="text" class="form-control" value="'+item.ITEMTHIN+'">' +
                                 '</div>' +
                                 '</td>' +
                                 '<td>' +
