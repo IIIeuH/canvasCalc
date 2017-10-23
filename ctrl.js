@@ -326,7 +326,7 @@ module.exports.upload = function(req, res, next) {
                                 result.rows.forEach(function (item) {
                                     var obj = {};
                                     console.log(item);
-                                    obj = new ItemReady(item.ITEM_AX_ID, item.ITEMNAME, item.ITEMTHIN, item.ITEMPRICE, item.ITEMWIDTH, item.ITEMHEIGHT);
+                                    obj = new ItemReady(item.ITEM_AX_ID, item.ITEMNAME, item.ITEMTHIN, item.ITEMPRICE, item.ITEMWIDTH*10, item.ITEMHEIGHT*10);
                                     masReady.push(obj);
                                 });
                                 res.json(masReady);

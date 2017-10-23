@@ -930,13 +930,18 @@ $(function(){
 
 //select выбор материала
 var select;
+var selectMas = [];
 var items = $.ajax({
     url: '/selectitems',
     type: 'GET',
     success: function(data){
-        select ='<option></option>';
+        select ='<option><input class="type-search" type="text" /></option>';
         data.forEach(function (item) {
+            var obj ={};
             if(item.ITEM_TYPES_ID === 1){
+                obj.id = item.ITEMID;
+                obj.text = item.ITEMNAME;
+                selectMas.push(obj);
                 select += '<option value="'+ item.ITEMID +'">'+ item.ITEMNAME +'</option>';
             }
         });
@@ -948,9 +953,13 @@ var items = $.ajax({
 
 $(function(){
     items.then(function(data){
-        $('#material').append(
-            select
-        );
+        // $('#material').append(
+        //     select
+        // );
+        $('#material').select2({
+            data: selectMas,
+            minimumResultsForSearch: 6
+        })
     });
 });
 //END select выбор материала
