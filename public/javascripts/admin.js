@@ -1,5 +1,13 @@
 $(document).ready(function(){
     $('[data-toggle="tooltip"]').tooltip();
+
+    //input file
+    var inp = $('#upload'),
+        lbl = $('.file_upload div');
+
+    inp.change(function(){
+        lbl.text(inp.prop('files')[0].name);
+    });
 });
 //Параметры материала
 var select;
@@ -192,7 +200,7 @@ $(function(){
         });
 
         //создание кнопок
-        $('.addItemtable').before(
+        $('.btn-top-panel').append(
             '<button class="btn btn-danger" type="button" id="cancelRedactor"> Отменить' +
             '<button class="btn btn-success" type="button" id="saveRedactor"> Сохранить'
         );
@@ -432,7 +440,7 @@ $(function(){
         });
 
         //создание кнопок
-        $('.addItemtable').before(
+        $('.btn-top-panel').append(
             '<button class="btn btn-danger" type="button" id="cancelRedactor"> Отменить' +
             '<button class="btn btn-success" type="button" id="saveRedactor"> Сохранить'
         );
@@ -673,7 +681,7 @@ $(function(){
             }
         });
         //создание кнопок
-        $('.addItemtable').before(
+        $('.btn-top-panel').append(
             '<button class="btn btn-danger" type="button" id="cancelRedactor"> Отменить' +
             '<button class="btn btn-success" type="button" id="saveRedactor"> Сохранить'
         );
@@ -730,7 +738,7 @@ $(function(){
             }
         });
         //создание кнопок
-        $('.addItemtable').before(
+        $('.btn-top-panel').append(
             '<button class="btn btn-danger" type="button" id="cancelRedactor"> Отменить' +
             '<button class="btn btn-success" type="button" id="saveRedactor"> Сохранить'
         );
@@ -1051,7 +1059,7 @@ $(function(){
             }
         });
         //создание кнопок
-        $('.addItemtable').before(
+        $('.btn-top-panel').append(
             '<button class="btn btn-danger" type="button" id="cancelRedactor"> Отменить' +
             '<button class="btn btn-success" type="button" id="saveRedactor"> Сохранить'
         );
@@ -1188,7 +1196,7 @@ $(function(){
         });
 
         //создание кнопок
-        $('.addItemtableLoc').before(
+        $('.btn-top-panel').append(
             '<button class="btn btn-danger" type="button" id="cancelRedactor"> Отменить' +
             '<button class="btn btn-success" type="button" id="saveRedactor"> Сохранить'
         );
@@ -1317,6 +1325,9 @@ $(function(){
     $('.file_upload button').click(function(){
         var input = $('#upload').prop('files')[0];
         var data = new FormData();
+        if(!input){
+            return false;
+        }
         data.append('csv', input);
         $.ajax({
             url: '/upload',

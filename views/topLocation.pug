@@ -2,12 +2,14 @@ extends layoutAdmin
 
 block content
     .container-fluid
-        button.btn.btn-warning(type="button", id="addItemLoc") Добавить
-        button.btn.btn-success.hidden(type="button", id="addTableLoc") Добавить строчку
-        button.btn.btn-warning.hidden(type="button", id="cancelTableLoc") Убрать строчку
-        button.btn.btn-info.hidden(type="button", id="saveItemLoc") Сохранить
-        button.btn.btn-danger.hidden(type="button", id="cancelItemLoc") Отменить
-        .addItemtableLoc
+        .row
+            .col-md-4.btn-top-panel
+                button.btn.btn-warning(type="button", id="addItemLoc") Добавить
+                button.btn.btn-success.hidden(type="button", id="addTableLoc") Добавить строчку
+                button.btn.btn-warning.hidden(type="button", id="cancelTableLoc") Убрать строчку
+                button.btn.btn-info.hidden(type="button", id="saveItemLoc") Сохранить
+                button.btn.btn-danger.hidden(type="button", id="cancelItemLoc") Отменить
+    .addItemtableLoc
     .container-fluid
         .row
             .col-md-12

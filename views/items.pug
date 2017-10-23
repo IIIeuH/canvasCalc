@@ -3,7 +3,7 @@ extends layoutAdmin
 block content
     .container-fluid
         .row
-            .col-md-4
+            .col-md-4.btn-top-panel
                 button.btn.btn-warning(type="button", id="addItem") Добавить
                 button.btn.btn-success.hidden(type="button", id="addTable") Добавить строчку
                 button.btn.btn-warning.hidden(type="button", id="cancelTable") Убрать строчку
@@ -12,9 +12,9 @@ block content
             .col-md-2
                 .file_upload
                     button.btn.btn-info(type="button" data-loading-text="Обработка...") Загрузить
-                    input(type="text" id="uploadText", placeholder="Выбирите файл...")
-                    //div Файл не выбран
-                    input(type="file" id="upload")
+                    //input(type="text" id="uploadText", placeholder="Выбирите файл...")
+                    div Файл не выбран
+                    input(type="file" id="upload" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel")
         div(style="display: none;")
             .box-modal#loadCsv
                 .box-modal_close.arcticmodal-close закрыть
