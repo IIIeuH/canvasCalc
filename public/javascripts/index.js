@@ -1032,9 +1032,17 @@ $(function(){
                     inputSelect = item;
                 }
             });
+            if(inputSelect.ITEMWIDTH < +$('#width').val() || inputSelect.ITEMHEIGHT < +$('#depth').val()){
+                $('.hidwidth').removeClass('hidden')
+            }else{
+                $('.hidwidth').addClass('hidden')
+            }
             if(inputSelect){
                 if (inputSelect.ITEMWIDTH < that.val()) {
                     $('#splice1').val(inputSelect.ITEMWIDTH);
+                    draw();
+                }else{
+                    $('#splice1').val(0);
                     draw();
                 }
             }
@@ -1051,9 +1059,17 @@ $(function(){
                     inputSelect = item;
                 }
             });
+            if(inputSelect.ITEMWIDTH < +$('#width').val() || inputSelect.ITEMHEIGHT < +$('#depth').val()){
+                $('.hidwidth').removeClass('hidden')
+            }else{
+                $('.hidwidth').addClass('hidden')
+            }
             if(inputSelect){
                 if (inputSelect.ITEMHEIGHT < that.val()) {
                     $('#splice2').val(inputSelect.ITEMHEIGHT);
+                    draw();
+                }else{
+                    $('#splice2').val(0);
                     draw();
                 }
             }

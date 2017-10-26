@@ -263,3 +263,9 @@ button.sendMail{
   top: 42%;
   cursor: pointer;
 }
+.price p{
+  font-size: 24px;
+}
+.pricedoubl p {
+  font-size: 24px;
+}
