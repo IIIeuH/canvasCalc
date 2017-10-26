@@ -773,14 +773,15 @@ function saveItemsCSV(req, col, cb){
                         doRelease(connection);
                         cb(err);
                     }
-                    console.log(result);
                     var query = [];
                     query.push("INSERT ALL ");
-                    req.forEach(function(item, i){
+                    req.forEach(function(item){
                         query.push("INTO items_temp (ITEM_AX_ID, ITEMNAME, ITEM_TYPES_ID, ITEMTHIN, ITEMWIDTH, ITEMHEIGHT, ITEMPRICE) VALUES");
                         query.push("(");
                         for(var i = 0; i < item.length; i ++){
                             if(i === 0 || i === 1){
+                                item[i] = item[i].replace(/'/g, "''");
+                                console.log(item[i]);
                                 query.push("'"+item[i]+"'");
                                 query.push(",");
                             }else{
@@ -818,8 +819,6 @@ function saveItemsCSV(req, col, cb){
                                 });
                         });
                 });
-            //var query = "INSERT INTO items (itemname, item_types_id, itemheight, itemwidth, itemthin, itemprice) VALUES (:itemname, :item_types_id, :itemheight, :itemwidth, :itemthin, :itemprice)";
-
         });
 }
 

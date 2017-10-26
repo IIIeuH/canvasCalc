@@ -43,7 +43,7 @@ app.use(cookieParser());
 app.use(multipartMiddleware);
 
 app.use(session({
-    cookie: {maxAge: null},
+    cookie: {maxAge: 43200000},
     secret: 'SecretKey',
     key: 'session_name',
     resave: true,
