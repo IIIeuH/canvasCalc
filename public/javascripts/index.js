@@ -822,7 +822,6 @@ function draw(){
     var coorder = {};
     coorder.width = width;
     coorder.heigth = heigth;
-    console.log(width, heigth);
     return coorder;
 }
 
@@ -1493,7 +1492,6 @@ $(function(){
                     url: '/selectjobparams',
                     type: 'GET',
                     success: function (data) {
-                        console.log(data);
                     },
                     error: function (err) {
                         console.log(err);
@@ -1535,7 +1533,6 @@ $(function(){
 
                     countertopCost = Math.round(materialCost + profileGlueCost+ spliceGlueCost + profileCost + gidrorezCutCost  + lowerAssemCost);
 
-                    //console.log(materialCost , profileGlueCost, spliceGlueCost , profileCost , gidrorezCutCost  , lowerAssemCost);
                     $('.price h2').text(countertopCost).priceFormat({
                         prefix: '',
                         centsLimit: 0,

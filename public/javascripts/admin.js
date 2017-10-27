@@ -133,7 +133,6 @@ $(function(){
             });
             data.push(mas);
         });
-        console.log(data);
         $.ajax({
             url: '/admin/items/',
             type: 'POST',
@@ -256,7 +255,6 @@ $(function(){
             });
             data.push(mas);
         });
-        console.log(data);
         $.ajax({
             url: '/admin/itemsCSV/',
             type: 'POST',
@@ -985,6 +983,7 @@ $(function(){
             $(this).find('.form-group').children().each(function(){
                 mas.push($(this).val());
             });
+            mas.push($(this).find('.input-group input').val());
             data.push(mas);
         });
         $.ajax({
@@ -1385,7 +1384,6 @@ $(function(){
                         });
                     }
                 });
-                console.log(data);
             },
             error: function(err){
                 console.log(err);

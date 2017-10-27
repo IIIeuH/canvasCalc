@@ -208,7 +208,6 @@ module.exports.bomParams = function(req, res, next){
 };
 
 module.exports.del = function(req, res, next){
-    console.log(req.body);
     delItems(req.body.id, req.body.table, req.body.nameId, function(data){
         res.json(data);
     });
@@ -249,9 +248,7 @@ module.exports.updateTopLocation = function(req, res, next) {
 };
 
 module.exports.upload = function(req, res, next) {
-    console.log(req.files);
     csvFilePath=req.files.csv.path;
-    console.log(csvFilePath);
     function ItemReady(axaptaItemId, name, thin, price, width, height){
         this.ITEM_AX_ID = axaptaItemId;
         this.ITEMNAME = name;
@@ -266,13 +263,11 @@ module.exports.upload = function(req, res, next) {
     csv()
     .fromFile(csvFilePath)
     .on('json', function(jsonObj){
-        console.log(jsonObj.itemid);
         string += "'"+jsonObj.itemid + "',";
     })
     .on('done',function(error) {
         if (error) console.log(error);
         string = string.substring(0, string.length - 1);
-        console.log(string);
         oracledb.getConnection(
             {
                 user: "tops",
@@ -325,7 +320,6 @@ module.exports.upload = function(req, res, next) {
                                 }
                                 result.rows.forEach(function (item) {
                                     var obj = {};
-                                    console.log(item);
                                     obj = new ItemReady(item.ITEM_AX_ID, item.ITEMNAME, item.ITEMTHIN, item.ITEMPRICE, item.ITEMWIDTH*10, item.ITEMHEIGHT*10);
                                     masReady.push(obj);
                                 });
@@ -359,7 +353,6 @@ module.exports.mail = function(req, res, next) {
                         doRelease(connection);
                     }
                         doRelease(connection);
-                        console.log(ress.rows[0].TOP_USER_EMAIL);
                         transporter.sendMail({
                             from: '<terra.notification@yandex.ru>',
                             to: ress.rows[0].TOP_USER_EMAIL,
@@ -392,7 +385,6 @@ module.exports.add = function(req, res, next) {
                         return;
                     }
                     var itemid = +req.body.itemId;
-                    console.log(req.body);
                     var query = "merge into contertops a using(select :countertops_id countertops_id, :itemid itemid, :width width, :heigth heigth, :section section, :joint_vertical joint_vertical, :joint_horizontal joint_horizontal, :comments comments, :top_name top_name, :section_side section_side, :section_height section_height, :bottom_glue_width bottom_glue_width, :price price, :top_user_id top_user_id, :saved saved from dual) b ON (a.countertops_id=b.countertops_id and b.countertops_id != 0) WHEN matched then update  SET a.itemid=b.itemid,  a.width=b.width,  a.heigth=b.heigth,  a.section=b.section,  a.joint_vertical=b.joint_vertical,  a.joint_horizontal=b.joint_horizontal,  a.comments=b.comments,  a.top_name=b.top_name,  a.section_side=b.section_side,  a.section_height=b.section_height,  a.bottom_glue_width=b.bottom_glue_width,  a.price=b.price,  a.top_user_id=b.top_user_id, a.saved=b.saved when not matched then insert  (itemid,   width,   heigth,   section,   joint_vertical,   joint_horizontal,   comments,   top_name,   section_side,   section_height,   bottom_glue_width,   price,   top_user_id, saved)  values  (b.itemid,   b.width,   b.heigth,   b.section,   b.joint_vertical,   b.joint_horizontal,   b.comments,   b.top_name,   b.section_side,   b.section_height,   b.bottom_glue_width,   b.price,   b.top_user_id, b.saved)";
                     connection.execute(
                         query, [req.body.counterTopId, itemid, req.body.width, req.body.heigth, req.body.section, req.body.joinVertical, req.body.joinHorizontal, req.body.comments, req.body.name, req.body.sectionSide, req.body.sectionHeight, req.body.bottomGlueWidth, req.body.price, req.user[0].TOP_USER_ID, 1], {autoCommit: true},
@@ -475,7 +467,6 @@ module.exports.add = function(req, res, next) {
                         return;
                     }
                     var res = JSON.parse(req.body.dop);
-                    console.log('COUNTEMDDS', counterTopId, req.body.dop);
                     req.body.dop = JSON.parse(req.body.dop);
                     if(req.body.dop.length > 0){
                         async.forEachOf(res, function(item, k, done){
@@ -497,7 +488,6 @@ module.exports.add = function(req, res, next) {
                         });
                     }else{
                         var query = "DELETE FROM countertops_addon WHERE countertops_id = " + counterTopId + " AND addon_type_id = 9999";
-                        console.log(query);
                         connection.execute(
                             query,
                             function (err) {
@@ -734,7 +724,6 @@ function saveItems(req, col, cb){
                 });
                 query.push('SELECT 1 FROM DUAL');
                 query = query.join(' ');
-                console.log(query);
                 connection.execute(
                     query, {}, {autoCommit: true},
                     function (err, result) {
@@ -743,7 +732,6 @@ function saveItems(req, col, cb){
                             doRelease(connection);
                             cb(err);
                         }
-                        console.log(result);
                         doRelease(connection);
                         cb(result);
                     });
@@ -781,7 +769,6 @@ function saveItemsCSV(req, col, cb){
                         for(var i = 0; i < item.length; i ++){
                             if(i === 0 || i === 1){
                                 item[i] = item[i].replace(/'/g, "''");
-                                console.log(item[i]);
                                 query.push("'"+item[i]+"'");
                                 query.push(",");
                             }else{
@@ -794,7 +781,6 @@ function saveItemsCSV(req, col, cb){
                     });
                     query.push('SELECT 1 FROM DUAL');
                     query = query.join(' ');
-                    console.log(query);
                     connection.execute(
                         query, {}, {autoCommit: true},
                         function (err, result) {
@@ -803,7 +789,6 @@ function saveItemsCSV(req, col, cb){
                                 doRelease(connection);
                                 cb(err);
                             }
-                            console.log(result);
                             var queryMarge = "merge into items a using (select * from items_temp) b on (a.item_ax_id=b.item_ax_id) when matched then update set a.ITEMNAME=b.ITEMNAME, a.ITEMHEIGHT=b.ITEMHEIGHT, a.ITEMWIDTH=b.ITEMWIDTH, a.ITEMTHIN=b.ITEMTHIN, a.ITEMPRICE=b.ITEMPRICE, a.ITEM_TYPES_ID=b.ITEM_TYPES_ID when not matched then insert (ITEM_AX_ID, ITEMNAME, ITEM_TYPES_ID, ITEMHEIGHT, ITEMWIDTH, ITEMTHIN, ITEMPRICE) values (b.ITEM_AX_ID, b.ITEMNAME, b.ITEM_TYPES_ID, b.ITEMHEIGHT, b.ITEMWIDTH, b.ITEMTHIN, b.ITEMPRICE)";
                             connection.execute(
                                 queryMarge, {}, {autoCommit: true},
@@ -836,7 +821,6 @@ function updateItems(req, id, col, cb){
                 return;
             }
             req = JSON.parse(req);
-            console.log('REQ' + req);
             var query = [];
             query.push("UPDATE " + col);
             query.push("SET ");
@@ -849,7 +833,6 @@ function updateItems(req, id, col, cb){
             query.push("itemprice = :itemprice");
             query.push(" WHERE itemid= :id");
             query = query.join(' ');
-            console.log(query);
             connection.execute(
                 query, {
                     id: id,
@@ -867,7 +850,6 @@ function updateItems(req, id, col, cb){
                         doRelease(connection);
                         cb(err);
                     }
-                    console.log(result);
                     doRelease(connection);
                     cb(result);
                 });
@@ -889,7 +871,6 @@ function updateJobParams(req, id, col, cb){
                 return;
             }
             req = JSON.parse(req);
-            console.log(req, id,col);
             var query = [];
             query.push("UPDATE " + col);
             query.push("SET ");
@@ -898,7 +879,6 @@ function updateJobParams(req, id, col, cb){
             query.push("jobuoms_id = :jobuomsId");
             query.push(" WHERE jobid= :jobid");
             query = query.join(' ');
-            console.log(query);
             connection.execute(
                 query, {
                     jobid: id,
@@ -912,7 +892,6 @@ function updateJobParams(req, id, col, cb){
                         doRelease(connection);
                         cb(err);
                     }
-                    console.log(result);
                     doRelease(connection);
                     cb(result);
                 });
@@ -935,7 +914,6 @@ function updateBomParams(req, id, col, cb){
                 return;
             }
             req = JSON.parse(req);
-            console.log(req, id,col);
             var query = [];
             query.push("UPDATE " + col);
             query.push("SET ");
@@ -947,7 +925,6 @@ function updateBomParams(req, id, col, cb){
             query.push("consumpperuoms_id = :consumpperuoms_id");
             query.push(" WHERE bomid= :bomid");
             query = query.join(' ');
-            console.log(query);
             connection.execute(
                 query, {
                     bomid: id,
@@ -964,7 +941,6 @@ function updateBomParams(req, id, col, cb){
                         doRelease(connection);
                         cb(err);
                     }
-                    console.log(result);
                     doRelease(connection);
                     cb(result);
                 });
@@ -987,14 +963,12 @@ function updateUom(req, id, col, cb){
                 return;
             }
             req = JSON.parse(req);
-            console.log(req[0],req, id,col);
             var query = [];
             query.push("UPDATE " + col);
             query.push("SET");
             query.push("uom = :uom");
             query.push("WHERE uoms_id= :uoms_id");
             query = query.join(' ');
-            console.log(query);
             connection.execute(
                 query, {
                     uoms_id: id,
@@ -1006,7 +980,6 @@ function updateUom(req, id, col, cb){
                         doRelease(connection);
                         cb(err);
                     }
-                    console.log(result);
                     doRelease(connection);
                     cb(result);
                 });
@@ -1030,7 +1003,6 @@ function updateUsers(req, id, col, cb){
                 return;
             }
             req = JSON.parse(req);
-            console.log(req[0],req, id,col);
             var query = [];
             query.push("UPDATE " + col);
             query.push("SET");
@@ -1060,7 +1032,6 @@ function updateUsers(req, id, col, cb){
                         doRelease(connection);
                         cb(err);
                     }
-                    console.log(result);
                     doRelease(connection);
                     cb(result);
                 });
@@ -1084,7 +1055,6 @@ function updateTopLocation(req, id, col, cb){
                 return;
             }
             req = JSON.parse(req);
-            console.log(req[0],req, id,col);
             var query = [];
             query.push("UPDATE " + col);
             query.push("SET");
@@ -1102,7 +1072,6 @@ function updateTopLocation(req, id, col, cb){
                         doRelease(connection);
                         cb(err);
                     }
-                    console.log(result);
                     doRelease(connection);
                     cb(result);
                 });
@@ -1155,7 +1124,6 @@ function saveJobParams(req, col, cb){
                         doRelease(connection);
                         cb(err);
                     }
-                    console.log(result);
                     doRelease(connection);
                     cb(result);
                 });
@@ -1206,7 +1174,6 @@ function saveBomParams(req, col, cb){
                         doRelease(connection);
                         cb(err);
                     }
-                    console.log(result);
                     doRelease(connection);
                     cb(result);
                 });
@@ -1257,7 +1224,6 @@ function saveUom(req, col, cb){
                         doRelease(connection);
                         cb(err);
                     }
-                    console.log(result);
                     doRelease(connection);
                     cb(result);
                 });
@@ -1285,12 +1251,12 @@ function saveUsers(req, col, cb){
                 item[0] = +item[0];
                 item[1] = +item[1];
                 item[2] = "'" + item[2]+"'";
-                item[3] = "'" + bcrypt.encrypt(item[3])+"'";
+                item[3] = "'" + item[3]+"'";
                 item[4] = "'" + item[4]+"'";
                 item[5] = "'" + item[5]+"'";
                 item[6] = "'" + item[6]+"'";
-                item[7] = "'" + item[7]+"'";
-                query.push("INTO top_users (top_location_id, top_user_level, top_user, top_user_password, top_user_fio, top_user_address, top_user_phone, top_user_email) VALUES");
+                item[7] = "'" + bcrypt.encrypt(item[7])+"'";
+                query.push("INTO top_users (top_location_id, top_user_level, top_user, top_user_fio, top_user_address, top_user_phone, top_user_email, top_user_password) VALUES");
                 query.push("(");
                 for(var i = 0; i < item.length; i ++){
                     query.push(item[i]);
@@ -1301,7 +1267,6 @@ function saveUsers(req, col, cb){
             });
             query.push('SELECT 1 FROM DUAL');
             query = query.join(' ');
-            console.log(query);
             connection.execute(
                 query, {}, {autoCommit: true},
                 function (err, result) {
@@ -1310,7 +1275,6 @@ function saveUsers(req, col, cb){
                         doRelease(connection);
                         cb(err);
                     }
-                    console.log(result);
                     doRelease(connection);
                     cb(result);
                 });
@@ -1333,7 +1297,6 @@ function addTopLocations(req, col, cb){
             req = JSON.parse(req);
             col = JSON.parse(col);
             var query = [];
-            console.log(req);
             query.push("INSERT ALL ");
             req.forEach(function(item, i){
                 query.push("INTO top_locations (top_location_name) VALUES");
@@ -1360,7 +1323,6 @@ function addTopLocations(req, col, cb){
                         doRelease(connection);
                         cb(err);
                     }
-                    console.log(result);
                     doRelease(connection);
                     cb(result);
                 });
@@ -1379,7 +1341,6 @@ module.exports.draw = function(req, res){
                 console.error(err.message);
                 return;
             }
-            console.log(req.body);
             var query = "SELECT * FROM countertops_addon WHERE countertops_id="+req.body.id;
             connection.execute(
                 query, {}, { outFormat: oracledb.OBJECT},
@@ -1663,7 +1624,6 @@ function delItems(id, table, nameId, cb){
                 return;
             }
             var query = "DELETE FROM "+table+" WHERE "+nameId+"="+ Number(id);
-            console.log(query);
             connection.execute(
                 query, {}, {autoCommit: true},
                 function (err, result) {
@@ -1673,7 +1633,6 @@ function delItems(id, table, nameId, cb){
                         cb(err);
                     }
                     doRelease(connection);
-                    console.log(result);
                     cb(result);
                 });
         });
