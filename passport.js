@@ -51,13 +51,15 @@ function(req, username, password, done) {
                 console.error(err.message);
                 return;
             }
+            username = username.replace(/'/g, "''");
             var query = "SELECT * FROM top_users WHERE top_user = '" +username + "'";
+            console.log(query);
             connection.execute(
                 query, {}, {outFormat: oracledb.OBJECT},
                 function (err, result) {
                     if (err) {
                         doRelease(connection);
-                        cb(err);
+                        done(err);
                     }
                     doRelease(connection);
                     if (!result.rows.length) {

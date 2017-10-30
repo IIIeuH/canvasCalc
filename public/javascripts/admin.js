@@ -1367,12 +1367,12 @@ $(function(){
                                 '</td>' +
                                 '<td>' +
                                 '<div class="form-group">' +
-                                '<input type="text" class="form-control" value="'+item.ITEMHEIGHT+'">' +
+                                '<input type="text" class="form-control" value="'+item.ITEMWIDTH+'">' +
                                 '</div>' +
                                 '</td>' +
                                 '<td>' +
                                 '<div class="form-group">' +
-                                '<input type="text" class="form-control" value="'+item.ITEMWIDTH+'">' +
+                                '<input type="text" class="form-control" value="'+item.ITEMHEIGHT+'">' +
                                 '</div>' +
                                 '</td>' +
                                 '<td>' +
